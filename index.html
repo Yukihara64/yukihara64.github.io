@@ -662,57 +662,93 @@
         return;
       }
 
-      const t        = data.track;
-      const isLive   = data.source === 'live';
-      const progress = t.duration ? Math.round((t.progress / t.duration) * 100) : 0;
-      const fmtTime  = ms => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
+      const t      = data.track;
+      const isLive = data.source === 'live';
+      const fmtTime = ms => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
 
-      el.innerHTML = `
-        <a href="${t.url}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
-          ${t.cover ? `<img src="${t.cover}" alt="${t.album}"
-            style="width:90px;height:90px;border-radius:10px;flex-shrink:0;
-                   border:1px solid rgba(29,185,84,.35);
-                   box-shadow:0 0 20px rgba(29,185,84,.2);
-                   transition:transform .2s,box-shadow .2s;"
-            onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 0 32px rgba(29,185,84,.45)'"
-            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(29,185,84,.2)'"/>` : ''}
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:.65rem;letter-spacing:3px;font-weight:900;margin-bottom:6px;
-                        display:flex;align-items:center;gap:8px;
-                        color:#1db954;text-shadow:0 0 10px rgba(29,185,84,.5);">
-              ${isLive
-                ? `<span style="width:8px;height:8px;background:#1db954;border-radius:50%;
-                               box-shadow:0 0 8px #1db954;display:inline-block;
-                               animation:blink 1s infinite;flex-shrink:0;"></span> LISTENING NOW // 再生中`
-                : 'LAST PLAYED // 最近再生'}
-            </div>
-            <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1rem;font-weight:900;
-                        color:#f0d6f5;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-                        text-shadow:0 0 10px rgba(29,185,84,.3);">
-              🎵 ${t.name}
-            </div>
-            <div style="font-size:.82rem;color:#1db954;font-weight:700;margin-bottom:2px;">
-              ${t.artist}
-            </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">
-              ${t.album}
-            </div>
-            ${isLive ? `
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:.7rem;color:var(--muted);">${fmtTime(t.progress)}</span>
-              <div style="flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;">
-                <div style="width:${progress}%;height:100%;background:#1db954;border-radius:4px;
-                             box-shadow:0 0 8px rgba(29,185,84,.6);"></div>
+      // Only rebuild the DOM if the song changed to avoid flickering
+      const currentSong = el.dataset.trackUrl;
+      if (currentSong !== t.url) {
+        const progress = t.duration ? Math.round((t.progress / t.duration) * 100) : 0;
+        el.dataset.trackUrl = t.url;
+        el.innerHTML = `
+          <a href="${t.url}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
+            ${t.cover ? `<img src="${t.cover}" alt="${t.album}"
+              style="width:90px;height:90px;border-radius:10px;flex-shrink:0;
+                     border:1px solid rgba(29,185,84,.35);box-shadow:0 0 20px rgba(29,185,84,.2);
+                     transition:transform .2s,box-shadow .2s;"
+              onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 0 32px rgba(29,185,84,.45)'"
+              onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(29,185,84,.2)'"/>` : ''}
+            <div style="flex:1;min-width:0;">
+              <div id="spotify-status-label" style="font-size:.65rem;letter-spacing:3px;font-weight:900;margin-bottom:6px;
+                          display:flex;align-items:center;gap:8px;
+                          color:#1db954;text-shadow:0 0 10px rgba(29,185,84,.5);">
+                ${isLive
+                  ? `<span style="width:8px;height:8px;background:#1db954;border-radius:50%;
+                                 box-shadow:0 0 8px #1db954;display:inline-block;
+                                 animation:blink 1s infinite;flex-shrink:0;"></span> LISTENING NOW // 再生中`
+                  : 'LAST PLAYED // 最近再生'}
               </div>
-              <span style="font-size:.7rem;color:var(--muted);">${fmtTime(t.duration)}</span>
-            </div>` : ''}
-          </div>
-        </a>`;
+              <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1rem;font-weight:900;
+                          color:#f0d6f5;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                          text-shadow:0 0 10px rgba(29,185,84,.3);">
+                🎵 ${t.name}
+              </div>
+              <div style="font-size:.82rem;color:#1db954;font-weight:700;margin-bottom:2px;">${t.artist}</div>
+              <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">${t.album}</div>
+              ${isLive ? `
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span id="spotify-elapsed" style="font-size:.7rem;color:var(--muted);min-width:32px;">${fmtTime(t.progress)}</span>
+                <div style="flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;">
+                  <div id="spotify-bar" style="width:${progress}%;height:100%;background:#1db954;border-radius:4px;
+                               box-shadow:0 0 8px rgba(29,185,84,.6);transition:width .9s linear;"></div>
+                </div>
+                <span style="font-size:.7rem;color:var(--muted);min-width:32px;text-align:right;">${fmtTime(t.duration)}</span>
+              </div>` : ''}
+            </div>
+          </a>`;
+
+        // Start local progress ticker if live
+        if (isLive) {
+          clearInterval(window._spotifyTicker);
+          let elapsed  = t.progress;
+          const duration = t.duration;
+          window._spotifyTicker = setInterval(() => {
+            elapsed += 1000;
+            if (elapsed > duration) { clearInterval(window._spotifyTicker); return; }
+            const bar = document.getElementById('spotify-bar');
+            const elp = document.getElementById('spotify-elapsed');
+            if (bar) bar.style.width = `${Math.min((elapsed / duration) * 100, 100)}%`;
+            if (elp) elp.textContent = fmtTime(elapsed);
+          }, 1000);
+        }
+      } else if (isLive) {
+        // Same song — just sync the progress from API without rebuilding DOM
+        const bar = document.getElementById('spotify-bar');
+        const elp = document.getElementById('spotify-elapsed');
+        if (bar) bar.style.width = `${Math.round((t.progress / t.duration) * 100)}%`;
+        if (elp) elp.textContent = fmtTime(t.progress);
+        // Restart ticker with synced position
+        clearInterval(window._spotifyTicker);
+        let elapsed = t.progress;
+        const duration = t.duration;
+        window._spotifyTicker = setInterval(() => {
+          elapsed += 1000;
+          if (elapsed > duration) { clearInterval(window._spotifyTicker); return; }
+          const b = document.getElementById('spotify-bar');
+          const e = document.getElementById('spotify-elapsed');
+          if (b) b.style.width = `${Math.min((elapsed / duration) * 100, 100)}%`;
+          if (e) e.textContent = fmtTime(elapsed);
+        }, 1000);
+      }
+
     } catch(e) {
       el.innerHTML = `<span style="color:var(--muted);font-size:.82rem;">⚠️ Could not load Spotify data.</span>`;
     }
   }
   fetchSpotify();
+  // Poll every 10 seconds — updates song, progress bar and live status automatically
+  setInterval(fetchSpotify, 10000);
 
   // ── Steam last played ──
   async function fetchSteam() {
@@ -801,12 +837,12 @@
         status.style.color   = '#80ffcc';
         status.textContent   = '✅ Message sent! ありがとう 🌸';
       } else {
-        throw new Error(data.error);
+        throw new Error(data.error ?? 'Unknown error');
       }
     } catch(e) {
       status.style.display = 'block';
       status.style.color   = '#ff6b6b';
-      status.textContent   = '❌ Failed to send. Try again!';
+      status.textContent   = `❌ ${e.message || 'Failed to send. Try again!'}`;
     }
     btn.disabled = false; btn.style.opacity = '1';
   }
