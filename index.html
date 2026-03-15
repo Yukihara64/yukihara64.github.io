@@ -548,7 +548,7 @@
 </div>
 
 <script>
-  // ── Spotify now playing ──
+  // ── Spotify now playing ── (unchanged)
   async function fetchSpotify() {
     const el = document.getElementById('spotify-content');
     try {
@@ -612,12 +612,13 @@
   }
   fetchSpotify();
 
-  // ── Steam last played ──
+  // ── Steam last played with polling ──
   async function fetchSteam() {
     const el = document.getElementById('steam-content');
     try {
-      const res   = await fetch('/api/steam');
-      const data  = await res.json();
+      // Add timestamp to force a fresh request
+      const res = await fetch('/api/steam?_=' + Date.now());
+      const data = await res.json();
       const games = data.game ? [data.game] : null;
 
       if (!games || games.length === 0) {
@@ -626,7 +627,6 @@
       }
 
       const game   = games[0];
-      const appId  = game.appid;
       const name   = game.name;
       const img    = game.img;
       const hrs2w  = (game.playtime_2weeks / 60).toFixed(1);
@@ -670,8 +670,13 @@
       console.error('Steam fetch error:', e);
     }
   }
-  fetchSteam();
 
+  // Initial fetch
+  fetchSteam();
+  // Poll every 30 seconds
+  setInterval(fetchSteam, 30000);
+
+  // Petals effect (unchanged)
   const petals = ['🌸','🌺','✿','❀','🌷'];
   for (let i = 0; i < 22; i++) {
     const p = document.createElement('div');
