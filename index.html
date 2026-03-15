@@ -299,6 +299,12 @@
       .cert-grid{grid-template-columns:1fr;}
       .section{padding:22px 18px;}
     }
+    .draw-tool {
+      background:rgba(255,255,255,.05); border:1px solid rgba(191,128,255,.3);
+      border-radius:6px; padding:6px 10px; font-size:16px; cursor:pointer; transition:all .2s;
+    }
+    .draw-tool.active { background:rgba(191,128,255,.2); border-color:var(--neon-lav); }
+    .draw-tool:hover  { border-color:var(--neon-pink); }
   </style>
 </head>
 <body>
@@ -546,6 +552,78 @@
     </div>
   </div>
 
+  <!-- ANONYMOUS MESSAGES -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 匿名メッセージ <span class="sec-jp">Send a message</span></div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">Leave me an anonymous message — I read every one! 🌸</p>
+    <textarea id="msg-input" placeholder="Write something nice... or not 👀" maxlength="500"
+      style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,105,180,.3);border-radius:6px;
+             padding:12px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.88rem;
+             resize:vertical;min-height:100px;outline:none;transition:border-color .2s;"
+      onfocus="this.style.borderColor='var(--neon-pink)'"
+      onblur="this.style.borderColor='rgba(255,105,180,.3)'"
+    ></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <span id="msg-char" style="font-size:.72rem;color:var(--muted);">0 / 500</span>
+      <button id="msg-btn" onclick="sendMessage()"
+        style="background:linear-gradient(135deg,var(--neon-pink),var(--neon-lav));border:none;
+               border-radius:6px;padding:9px 24px;color:#fff;font-size:.85rem;font-weight:900;
+               cursor:pointer;transition:transform .2s,opacity .2s;"
+        onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        送信 Send →
+      </button>
+    </div>
+    <div id="msg-status" style="font-size:.82rem;margin-top:10px;display:none;"></div>
+  </div>
+
+  <!-- DRAWING PAD -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// お絵かき <span class="sec-jp">Drawing pad</span></div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">Draw something and send it to me! 🎨</p>
+
+    <!-- Tools -->
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+      <div style="display:flex;gap:4px;">
+        <button class="draw-tool active" id="tool-pen"   onclick="setTool('pen')"   title="Pen">✏️</button>
+        <button class="draw-tool"        id="tool-eraser" onclick="setTool('eraser')" title="Eraser">🧹</button>
+      </div>
+      <input type="color" id="draw-color" value="#ff69b4" title="Color"
+        style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0;"/>
+      <input type="range" id="draw-size" min="1" max="30" value="4" title="Brush size"
+        style="width:80px;accent-color:var(--neon-pink);"/>
+      <button onclick="clearCanvas()"
+        style="background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);border-radius:6px;
+               padding:6px 12px;color:#ff6b6b;font-size:.78rem;font-weight:700;cursor:pointer;">
+        Clear
+      </button>
+    </div>
+
+    <canvas id="draw-canvas" width="700" height="300"
+      style="width:100%;height:250px;background:#1a0a2e;border:1px solid rgba(191,128,255,.3);
+             border-radius:8px;cursor:crosshair;touch-action:none;display:block;"></canvas>
+
+    <!-- Optional message with drawing -->
+    <input type="text" id="draw-msg" placeholder="Add a message with your drawing... (optional)" maxlength="200"
+      style="width:100%;margin-top:10px;background:rgba(255,255,255,.04);border:1px solid rgba(191,128,255,.3);
+             border-radius:6px;padding:10px 14px;color:var(--text);font-family:'Nunito',sans-serif;
+             font-size:.85rem;outline:none;"
+      onfocus="this.style.borderColor='var(--neon-lav)'"
+      onblur="this.style.borderColor='rgba(191,128,255,.3)'"/>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button id="draw-btn" onclick="sendDrawing()"
+        style="background:linear-gradient(135deg,var(--neon-lav),var(--neon-cyan));border:none;
+               border-radius:6px;padding:9px 24px;color:#fff;font-size:.85rem;font-weight:900;
+               cursor:pointer;transition:transform .2s;"
+        onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+        🎨 Send Drawing →
+      </button>
+    </div>
+    <div id="draw-status" style="font-size:.82rem;margin-top:10px;display:none;"></div>
+  </div>
+
   <!-- FOOTER -->  <div class="footer">
     <a href="https://www.linkedin.com/in/danielguanes/" target="_blank">🔗 LinkedIn</a>
     &nbsp;·&nbsp;
@@ -695,6 +773,125 @@
     }
   }
   fetchSteam();
+
+  // ── Anonymous messages ──
+  const msgInput = document.getElementById('msg-input');
+  msgInput.addEventListener('input', () => {
+    document.getElementById('msg-char').textContent = `${msgInput.value.length} / 500`;
+  });
+
+  async function sendMessage() {
+    const msg    = msgInput.value.trim();
+    const status = document.getElementById('msg-status');
+    const btn    = document.getElementById('msg-btn');
+    if (!msg) return;
+    btn.disabled = true; btn.style.opacity = '.6';
+    status.style.display = 'none';
+    try {
+      const res  = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        msgInput.value = '';
+        document.getElementById('msg-char').textContent = '0 / 500';
+        status.style.display = 'block';
+        status.style.color   = '#80ffcc';
+        status.textContent   = '✅ Message sent! ありがとう 🌸';
+      } else {
+        throw new Error(data.error);
+      }
+    } catch(e) {
+      status.style.display = 'block';
+      status.style.color   = '#ff6b6b';
+      status.textContent   = '❌ Failed to send. Try again!';
+    }
+    btn.disabled = false; btn.style.opacity = '1';
+  }
+
+  // ── Drawing pad ──
+  const canvas  = document.getElementById('draw-canvas');
+  const ctx     = canvas.getContext('2d');
+  let drawing   = false;
+  let tool      = 'pen';
+  let lastX = 0, lastY = 0;
+
+  function setTool(t) {
+    tool = t;
+    document.querySelectorAll('.draw-tool').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tool-${t}`).classList.add('active');
+  }
+
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width  / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return [(clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY];
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    drawing = true;
+    [lastX, lastY] = getPos(e);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!drawing) return;
+    const [x, y] = getPos(e);
+    ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
+    ctx.strokeStyle = document.getElementById('draw-color').value;
+    ctx.lineWidth   = document.getElementById('draw-size').value;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    [lastX, lastY] = [x, y];
+  });
+  canvas.addEventListener('pointerup',   () => drawing = false);
+  canvas.addEventListener('pointerout',  () => drawing = false);
+
+  async function sendDrawing() {
+    const status = document.getElementById('draw-status');
+    const btn    = document.getElementById('draw-btn');
+    const msg    = document.getElementById('draw-msg').value.trim();
+
+    // Check canvas is not blank
+    const blank = document.createElement('canvas');
+    blank.width = canvas.width; blank.height = canvas.height;
+    if (canvas.toDataURL() === blank.toDataURL()) {
+      status.style.display = 'block'; status.style.color = '#ff6b6b';
+      status.textContent = '✏️ Draw something first!'; return;
+    }
+
+    btn.disabled = true; btn.style.opacity = '.6';
+    status.style.display = 'none';
+    try {
+      const res  = await fetch('/api/drawings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_data: canvas.toDataURL('image/png'), message: msg }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        clearCanvas();
+        document.getElementById('draw-msg').value = '';
+        status.style.display = 'block'; status.style.color = '#80ffcc';
+        status.textContent = '✅ Drawing sent! 絵をありがとう 🎨';
+      } else { throw new Error(data.error); }
+    } catch(e) {
+      status.style.display = 'block'; status.style.color = '#ff6b6b';
+      status.textContent = '❌ Failed to send. Try again!';
+    }
+    btn.disabled = false; btn.style.opacity = '1';
+  }
 
   const petals = ['🌸','🌺','✿','❀','🌷'];
   for (let i = 0; i < 22; i++) {
