@@ -23,14 +23,13 @@ export default async (req) => {
     });
   };
 
-  const buildGame = (appid, name, extra = {}) => ({
-    appid, name,
-    playtime_2weeks:  extra.playtime_2weeks  ?? 0,
-    playtime_forever: extra.playtime_forever ?? 0,
-    img: `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`,
-    url: `https://store.steampowered.com/app/${appid}`,
-  });
-
+ const buildGame = (appid, name, extra = {}) => ({
+  appid, name,
+  playtime_2weeks:  extra.playtime_2weeks  ?? 0,
+  playtime_forever: extra.playtime_forever ?? 0,
+  img: `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`,
+  url: `https://store.steampowered.com/app/${appid}`,
+});
   // Fetch player summary
   const summaryRes = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${STEAM_ID}`);
   const summaryData = await summaryRes.json();
