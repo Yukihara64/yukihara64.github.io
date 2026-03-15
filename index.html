@@ -1,357 +1,613 @@
-﻿<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Some bullshit - No diddy</title>
-    <style>
-        :root {
-            --bg1: #0f172a;
-            --bg2: #0b1220;
-            --accent1: #7c3aed;
-            --accent2: #06b6d4;
-            --card: #0b1220cc;
-            --muted: #9aa4b2;
-            --glass: rgba(255,255,255,0.04);
-            --glass-2: rgba(255,255,255,0.02);
-            font-synthesis: none;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ゆき — Esteban Guanes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #0d0a14;
+      --bg2:       #130d1e;
+      --card:      rgba(30,16,46,0.85);
+      --border:    rgba(255,105,180,0.35);
+      --neon-pink: #ff69b4;
+      --neon-lav:  #bf80ff;
+      --neon-cyan: #00e5ff;
+      --neon-mint: #80ffcc;
+      --sakura:    #ffb7d5;
+      --gold:      #ffd700;
+      --text:      #f0d6f5;
+      --muted:     #a07ab0;
+      --glow-pink: 0 0 12px rgba(255,105,180,0.6), 0 0 30px rgba(255,105,180,0.2);
+      --glow-lav:  0 0 12px rgba(191,128,255,0.6), 0 0 30px rgba(191,128,255,0.2);
+      --glow-cyan: 0 0 12px rgba(0,229,255,0.5), 0 0 28px rgba(0,229,255,0.15);
+    }
 
-        * {
-            box-sizing: border-box
-        }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
-        html, body {
-            height: 100%
-        }
+    body {
+      font-family: 'Nunito', 'Kosugi Maru', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        body {
-            margin: 0;
-            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: radial-gradient(600px 400px at 10% 20%, rgba(124,58,237,0.08), transparent), radial-gradient(500px 300px at 90% 80%, rgba(6,182,212,0.06), transparent), linear-gradient(180deg,var(--bg1),var(--bg2));
-            color: #e6eef6;
-            -webkit-font-smoothing: antialiased;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+    }
 
-        /* Floating soft shapes */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(40px) saturate(1.2);
-            opacity: 0.18;
-            pointer-events: none;
-            z-index: 0;
-        }
+    .bg-layer {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-grad {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(255,105,180,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 80%, rgba(191,128,255,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(0,229,255,0.05) 0%, transparent 60%);
+      animation: bgPulse 8s ease-in-out infinite alternate;
+    }
+    @keyframes bgPulse { from{opacity:.7;} to{opacity:1;} }
 
-            .orb.a {
-                width: 420px;
-                height: 420px;
-                left: -80px;
-                top: -60px;
-                background: linear-gradient(135deg,var(--accent1),transparent)
-            }
+    .petal {
+      position: absolute;
+      opacity: 0;
+      animation: petalFall linear infinite;
+      user-select: none;
+    }
+    @keyframes petalFall {
+      0%   { opacity:0; transform: translateY(-40px) rotate(0deg); }
+      10%  { opacity:.7; }
+      90%  { opacity:.5; }
+      100% { opacity:0; transform: translateY(110vh) rotate(720deg); }
+    }
 
-            .orb.b {
-                width: 300px;
-                height: 300px;
-                right: -70px;
-                bottom: -40px;
-                background: linear-gradient(135deg,var(--accent2),transparent);
-                opacity: 0.14
-            }
+    .container {
+      position: relative; z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 18px 100px;
+    }
 
-        /* Card */
-        .card {
-            position: relative;
-            z-index: 1;
-            width: min(920px,96%);
-            max-width: 920px;
-            background: linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 16px;
-            padding: 28px;
-            display: grid;
-            grid-template-columns: 120px 1fr 220px;
-            gap: 20px;
-            align-items: center;
-            backdrop-filter: blur(6px) saturate(1.05);
-            box-shadow: 0 10px 40px rgba(2,6,23,0.6);
-        }
+    .kanji-bg {
+      position: fixed;
+      font-family: 'Zen Maru Gothic', serif;
+      font-size: 260px; font-weight: 900;
+      color: rgba(255,105,180,0.03);
+      right: -40px; bottom: -40px;
+      z-index: 0; pointer-events: none; line-height:1; user-select:none;
+    }
 
-        /* Avatar */
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 14px;
-            background: linear-gradient(135deg,var(--accent1),var(--accent2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 36px;
-            letter-spacing: 0.6px;
-            color: white;
-            box-shadow: 0 6px 18px rgba(12,14,22,0.6);
-        }
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: var(--glow-pink), inset 0 0 60px rgba(255,105,180,0.04);
+      animation: popIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from{opacity:0;transform:scale(0.9) translateY(20px);}
+      to{opacity:1;transform:scale(1) translateY(0);}
+    }
+    .hero::before,.hero::after,.section::before,.section::after {
+      content:''; position:absolute;
+      width:18px; height:18px;
+      border-color:var(--neon-pink); border-style:solid; z-index:2;
+    }
+    .hero::before,.section::before { top:0;left:0; border-width:2px 0 0 2px; }
+    .hero::after,.section::after   { bottom:0;right:0; border-width:0 2px 2px 0; }
 
-        /* Name + tagline */
-        .main {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
+    .hero-banner {
+      background: linear-gradient(135deg,#1a0a2e 0%,#0d0a14 50%,#0a1420 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 36px 24px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 28px; align-items: center;
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 28px;
-            line-height: 1.05;
-            background: linear-gradient(90deg,#fff,var(--accent2));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.4px;
-        }
+    .avatar-frame { position:relative; flex-shrink:0; }
+    .avatar-hex {
+      width:110px; height:110px; border-radius:50%;
+      background: conic-gradient(var(--neon-pink),var(--neon-lav),var(--neon-cyan),var(--neon-pink));
+      padding:3px; animation:rotateBorder 4s linear infinite;
+      display:flex; align-items:center; justify-content:center;
+    }
+    @keyframes rotateBorder { to{transform:rotate(360deg);} }
+    .avatar-inner {
+      width:104px; height:104px; border-radius:50%;
+      background:#1a0a2e;
+      display:flex; align-items:center; justify-content:center;
+      font-size:58px; position:relative; overflow:hidden;
+    }
+    .avatar-inner::after {
+      content:''; position:absolute; inset:0; border-radius:50%;
+      background:linear-gradient(180deg,transparent 50%,rgba(255,105,180,0.15) 100%);
+    }
+    .lvl-badge {
+      position:absolute; bottom:-4px; right:-4px;
+      background:linear-gradient(135deg,var(--neon-pink),var(--neon-lav));
+      border:2px solid var(--bg); border-radius:10px;
+      padding:2px 7px; font-size:0.65rem; font-weight:900; color:#fff; letter-spacing:.5px;
+    }
 
-        .tag {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
+    .jp-name {
+      font-family:'Zen Maru Gothic',sans-serif; font-size:.8rem;
+      color:var(--neon-pink); letter-spacing:3px; text-transform:uppercase;
+      margin-bottom:4px; text-shadow:var(--glow-pink);
+    }
+    .hero-text h1 {
+      font-family:'Zen Maru Gothic',sans-serif; font-size:1.9rem; font-weight:900; line-height:1.1;
+      background:linear-gradient(90deg,#fff 0%,var(--sakura) 50%,var(--neon-lav) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      margin-bottom:8px;
+    }
+    .hero-text .role { font-size:.88rem; color:var(--muted); font-weight:700; margin-bottom:12px; line-height:1.6; }
+    .hero-text .role span { color:var(--neon-cyan); text-shadow:var(--glow-cyan); }
+    .hero-badges { display:flex; flex-wrap:wrap; gap:8px; }
+    .hbadge { border:1px solid; border-radius:3px; padding:3px 10px; font-size:.75rem; font-weight:700; letter-spacing:.5px; }
+    .hbadge.pink { border-color:var(--neon-pink); color:var(--neon-pink); text-shadow:var(--glow-pink); }
+    .hbadge.lav  { border-color:var(--neon-lav);  color:var(--neon-lav);  text-shadow:var(--glow-lav); }
+    .hbadge.cyan { border-color:var(--neon-cyan); color:var(--neon-cyan); text-shadow:var(--glow-cyan); }
+    .hbadge.gold { border-color:var(--gold); color:var(--gold); }
 
-        /* About & tags */
-        .about {
-            margin-top: 8px;
-            color: #cfe7f7;
-            font-size: 14px;
-            line-height: 1.5;
-            max-width: 56ch;
-        }
+    .hero-status {
+      padding:16px 36px;
+      display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+      border-top:1px solid rgba(255,105,180,0.1);
+    }
+    .status-dot { width:8px;height:8px;background:#43e97b;border-radius:50%;box-shadow:0 0 8px #43e97b;animation:blink 1.4s ease-in-out infinite; }
+    @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+    .status-text { font-size:.82rem;color:#80ffa0;font-weight:700; }
+    .loc { margin-left:auto;font-size:.8rem;color:var(--muted); }
+    .loc span { color:var(--sakura); }
 
-        .chips {
-            margin-top: 12px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px
-        }
+    /* ── SECTION ── */
+    .section {
+      position:relative; background:var(--card);
+      border:1px solid var(--border); border-radius:4px;
+      padding:26px 30px; margin-top:20px;
+      box-shadow:0 4px 24px rgba(0,0,0,.4);
+      animation:slideUp 0.5s cubic-bezier(.34,1.56,.64,1) both;
+      overflow:hidden;
+    }
+    .section:nth-child(2){animation-delay:.08s;}
+    .section:nth-child(3){animation-delay:.16s;}
+    .section:nth-child(4){animation-delay:.24s;}
+    .section:nth-child(5){animation-delay:.32s;}
+    .section:nth-child(6){animation-delay:.40s;}
+    .section:nth-child(7){animation-delay:.48s;}
+    @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+    .section::before{border-color:var(--neon-lav);}
+    .section::after{border-color:var(--neon-cyan);}
 
-        .chip {
-            background: var(--glass-2);
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 13px;
-            color: #bcd6e8;
-            border: 1px solid rgba(255,255,255,0.02);
-        }
+    .section-glow {
+      position:absolute; top:0;left:0;right:0; height:1px;
+      background:linear-gradient(90deg,transparent,var(--neon-pink),var(--neon-lav),transparent);
+      opacity:.6;
+    }
 
-        /* Right column */
-        .right {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: flex-end;
-        }
+    .sec-title {
+      font-family:'Zen Maru Gothic',sans-serif;
+      font-size:.65rem; letter-spacing:4px; text-transform:uppercase;
+      color:var(--neon-pink); text-shadow:var(--glow-pink);
+      margin-bottom:20px; display:flex; align-items:center; gap:12px;
+    }
+    .sec-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,105,180,.4),transparent); }
+    .sec-jp { font-family:'Zen Maru Gothic',sans-serif; font-size:.75rem; color:var(--muted); margin-left:4px; }
 
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%
-        }
+    /* about */
+    .about-text { font-size:.88rem; line-height:1.85; color:#c8a8d8; margin-bottom:12px; }
+    .about-text strong{color:var(--sakura);}
+    .about-text em{color:var(--neon-cyan);font-style:normal;}
+    .goal-box {
+      border:1px solid rgba(255,105,180,.3); border-radius:4px;
+      padding:14px 18px; background:rgba(255,105,180,.05);
+      font-size:.85rem; line-height:1.7; color:#c8a8d8;
+    }
+    .goal-box .goal-label { font-size:.65rem;letter-spacing:3px;color:var(--neon-pink);text-shadow:var(--glow-pink);margin-bottom:6px;font-weight:900; }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: inherit;
-            background: linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-            border: 1px solid rgba(255,255,255,0.03);
-            font-weight: 600;
-            font-size: 14px;
-            justify-content: center;
-        }
+    /* exp */
+    .exp-row { display:flex;gap:16px;padding:16px 0;border-bottom:1px dashed rgba(191,128,255,.15); }
+    .exp-row:last-child{border-bottom:none;padding-bottom:0;}
+    .exp-icon {
+      width:42px;height:42px;border-radius:8px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:20px;
+      background:rgba(255,105,180,.08);border:1px solid rgba(255,105,180,.2);
+    }
+    .exp-icon.c{background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);}
+    .exp-icon.m{background:rgba(128,255,204,.08);border-color:rgba(128,255,204,.2);}
+    .exp-icon.s{background:rgba(255,215,0,.07);border-color:rgba(255,215,0,.2);}
+    .exp-body h3{font-size:.95rem;font-weight:800;color:#f0d6f5;margin-bottom:2px;}
+    .exp-body .co{font-size:.8rem;color:var(--neon-pink);font-weight:700;margin-bottom:2px;}
+    .exp-body .period{font-size:.73rem;color:var(--muted);margin-bottom:6px;}
+    .exp-body p{font-size:.83rem;color:#a088b0;line-height:1.6;}
 
-            .btn.primary {
-                background: linear-gradient(90deg,var(--accent1),var(--accent2));
-                color: white;
-                box-shadow: 0 6px 18px rgba(6,11,26,0.45)
-            }
+    /* skills */
+    .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;}
+    .sk {
+      border:1px solid rgba(191,128,255,.25); border-radius:4px;
+      padding:10px 8px; text-align:center; font-size:.78rem; font-weight:700;
+      color:#d0a8e8; background:rgba(191,128,255,.05); transition:all .2s; cursor:default;
+    }
+    .sk:hover{border-color:var(--neon-pink);color:var(--sakura);background:rgba(255,105,180,.1);box-shadow:var(--glow-pink);transform:translateY(-3px);}
+    .sk .si{font-size:20px;display:block;margin-bottom:5px;}
 
-            .btn.ghost {
-                background: transparent;
-                border: 1px dashed rgba(255,255,255,0.04);
-                color: var(--muted)
-            }
+    /* lang bars */
+    .lang-item{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+    .lang-item:last-child{margin-bottom:0;}
+    .lang-flag{font-size:22px;flex-shrink:0;}
+    .lang-name{width:80px;flex-shrink:0;font-size:.85rem;font-weight:800;color:#f0d6f5;}
+    .lang-jp{font-size:.72rem;color:var(--muted);display:block;}
+    .stat-bar{flex:1;height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;border:1px solid rgba(255,105,180,.15);}
+    .stat-fill{height:100%;border-radius:4px;animation:fillBar 1.2s cubic-bezier(.4,0,.2,1) both;}
+    @keyframes fillBar{from{width:0;}}
+    .stat-fill.es{background:linear-gradient(90deg,var(--neon-pink),var(--neon-lav));width:100%;animation-delay:.2s;}
+    .stat-fill.en{background:linear-gradient(90deg,var(--neon-cyan),var(--neon-mint));width:90%;animation-delay:.4s;}
+    .stat-fill.jp{background:linear-gradient(90deg,var(--gold),#ff9800);width:65%;animation-delay:.6s;}
+    .stat-label{font-size:.72rem;color:var(--muted);width:32px;text-align:right;flex-shrink:0;}
 
-            .btn svg {
-                width: 16px;
-                height: 16px;
-                opacity: 0.95
-            }
+    /* certs */
+    .cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+    .cert-card {
+      border:1px solid rgba(191,128,255,.2); border-radius:4px;
+      padding:14px 16px; background:rgba(191,128,255,.04);
+      transition:all .25s; position:relative; overflow:hidden;
+    }
+    .cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--neon-lav),transparent);opacity:0;transition:opacity .25s;}
+    .cert-card:hover{border-color:var(--neon-lav);background:rgba(191,128,255,.09);transform:translateY(-3px);}
+    .cert-card:hover::before{opacity:1;}
+    .cert-icon{font-size:26px;margin-bottom:8px;}
+    .cert-name{font-size:.85rem;font-weight:800;color:#f0d6f5;margin-bottom:3px;}
+    .cert-issuer{font-size:.73rem;color:var(--neon-lav);margin-bottom:4px;font-weight:700;}
+    .cert-date{font-size:.7rem;color:var(--muted);margin-bottom:8px;}
+    .cert-tags{display:flex;flex-wrap:wrap;gap:4px;}
+    .ctag{font-size:.65rem;border:1px solid rgba(0,229,255,.3);border-radius:3px;padding:1px 7px;color:var(--neon-cyan);font-weight:700;}
 
-        /* Footer row across bottom */
-        .meta {
-            grid-column: 1/-1;
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--muted);
-            font-size: 13px;
-        }
+    /* edu */
+    .edu-row{display:flex;gap:16px;align-items:flex-start;padding:14px 0;border-bottom:1px dashed rgba(191,128,255,.15);}
+    .edu-row:last-child{border-bottom:none;}
+    .edu-icon2{font-size:30px;flex-shrink:0;margin-top:2px;}
+    .edu-body h3{font-size:.92rem;font-weight:800;color:#f0d6f5;margin-bottom:3px;}
+    .edu-body .deg{font-size:.82rem;color:var(--neon-lav);font-weight:700;}
+    .edu-body .sub{font-size:.75rem;color:var(--muted);margin-top:3px;}
 
-        /* Responsive */
-        @media (max-width:720px) {
-            .card {
-                grid-template-columns: 1fr;
-                gap: 16px;
-                padding: 18px
-            }
+    /* footer */
+    .footer{text-align:center;margin-top:40px;font-size:.78rem;color:var(--muted);}
+    .footer a{color:var(--neon-pink);text-decoration:none;text-shadow:var(--glow-pink);}
+    .footer a:hover{text-decoration:underline;}
+    .footer .jp-footer{font-family:'Zen Maru Gothic',sans-serif;font-size:.7rem;color:rgba(160,122,176,.5);margin-top:6px;letter-spacing:2px;}
 
-            .right {
-                align-items: stretch
-            }
-
-            .avatar {
-                justify-self: center;
-                margin: 0 auto
-            }
-
-            .meta {
-                flex-direction: column;
-                gap: 8px;
-                align-items: center
-            }
-        }
-
-        /* small interaction */
-        .copy-hint {
-            font-size: 12px;
-            color: var(--muted)
-        }
-
-        .bounce {
-            animation: float 3.6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0)
-            }
-
-            50% {
-                transform: translateY(-6px)
-            }
-
-            100% {
-                transform: translateY(0)
-            }
-        }
-    </style>
+    @media(max-width:540px){
+      .hero-banner{grid-template-columns:1fr;text-align:center;}
+      .hero-badges{justify-content:center;}
+      .hero-status{justify-content:center;}
+      .loc{margin-left:0;}
+      .cert-grid{grid-template-columns:1fr;}
+      .section{padding:22px 18px;}
+    }
+  </style>
 </head>
 <body>
-    <div class="orb a"></div>
-    <div class="orb b"></div>
 
-    <main class="card" role="main" aria-labelledby="name">
-        <div class="avatar bounce" aria-hidden="true">TY</div>
+<div class="bg-layer">
+  <div class="bg-grad"></div>
+</div>
+<div class="kanji-bg">夢</div>
 
-        <section class="main" aria-labelledby="name">
-            <h1 id="name">Tsukihara Yuki</h1>
-            <div class="tag">Creative dev & 3D Artist — building delightful tools and tiny digital worlds</div>
+<div class="container">
 
-            <p class="about">
-                Minimal, fast, and aesthetic. I like clean UI, subtle motion, and tiny utilities that make
-                everyday tasks a little faster. I split time between code, depression, and my university.
-            </p>
-
-            <div class="chips" aria-hidden="true">
-                <span class="chip">HTML</span>
-                <span class="chip">CSS</span>
-                <span class="chip">JavaScript</span>
-                <span class="chip">C++</span>
-                <span class="chip">Blender</span>
-                <span class="chip">Game Tools</span>
-            </div>
-        </section>
-
-        <aside class="right" aria-label="Quick links">
-            <a class="btn primary" href="https://github.com/Yukihara64" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.28-1.23 3.28-1.23.67 1.65.25 2.87.13 3.17.77.84 1.23 1.91 1.23 3.22 0 4.6-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.21.7.83.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
-                </svg>
-                GitHub
-            </a>
-
-            <a class="btn" href="https://twitter.com/tsk_yk64" target="_blank" rel="noopener noreferrer">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.29 4.29 0 0 0 1.88-2.38 8.6 8.6 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.3 3.9A12.14 12.14 0 0 1 3.15 4.6a4.28 4.28 0 0 0 1.33 5.71 4.26 4.26 0 0 1-1.94-.54v.06a4.28 4.28 0 0 0 3.43 4.19 4.3 4.3 0 0 1-1.93.07 4.28 4.28 0 0 0 3.99 2.97A8.59 8.59 0 0 1 2 19.54a12.12 12.12 0 0 0 6.56 1.92c7.88 0 12.2-6.53 12.2-12.2l-.01-.56A8.7 8.7 0 0 0 24 5.5a8.47 8.47 0 0 1-2.54.7z" />
-                </svg>
-                Twitter
-            </a>
-
-            <a id="emailBtn" class="btn ghost" href="mailto:tsukinayuki64@hotmail.com">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M1.5 4.5h21v15h-21v-15zm10.5 8.25l9-6.75h-18l9 6.75z" />
-                </svg>
-                tsukinayuki64@hotmail.com
-            </a>
-
-            <div class="copy-hint" id="copyHint">Click the email to open your mail client · double-click to copy to clipboard</div>
-        </aside>
-
-        <div class="meta" aria-hidden="true">
-            <div>Based in Yokohama · available for freelance</div>
-            <div>Made with hate<span title="heart">♥</span> — little page, big vibes</div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-banner">
+      <div class="avatar-frame">
+        <div class="avatar-hex">
+          <div class="avatar-inner">🐻</div>
         </div>
-    </main>
+        <div class="lvl-badge">LVL 99</div>
+      </div>
+      <div class="hero-text">
+        <div class="jp-name">✦ えすてばん ゆき ✦</div>
+        <h1>Esteban (ゆき) Guanes</h1>
+        <div class="role">
+          <span>Customer Support Technician</span> @ Infobip<br>
+          Junior 3D Artist &nbsp;·&nbsp; Tech Enthusiast &nbsp;·&nbsp; 冒険者
+        </div>
+        <div class="hero-badges">
+          <span class="hbadge pink">📡 Telecom</span>
+          <span class="hbadge lav">🎨 3D Art</span>
+          <span class="hbadge cyan">🗄️ SQL / DBA</span>
+          <span class="hbadge gold">✨ Always Learning</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-status">
+      <div class="loc" style="margin-left:0;">📍 <span>Asunción, Paraguay</span></div>
+    </div>
+  </div>
 
-    <script>// small interaction: double-click the email link to copy address
-    (function(){
-      const emailBtn = document.getElementById('emailBtn');
-      const copyHint = document.getElementById('copyHint');
-        const address = 'tsukinayuki64@hotmail.com';
+  <!-- ABOUT -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 自己紹介 <span class="sec-jp">About</span></div>
+    <p class="about-text">
+      I handle support in the area of <strong>databases</strong>, using platforms such as
+      <em>Oracle</em>, <em>Sybase</em>, <em>Postgres</em> and <em>SqlDbx</em>.
+      Now bringing support for <strong>SaaS solutions</strong> in the telecommunication business.
+    </p>
+    <p class="about-text">
+      I hold a <strong>Master's in Organic 3D Modeling</strong>, enabling me to develop design
+      and animation projects in <em>Maya</em>, <em>Blender3D</em>, <em>Unreal Engine</em> and
+      <em>ZBrush</em>. Passionate about creating virtual worlds and realistic characters —
+      eager to apply creativity in the <strong>video game and entertainment industry</strong>.
+    </p>
+    <p class="about-text" style="margin-bottom:16px;">
+      Currently pursuing a degree in <strong>Computer Engineering</strong>, further leveling up technical stats. ⚡
+    </p>
+    <div class="goal-box">
+      <div class="goal-label">// 目標 — MY QUEST</div>
+      To continue growing as a professional and add value to the <strong style="color:var(--sakura)">technology and entertainment industry</strong>.
+      Always learning — certified in 3D modeling and data protection. 🌸
+    </div>
+  </div>
 
-      let lastClick = 0;
-      emailBtn.addEventListener('click', (e) => {
-        // single click -> let mailto open normally
-        // but we still record time for double-click detection
-        const now = Date.now();
-        if (now - lastClick < 350) {
-          // double-click: copy to clipboard and prevent opening mail client
-          e.preventDefault();
-          if (navigator.clipboard) {
-            navigator.clipboard.writeText(address).then(()=>{
-              copyHint.textContent = 'Copied to clipboard ✓';
-              setTimeout(()=> copyHint.textContent = 'Click the email to open your mail client · double-click to copy to clipboard',2200);
-            });
-          } else {
-            // fallback
-            const ta = document.createElement('textarea');
-            ta.value = address; document.body.appendChild(ta); ta.select();
-            try { document.execCommand('copy'); copyHint.textContent = 'Copied to clipboard ✓' } catch(e){}
-            ta.remove();
-            setTimeout(()=> copyHint.textContent = 'Click the email to open your mail client · double-click to copy to clipboard',2200);
-          }
-        }
-        lastClick = now;
-      });
+  <!-- EXPERIENCE -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 職歴 <span class="sec-jp">Experience</span></div>
+    <div class="exp-row">
+      <div class="exp-icon">📡</div>
+      <div class="exp-body">
+        <h3>Customer Support Technician</h3>
+        <div class="co">Infobip</div>
+        <div class="period">Jul 2024 – Present · 1 yr 9 mo · Asunción, PY</div>
+        <p>Technical assistance and customer service for global messaging and SaaS communication solutions. Specialized in resolving complex telecom incidents.</p>
+      </div>
+    </div>
+    <div class="exp-row">
+      <div class="exp-icon c">🏦</div>
+      <div class="exp-body">
+        <h3>Outsourced Junior IT Technician</h3>
+        <div class="co">Central Bank of Paraguay (BCP)</div>
+        <div class="period">Mar 2023 – Jul 2024 · 1 yr 5 mo · Hybrid</div>
+        <p>Outsourced DBA support for Paraguay's central financial institution.</p>
+      </div>
+    </div>
+    <div class="exp-row">
+      <div class="exp-icon m">⚙️</div>
+      <div class="exp-body">
+        <h3>Technical Engineer</h3>
+        <div class="co">One S.A.</div>
+        <div class="period">Mar 2023 – Jul 2024 · 1 yr 5 mo · Asunción, PY</div>
+        <p>Technical engineering focused on SQL and problem resolution.</p>
+      </div>
+    </div>
+    <div class="exp-row">
+      <div class="exp-icon s">📋</div>
+      <div class="exp-body">
+        <h3>Auxiliar Administrativo</h3>
+        <div class="co">B.D.G.K S.A.</div>
+        <div class="period">Jun 2018 – Apr 2023 · 4 yrs 11 mo · Asunción, PY</div>
+        <p>Accounts receivable, procurement and administrative support.</p>
+      </div>
+    </div>
+  </div>
 
-      // Small accessibility: keyboard copy with Enter while focused + Shift
-      emailBtn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.shiftKey) {
-          e.preventDefault();
-          navigator.clipboard && navigator.clipboard.writeText(address);
-          copyHint.textContent = 'Copied to clipboard (Shift+Enter) ✓';
-          setTimeout(()=> copyHint.textContent = 'Click the email to open your mail client · double-click to copy to clipboard',2200);
-        }
-      });
-    })();</script>
+  <!-- SKILLS -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// スキル <span class="sec-jp">Skills</span></div>
+    <div class="skill-grid">
+      <div class="sk"><span class="si">📡</span>Telecom</div>
+      <div class="sk"><span class="si">🗄️</span>SQL</div>
+      <div class="sk"><span class="si">☁️</span>SaaS</div>
+      <div class="sk"><span class="si">🛠️</span>Tech Support</div>
+      <div class="sk"><span class="si">🔧</span>Troubleshoot</div>
+      <div class="sk"><span class="si">🗃️</span>Oracle/Sybase</div>
+      <div class="sk"><span class="si">🐘</span>PostgreSQL</div>
+      <div class="sk"><span class="si">🖥️</span>MS SQL Server</div>
+      <div class="sk"><span class="si">🔒</span>Cybersecurity</div>
+      <div class="sk"><span class="si">🟠</span>Blender 3D</div>
+      <div class="sk"><span class="si">🎮</span>Unreal Engine</div>
+      <div class="sk"><span class="si">🗿</span>ZBrush</div>
+      <div class="sk"><span class="si">🎬</span>Maya</div>
+      <div class="sk"><span class="si">🖌️</span>Substance Painter</div>
+      <div class="sk"><span class="si">📦</span>Procurement</div>
+      <div class="sk"><span class="si">🤝</span>Customer Service</div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATIONS -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 資格 <span class="sec-jp">Certifications</span></div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-icon">🎨</div>
+        <div class="cert-name">3D Organic Modelling</div>
+        <div class="cert-issuer">TECH Universidad Global</div>
+        <div class="cert-date">Mar 2024 · ID: BDADCEAFBIFF50C</div>
+        <div class="cert-tags">
+          <span class="ctag">ZBrush</span><span class="ctag">Blender</span>
+          <span class="ctag">Substance</span><span class="ctag">Mari</span><span class="ctag">3ds Max</span>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🔒</div>
+        <div class="cert-name">ISC2 Candidate</div>
+        <div class="cert-issuer">ISC2</div>
+        <div class="cert-date">Mar 2024 · Exp Mar 2025</div>
+        <div class="cert-tags"><span class="ctag">Cybersecurity</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🐘</div>
+        <div class="cert-name">PostgreSQL</div>
+        <div class="cert-issuer">SNPP</div>
+        <div class="cert-date">Aug 2020</div>
+        <div class="cert-tags"><span class="ctag">PostgreSQL</span><span class="ctag">SQL</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🛡️</div>
+        <div class="cert-name">Ciberseguridad de Sistemas</div>
+        <div class="cert-issuer">SNPP</div>
+        <div class="cert-date">Mar 2023</div>
+        <div class="cert-tags"><span class="ctag">Cybersecurity</span></div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-icon">🗄️</div>
+        <div class="cert-name">Microsoft SQL Server</div>
+        <div class="cert-issuer">Udemy</div>
+        <div class="cert-date">Dec 2022 · Basic → Advanced</div>
+        <div class="cert-tags"><span class="ctag">SQL</span><span class="ctag">MS SQL Server</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 学歴 <span class="sec-jp">Education</span></div>
+    <div class="edu-row">
+      <div class="edu-icon2">🏯</div>
+      <div class="edu-body">
+        <h3>Universidad Nihon Gakko</h3>
+        <div class="deg">Grado · Ingeniería en Informática</div>
+        <div class="sub">Computer Engineering · Asunción, Paraguay</div>
+      </div>
+    </div>
+    <div class="edu-row">
+      <div class="edu-icon2">🎓</div>
+      <div class="edu-body">
+        <h3>TECH Universidad</h3>
+        <div class="deg">Master of Arts · Modelado 3D Orgánico</div>
+        <div class="sub">Apr 2023 – Apr 2024 · Unreal Engine · Modelado 3D</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGUAGES -->
+  <div class="section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 言語 <span class="sec-jp">Languages</span></div>
+    <div class="lang-item">
+      <div class="lang-flag">🇪🇸</div>
+      <div class="lang-name">Español <span class="lang-jp">スペイン語</span></div>
+      <div class="stat-bar"><div class="stat-fill es"></div></div>
+      <div class="stat-label">Native</div>
+    </div>
+    <div class="lang-item">
+      <div class="lang-flag">🇺🇸</div>
+      <div class="lang-name">English <span class="lang-jp">英語</span></div>
+      <div class="stat-bar"><div class="stat-fill en"></div></div>
+      <div class="stat-label">Fluent</div>
+    </div>
+    <div class="lang-item">
+      <div class="lang-flag">🇯🇵</div>
+      <div class="lang-name">日本語 <span class="lang-jp">にほんご</span></div>
+      <div class="stat-bar"><div class="stat-fill jp"></div></div>
+      <div class="stat-label">Inter.</div>
+    </div>
+  </div>
+
+  <!-- STEAM -->
+  <div class="section" id="steam-section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 最近プレイ中 <span class="sec-jp">Last Played</span></div>
+    <div id="steam-content" style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;">
+      <span style="animation:blink 1s infinite;display:inline-block;">⏳</span> Loading Steam data...
+    </div>
+  </div>
+
+  <!-- FOOTER -->  <div class="footer">
+    <a href="https://www.linkedin.com/in/danielguanes/" target="_blank">🔗 LinkedIn</a>
+    &nbsp;·&nbsp; Asunción, Paraguay
+    <div class="jp-footer">夢を諦めない — Never give up on your dreams ✨</div>
+  </div>
+
+</div>
+
+<script>
+  // ── Steam last played ──
+  async function fetchSteam() {
+    const el = document.getElementById('steam-content');
+    try {
+      const res   = await fetch('/.netlify/functions/steam');
+      const data  = await res.json();
+      const games = data.game ? [data.game] : null;
+
+      if (!games || games.length === 0) {
+        el.innerHTML = `<span style="color:var(--muted)">😴 No recent games found — maybe ゆき is taking a break!</span>`;
+        return;
+      }
+
+      const game   = games[0];
+      const appId  = game.appid;
+      const name   = game.name;
+      const img    = game.img;
+      const hrs2w  = (game.playtime_2weeks / 60).toFixed(1);
+      const hrsAll = (game.playtime_forever / 60).toFixed(0);
+      const storeUrl = game.url;
+
+      el.innerHTML = `
+        <a href="${storeUrl}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
+          <img src="${img}" alt="${name}"
+            style="width:184px;border-radius:6px;border:1px solid rgba(255,105,180,.35);flex-shrink:0;
+                   box-shadow:0 0 20px rgba(255,105,180,.25);transition:transform .2s,box-shadow .2s;"
+            onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 32px rgba(255,105,180,.5)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(255,105,180,.25)'"
+            onerror="this.style.display='none'"/>
+          <div>
+            <div style="font-size:.68rem;letter-spacing:3px;color:var(--neon-pink);font-weight:900;margin-bottom:6px;text-shadow:var(--glow-pink);">
+              NOW PLAYING // 最近プレイ
+            </div>
+            <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1.1rem;font-weight:900;
+                        color:#f0d6f5;margin-bottom:8px;text-shadow:0 0 12px rgba(255,105,180,.4);">
+              🎮 ${name}
+            </div>
+            <div style="font-size:.8rem;color:var(--neon-cyan);font-weight:700;margin-bottom:4px;text-shadow:var(--glow-cyan);">
+              ⏱ ${hrs2w}h played in last 2 weeks
+            </div>
+            <div style="font-size:.76rem;color:var(--muted);margin-bottom:12px;">
+              ${hrsAll}h total playtime
+            </div>
+            <span style="border:1px solid rgba(0,229,255,.4);border-radius:3px;padding:3px 12px;
+                         font-size:.7rem;font-weight:700;color:var(--neon-cyan);letter-spacing:1px;">
+              🕹 View on Steam →
+            </span>
+          </div>
+        </a>`;
+    } catch(e) {
+      el.innerHTML = `<span style="color:var(--muted);font-size:.82rem;">⚠️ Could not load Steam data right now. Try again later!</span>`;
+      console.error('Steam fetch error:', e);
+    }
+  }
+  fetchSteam();
+
+  const petals = ['🌸','🌺','✿','❀','🌷'];
+  for (let i = 0; i < 22; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = petals[Math.floor(Math.random()*petals.length)];
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      animation-duration:${12+Math.random()*18}s;
+      animation-delay:-${Math.random()*20}s;
+      font-size:${10+Math.random()*10}px;
+    `;
+    document.querySelector('.bg-layer').appendChild(p);
+  }
+</script>
 </body>
 </html>
