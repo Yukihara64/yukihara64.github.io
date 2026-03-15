@@ -330,6 +330,7 @@
           <span class="hbadge lav">🎨 3D Art</span>
           <span class="hbadge cyan">🗄️ SQL / DBA</span>
           <span class="hbadge gold">✨ Always Learning</span>
+          <a href="https://x.com/tsk_yk64" target="_blank" class="hbadge" style="border-color:#e0e0e0;color:#e0e0e0;text-decoration:none;">𝕏 @tsk_yk64</a>
         </div>
       </div>
     </div>
@@ -541,6 +542,8 @@
 
   <!-- FOOTER -->  <div class="footer">
     <a href="https://www.linkedin.com/in/danielguanes/" target="_blank">🔗 LinkedIn</a>
+    &nbsp;·&nbsp;
+    <a href="https://x.com/tsk_yk64" target="_blank">𝕏 Twitter</a>
     &nbsp;·&nbsp; Asunción, Paraguay
     <div class="jp-footer">夢を諦めない — Never give up on your dreams ✨</div>
   </div>
@@ -548,7 +551,7 @@
 </div>
 
 <script>
-  // ── Spotify now playing ── (unchanged)
+  // ── Spotify now playing ──
   async function fetchSpotify() {
     const el = document.getElementById('spotify-content');
     try {
@@ -612,13 +615,12 @@
   }
   fetchSpotify();
 
-  // ── Steam last played with polling ──
+  // ── Steam last played ──
   async function fetchSteam() {
     const el = document.getElementById('steam-content');
     try {
-      // Add timestamp to force a fresh request
-      const res = await fetch('/api/steam?_=' + Date.now());
-      const data = await res.json();
+      const res   = await fetch('/api/steam');
+      const data  = await res.json();
       const games = data.game ? [data.game] : null;
 
       if (!games || games.length === 0) {
@@ -627,6 +629,7 @@
       }
 
       const game   = games[0];
+      const appId  = game.appid;
       const name   = game.name;
       const img    = game.img;
       const hrs2w  = (game.playtime_2weeks / 60).toFixed(1);
@@ -670,13 +673,8 @@
       console.error('Steam fetch error:', e);
     }
   }
-
-  // Initial fetch
   fetchSteam();
-  // Poll every 30 seconds
-  setInterval(fetchSteam, 30000);
 
-  // Petals effect (unchanged)
   const petals = ['🌸','🌺','✿','❀','🌷'];
   for (let i = 0; i < 22; i++) {
     const p = document.createElement('div');
