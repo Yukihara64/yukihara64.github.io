@@ -17,18 +17,20 @@ export default async () => {
   const summaryData = await summaryRes.json();
   const player      = summaryData?.response?.players?.[0];
 
-  // gameid is present when actively in a game (works for non-Steam/custom app IDs too)
-  if (player?.gameid && player?.gameextrainfo) {
+  // gameid present = actively in a game
+  // gameextrainfo may be missing for non-Steam launchers (e.g. Tarkov BSG launcher)
+  if (player?.gameid) {
     return Response.json({
-      game: buildGame(player.gameid, player.gameextrainfo),
+      game: buildGame(player.gameid, player.gameextrainfo ?? "Playing a game"),
       source: "live",
+      debug: { gameid: player.gameid, gameextrainfo: player.gameextrainfo ?? null, personastate: player.personastate },
     });
   }
 
   // 2. Try recently played (last 2 weeks)
-  const recentUrl  = `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=${STEAM_KEY}&steamid=${STEAM_ID}&count=1&format=json`;
-  const recentRes  = await fetch(recentUrl);
-  const recentData = await recentRes.json();
+  const recentUrl   = `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?key=${STEAM_KEY}&steamid=${STEAM_ID}&count=1&format=json`;
+  const recentRes   = await fetch(recentUrl);
+  const recentData  = await recentRes.json();
   const recentGames = recentData?.response?.games;
 
   if (recentGames && recentGames.length > 0) {
@@ -36,24 +38,24 @@ export default async () => {
     return Response.json({
       game: buildGame(g.appid, g.name, g),
       source: "recent",
+      debug: { gameid: null, personastate: player?.personastate },
     });
   }
 
-  // 3. Fallback: most played all-time from owned games
+  // 3. Fallback: most played all-time
   const ownedUrl  = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${STEAM_KEY}&steamid=${STEAM_ID}&include_appinfo=true&include_played_free_games=true&format=json`;
   const ownedRes  = await fetch(ownedUrl);
   const ownedData = await ownedRes.json();
   const owned     = ownedData?.response?.games;
 
-  if (!owned || owned.length === 0) {
-    return Response.json({ game: null });
-  }
+  if (!owned || owned.length === 0) return Response.json({ game: null });
 
   owned.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0));
   const top = owned[0];
   return Response.json({
     game: buildGame(top.appid, top.name, top),
     source: "alltime",
+    debug: { gameid: null, personastate: player?.personastate },
   });
 };
 
