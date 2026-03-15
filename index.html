@@ -543,7 +543,7 @@
   async function fetchSteam() {
     const el = document.getElementById('steam-content');
     try {
-      const res   = await fetch('/.netlify/functions/steam');
+      const res   = await fetch('/api/steam');
       const data  = await res.json();
       const games = data.game ? [data.game] : null;
 
