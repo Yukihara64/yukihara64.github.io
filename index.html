@@ -126,6 +126,7 @@
       display:flex; align-items:center; justify-content:center;
     }
     @keyframes rotateBorder { to{transform:rotate(360deg);} }
+    .avatar-inner img { width:104px; height:104px; border-radius:50%; object-fit:cover; display:block; flex-shrink:0; }
     .avatar-inner {
       width:104px; height:104px; border-radius:50%;
       background:#1a0a2e;
@@ -314,12 +315,17 @@
     <div class="hero-banner">
       <div class="avatar-frame">
         <div class="avatar-hex">
-          <div class="avatar-inner">🐻</div>
+          <div class="avatar-inner">
+            <img src="https://unavatar.io/twitter/tsk_yk64"
+              alt="Daniel Guanes"
+              style="width:104px;height:104px;border-radius:50%;object-fit:cover;"
+              onerror="this.style.display='none';this.parentElement.innerHTML='🐻'"/>
+          </div>
         </div>
-        <div class="lvl-badge">LVL 99</div>
+        <div class="lvl-badge" id="age-badge"></div>
       </div>
       <div class="hero-text">
-        <div class="jp-name">✦ えすてばん ゆき ✦</div>
+        <div class="jp-name">✦ だにえる ゆき ✦</div>
         <h1>Daniel (ゆき) Guanes</h1>
         <div class="role">
           <span>Customer Support Technician</span> @ Infobip<br>
@@ -551,6 +557,21 @@
 </div>
 
 <script>
+  // ── Dynamic age in Japanese ──
+  (function() {
+    const BIRTH = new Date(1999, 9, 4); // October 4, 1999 (month is 0-indexed)
+    const now   = new Date();
+    let age = now.getFullYear() - BIRTH.getFullYear();
+    // If birthday hasnt happened yet this year, subtract 1
+    if (now < new Date(now.getFullYear(), 9, 4)) age--;
+    // Convert age to Japanese kanji
+    const kanjiMap = { 0:"零",1:"一",2:"二",3:"三",4:"四",5:"五",6:"六",7:"七",8:"八",9:"九",
+      10:"十",20:"二十",21:"二十一",22:"二十二",23:"二十三",24:"二十四",25:"二十五",
+      26:"二十六",27:"二十七",28:"二十八",29:"二十九",30:"三十" };
+    const kanjiAge = kanjiMap[age] ?? age;
+    const badge = document.getElementById("age-badge");
+    if (badge) badge.textContent = kanjiAge + "歳";
+  })();
   // ── Spotify now playing ──
   async function fetchSpotify() {
     const el = document.getElementById('spotify-content');
