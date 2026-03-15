@@ -521,6 +521,15 @@
     </div>
   </div>
 
+  <!-- SPOTIFY -->
+  <div class="section" id="spotify-section">
+    <div class="section-glow"></div>
+    <div class="sec-title">// 音楽 <span class="sec-jp">Now Playing</span></div>
+    <div id="spotify-content" style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;">
+      <span style="animation:blink 1s infinite;display:inline-block;">⏳</span> Loading Spotify...
+    </div>
+  </div>
+
   <!-- STEAM -->
   <div class="section" id="steam-section">
     <div class="section-glow"></div>
@@ -539,6 +548,70 @@
 </div>
 
 <script>
+  // ── Spotify now playing ──
+  async function fetchSpotify() {
+    const el = document.getElementById('spotify-content');
+    try {
+      const res  = await fetch('/api/spotify');
+      const data = await res.json();
+
+      if (!data.track) {
+        el.innerHTML = `<span style="color:var(--muted)">🎵 Not listening to anything right now...</span>`;
+        return;
+      }
+
+      const t        = data.track;
+      const isLive   = data.source === 'live';
+      const progress = t.duration ? Math.round((t.progress / t.duration) * 100) : 0;
+      const fmtTime  = ms => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
+
+      el.innerHTML = `
+        <a href="${t.url}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
+          ${t.cover ? `<img src="${t.cover}" alt="${t.album}"
+            style="width:90px;height:90px;border-radius:10px;flex-shrink:0;
+                   border:1px solid rgba(29,185,84,.35);
+                   box-shadow:0 0 20px rgba(29,185,84,.2);
+                   transition:transform .2s,box-shadow .2s;"
+            onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 0 32px rgba(29,185,84,.45)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(29,185,84,.2)'"/>` : ''}
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.65rem;letter-spacing:3px;font-weight:900;margin-bottom:6px;
+                        display:flex;align-items:center;gap:8px;
+                        color:#1db954;text-shadow:0 0 10px rgba(29,185,84,.5);">
+              ${isLive
+                ? `<span style="width:8px;height:8px;background:#1db954;border-radius:50%;
+                               box-shadow:0 0 8px #1db954;display:inline-block;
+                               animation:blink 1s infinite;flex-shrink:0;"></span> LISTENING NOW // 再生中`
+                : 'LAST PLAYED // 最近再生'}
+            </div>
+            <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1rem;font-weight:900;
+                        color:#f0d6f5;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                        text-shadow:0 0 10px rgba(29,185,84,.3);">
+              🎵 ${t.name}
+            </div>
+            <div style="font-size:.82rem;color:#1db954;font-weight:700;margin-bottom:2px;">
+              ${t.artist}
+            </div>
+            <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">
+              ${t.album}
+            </div>
+            ${isLive ? `
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:.7rem;color:var(--muted);">${fmtTime(t.progress)}</span>
+              <div style="flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;">
+                <div style="width:${progress}%;height:100%;background:#1db954;border-radius:4px;
+                             box-shadow:0 0 8px rgba(29,185,84,.6);"></div>
+              </div>
+              <span style="font-size:.7rem;color:var(--muted);">${fmtTime(t.duration)}</span>
+            </div>` : ''}
+          </div>
+        </a>`;
+    } catch(e) {
+      el.innerHTML = `<span style="color:var(--muted);font-size:.82rem;">⚠️ Could not load Spotify data.</span>`;
+    }
+  }
+  fetchSpotify();
+
   // ── Steam last played ──
   async function fetchSteam() {
     const el = document.getElementById('steam-content');
