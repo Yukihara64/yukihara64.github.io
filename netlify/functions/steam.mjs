@@ -27,7 +27,8 @@ export default async (req) => {
   appid, name,
   playtime_2weeks:  extra.playtime_2weeks  ?? 0,
   playtime_forever: extra.playtime_forever ?? 0,
-  img: `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`,
+  // Use the library image URL
+  img: `https://steamcdn-a.akamaihd.net/steam/apps/${appid}/library_600x900.jpg`,
   url: `https://store.steampowered.com/app/${appid}`,
 });
   // Fetch player summary
