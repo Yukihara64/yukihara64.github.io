@@ -1,7 +1,7 @@
 // netlify/functions/steam.mjs
 export default async (req) => {
   const STEAM_KEY    = Netlify.env.get("STEAM_API_KEY");
-  const STEAM_ID     = "76561198439644295";
+  const STEAM_ID     = "76561198012828824";
   const FEATURED_ID  = Number(Netlify.env.get("STEAM_FEATURED_APPID") ?? 0);
   const FEATURED_NAME= Netlify.env.get("STEAM_FEATURED_NAME") ?? "";
   const BLOCKED      = (Netlify.env.get("STEAM_BLOCKED_APPIDS") ?? "")
