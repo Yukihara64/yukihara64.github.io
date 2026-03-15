@@ -1,13 +1,13 @@
 // netlify/functions/steam.mjs
 export default async () => {
   const STEAM_KEY     = Netlify.env.get("STEAM_API_KEY");
-  const STEAM_ID      = "76561198012828824";               // Your correct Steam ID
+  const STEAM_ID      = "76561198012828824";               // ✅ Your correct Steam ID
   const FEATURED_ID   = Number(Netlify.env.get("STEAM_FEATURED_APPID") ?? 0);
   const FEATURED_NAME = Netlify.env.get("STEAM_FEATURED_NAME") ?? "";
   const BLOCKED       = (Netlify.env.get("STEAM_BLOCKED_APPIDS") ?? "")
                           .split(",").map(Number).filter(Boolean);
 
-  // Helper to add no‑cache headers
+  // Helper for no‑cache responses
   const jsonResponse = (data, status = 200) => {
     return new Response(JSON.stringify(data), {
       status,
@@ -20,42 +20,30 @@ export default async () => {
     });
   };
 
-  // Fetch the correct image URL using Steam's IStoreBrowseService
-  async function getGameImageUrl(appid) {
-    try {
-      const payload = {
-        ids: [{ appid }],
-        context: { country_code: "US" },
-        data_request: { include_assets: true }
-      };
-      const response = await fetch(
-        'https://api.steampowered.com/IStoreBrowseService/GetItems/v1/',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ input_json: payload })
-        }
-      );
-      const data = await response.json();
-      const item = data.response.store_items?.[0];
-      if (item?.assets?.header) {
-        const headerFile = item.assets.header;          // includes hash + filename
-        return `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/${headerFile}`;
-      }
-    } catch (error) {
-      console.error(`getGameImageUrl error for appid ${appid}:`, error);
-    }
-    // Fallback: try the direct URL without hash (might work for some games)
-    return `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
-  }
+  // Fetch all owned games once – we'll need them for images and playtime
+  const ownedRes = await fetch(
+    `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?` +
+    `key=${STEAM_KEY}&steamid=${STEAM_ID}&include_appinfo=true&include_played_free_games=true&format=json`
+  );
+  const ownedData = await ownedRes.json();
+  const ownedGames = ownedData?.response?.games ?? [];
 
-  // Build game object – now async because of the image fetch
-  const buildGame = async (appid, name, extra = {}) => {
-    const imgUrl = await getGameImageUrl(appid);
+  // Create a quick lookup map: appid -> game object from owned list
+  const gameMap = new Map();
+  ownedGames.forEach(g => gameMap.set(g.appid, g));
+
+  // Build game object using the logo URL from owned games if available
+  const buildGame = (appid, name, extra = {}) => {
+    const ownedInfo = gameMap.get(appid) || {};
+    // Use img_logo_url if it exists, otherwise fallback to a placeholder
+    let imgUrl = 'https://via.placeholder.com/184x69?text=No+Image'; // Placeholder
+    if (ownedInfo.img_logo_url) {
+      imgUrl = `https://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${ownedInfo.img_logo_url}.jpg`;
+    }
     return {
       appid, name,
-      playtime_2weeks:  extra.playtime_2weeks  ?? 0,
-      playtime_forever: extra.playtime_forever ?? 0,
+      playtime_2weeks:  extra.playtime_2weeks  ?? ownedInfo.playtime_2weeks  ?? 0,
+      playtime_forever: extra.playtime_forever ?? ownedInfo.playtime_forever ?? 0,
       img: imgUrl,
       url: `https://store.steampowered.com/app/${appid}`,
     };
@@ -66,26 +54,29 @@ export default async () => {
   const player     = (await summaryRes.json())?.response?.players?.[0];
 
   if (player?.gameid && !BLOCKED.includes(Number(player.gameid))) {
-    const game = await buildGame(player.gameid, player.gameextrainfo ?? "In a game");
-    return jsonResponse({ game, source: "live" });
+    return jsonResponse({
+      game: buildGame(player.gameid, player.gameextrainfo ?? "In a game"),
+      source: "live",
+    });
   }
 
-  // 2. Always show featured game (e.g., Tarkov) with real playtime
+  // 2. Featured game (e.g., Tarkov)
   if (FEATURED_ID) {
-    const ownedRes   = await fetch(`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${STEAM_KEY}&steamid=${STEAM_ID}&include_appinfo=true&include_played_free_games=true&format=json`);
-    const ownedGames = (await ownedRes.json())?.response?.games ?? [];
-    const featured   = ownedGames.find(g => g.appid === FEATURED_ID);
-    const game       = await buildGame(FEATURED_ID, FEATURED_NAME, featured ?? {});
-    return jsonResponse({ game, source: "featured" });
+    const featured = gameMap.get(FEATURED_ID) ?? {};
+    return jsonResponse({
+      game: buildGame(FEATURED_ID, FEATURED_NAME, featured),
+      source: "featured",
+    });
   }
 
   // 3. Fallback: most played, excluding blocked games
-  const ownedRes2 = await fetch(`https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${STEAM_KEY}&steamid=${STEAM_ID}&include_appinfo=true&include_played_free_games=true&format=json`);
-  const owned     = (await ownedRes2.json())?.response?.games ?? [];
-  const filtered  = owned.filter(g => !BLOCKED.includes(g.appid));
+  const filtered = ownedGames.filter(g => !BLOCKED.includes(g.appid));
   filtered.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0));
-  const game = await buildGame(filtered[0].appid, filtered[0].name, filtered[0]);
-  return jsonResponse({ game, source: "alltime" });
+  const topGame = filtered[0];
+  return jsonResponse({
+    game: buildGame(topGame.appid, topGame.name, topGame),
+    source: "alltime",
+  });
 };
 
 export const config = { path: "/api/steam" };
