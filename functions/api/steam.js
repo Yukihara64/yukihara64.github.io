@@ -9,7 +9,6 @@ export async function onRequest(context) {
   const BLOCKED       = (env.STEAM_BLOCKED_APPIDS ?? "")
                           .split(",").map(Number).filter(Boolean);
 
-  // Helper para respuesta JSON con cabeceras no-cache
   const jsonResponse = (data, status = 200) => {
     return new Response(JSON.stringify(data), {
       status,
@@ -22,25 +21,23 @@ export async function onRequest(context) {
     });
   };
 
-  // 1. Obtener juegos propios
-  const ownedRes = await fetch(
+  // 1. Get owned games
+  const ownedRes   = await fetch(
     `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?` +
     `key=${STEAM_KEY}&steamid=${STEAM_ID}&include_appinfo=true&include_played_free_games=true&format=json`
   );
-  const ownedData = await ownedRes.json();
-  const ownedGames = ownedData?.response?.games ?? [];
-  const ownedMap = new Map(ownedGames.map(g => [g.appid, g]));
+  const ownedGames = (await ownedRes.json())?.response?.games ?? [];
+  const ownedMap   = new Map(ownedGames.map(g => [g.appid, g]));
 
-  // 2. Obtener recientemente jugados
-  const recentRes = await fetch(
+  // 2. Get recently played
+  const recentRes   = await fetch(
     `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v1/?` +
     `key=${STEAM_KEY}&steamid=${STEAM_ID}&format=json`
   );
-  const recentData = await recentRes.json();
-  const recentGames = recentData?.response?.games ?? [];
-  const recentMap = new Map(recentGames.map(g => [g.appid, g]));
+  const recentGames = (await recentRes.json())?.response?.games ?? [];
+  const recentMap   = new Map(recentGames.map(g => [g.appid, g]));
 
-  // Función para obtener la mejor imagen
+  // Get best image for a given appid
   async function getGameImageUrl(appid) {
     if (appid === 3932890) {
       return 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3932890/e1367f10d469137a2ced522b642a9b1ee10450da/header.jpg?t=1770712130';
@@ -54,29 +51,24 @@ export async function onRequest(context) {
     if (ownedInfo?.img_logo_url) {
       return `https://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${ownedInfo.img_logo_url}.jpg`;
     }
-    try {
-      const storeRes = await fetch(`https://store.steampowered.com/app/${appid}`);
-      const html = await storeRes.text();
-      const match = html.match(/<meta property="og:image" content="([^"]+)">/);
-      if (match) return match[1];
-    } catch {}
     return 'https://via.placeholder.com/184x69?text=No+Image';
   }
 
-  // Construir objeto del juego
+  // Build game object
   const buildGame = async (appid, name, extra = {}) => {
-    const ownedInfo = ownedMap.get(appid);
+    const ownedInfo  = ownedMap.get(appid);
     const recentInfo = recentMap.get(appid);
 
-    let playtime_forever = 0;
-    let playtime_2weeks = 0;
+    let playtime_forever, playtime_2weeks;
 
     if (appid === 3932890) {
-      playtime_forever = 865;
-      playtime_2weeks = 96; // ajusta si quieres
+      // Tarkov migrated App IDs — real playtime is stored under old ID 1517290
+      const oldTarkov  = ownedMap.get(1517290);
+      playtime_forever = oldTarkov?.playtime_forever ?? 865;
+      playtime_2weeks  = oldTarkov?.playtime_2weeks  ?? 0;
     } else {
       playtime_forever = ownedInfo?.playtime_forever ?? recentInfo?.playtime_forever ?? extra.playtime_forever ?? 0;
-      playtime_2weeks = ownedInfo?.playtime_2weeks ?? recentInfo?.playtime_2weeks ?? extra.playtime_2weeks ?? 0;
+      playtime_2weeks  = ownedInfo?.playtime_2weeks  ?? recentInfo?.playtime_2weeks  ?? extra.playtime_2weeks  ?? 0;
     }
 
     const imgUrl = await getGameImageUrl(appid);
@@ -91,23 +83,26 @@ export async function onRequest(context) {
   };
 
   // 3. Live check
-  const summaryRes = await fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${STEAM_ID}`);
+  const summaryRes = await fetch(
+    `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${STEAM_ID}`
+  );
   const player = (await summaryRes.json())?.response?.players?.[0];
 
   if (player?.gameid && !BLOCKED.includes(Number(player.gameid))) {
-    const game = await buildGame(player.gameid, player.gameextrainfo ?? "In a game");
+    const game = await buildGame(Number(player.gameid), player.gameextrainfo ?? "In a game");
     return jsonResponse({ game, source: "live" });
   }
 
+  // 4. Featured game (Tarkov)
   if (FEATURED_ID) {
     const featured = ownedMap.get(FEATURED_ID) ?? {};
-    const game = await buildGame(FEATURED_ID, FEATURED_NAME, featured);
+    const game     = await buildGame(FEATURED_ID, FEATURED_NAME, featured);
     return jsonResponse({ game, source: "featured" });
   }
 
+  // 5. Fallback: most played, excluding blocked
   const filtered = ownedGames.filter(g => !BLOCKED.includes(g.appid));
   filtered.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0));
-  const topGame = filtered[0];
-  const game = await buildGame(topGame.appid, topGame.name, topGame);
+  const game = await buildGame(filtered[0].appid, filtered[0].name, filtered[0]);
   return jsonResponse({ game, source: "alltime" });
 }
