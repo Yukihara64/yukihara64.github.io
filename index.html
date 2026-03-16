@@ -321,8 +321,8 @@
     <div class="hero-banner">
       <div class="avatar-frame">
         <div class="avatar-hex">
-          <div class="avatar-inner">
-            <img src="https://unavatar.io/twitter/tsk_yk64"
+          <div class="avatar-inner" id="avatar-inner">
+            <img id="avatar-img"
               alt="Daniel Guanes"
               style="width:104px;height:104px;border-radius:50%;object-fit:cover;"
               onerror="this.style.display='none';this.parentElement.innerHTML='🐻'"/>
@@ -635,6 +635,13 @@
 </div>
 
 <script>
+  // ── Avatar — cache bust daily so Twitter pic always updates ──
+  (function() {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const img   = document.getElementById('avatar-img');
+    if (img) img.src = `https://unavatar.io/twitter/tsk_yk64?v=${today}`;
+  })();
+
   // ── Dynamic age in Japanese ──
   (function() {
     const BIRTH = new Date(1999, 9, 4); // October 4, 1999 (month is 0-indexed)
