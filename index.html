@@ -44,7 +44,7 @@
             <span class="hbadge pink">📡 Telecom</span>
             <span class="hbadge lav">🎨 3D Art</span>
             <span class="hbadge cyan">🗄️ SQL / DBA</span>
-            <span class="hbadge gold">✨ Always Learning</span>
+            <button onclick="toggleTarkov()" class="hbadge border-warning text-warning bg-transparent" id="tarkov-btn">⚒️ Tarkov Mode</button>
             <a href="https://x.com/tsk_yk64" target="_blank" class="hbadge border-light text-light text-decoration-none">𝕏 @tsk_yk64</a>
           </div>
         </div>
@@ -54,6 +54,9 @@
       <div class="loc me-md-auto">📍 <span class="text-sakura">Asunción, Paraguay</span></div>
     </div>
   </div>
+
+  <!-- Audio Player for Tarkov Mode -->
+  <div id="tarkov-audio-container" style="display:none;"></div>
 
   <!-- ABOUT -->
   <div class="section">
@@ -233,7 +236,7 @@
     <div class="section-glow"></div>
     <div class="sec-title">// 言語 <span class="sec-jp">Languages</span></div>
     <div class="lang-item">
-      <div class="lang-flag">🇪🇸</div>
+      <div class="lang-flag"><img src="https://flagcdn.com/w40/es.png" width="22" alt="ES"></div>
       <div class="lang-name">Español <span class="lang-jp">スペイン語</span></div>
       <div class="stat-bar">
         <div class="progress-bar" role="progressbar" style="width: 100%; height: 100%; background: linear-gradient(90deg,var(--neon-pink),var(--neon-lav));" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -241,7 +244,7 @@
       <div class="stat-label">Native</div>
     </div>
     <div class="lang-item">
-      <div class="lang-flag">🇺🇸</div>
+      <div class="lang-flag"><img src="https://flagcdn.com/w40/us.png" width="22" alt="US"></div>
       <div class="lang-name">English <span class="lang-jp">英語</span></div>
       <div class="stat-bar">
         <div class="progress-bar" role="progressbar" style="width: 90%; height: 100%; background: linear-gradient(90deg,var(--neon-cyan),var(--neon-mint));" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
@@ -249,7 +252,7 @@
       <div class="stat-label">Fluent</div>
     </div>
     <div class="lang-item">
-      <div class="lang-flag">🇯🇵</div>
+      <div class="lang-flag"><img src="https://flagcdn.com/w40/jp.png" width="22" alt="JP"></div>
       <div class="lang-name">日本語 <span class="lang-jp">にほんご</span></div>
       <div class="stat-bar">
         <div class="progress-bar" role="progressbar" style="width: 65%; height: 100%; background: linear-gradient(90deg,var(--gold),#ff9800);" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
@@ -672,6 +675,25 @@
       font-size:${10+Math.random()*10}px;
     `;
     document.querySelector('.bg-layer').appendChild(p);
+  }
+
+  // ── TARKOV THEME TOGGLE ──
+  function toggleTarkov() {
+    const body = document.body;
+    const btn = document.getElementById('tarkov-btn');
+    const audioContainer = document.getElementById('tarkov-audio-container');
+    const isTarkov = body.classList.toggle('tarkov-theme');
+    
+    if (isTarkov) {
+      btn.innerHTML = '⚡ Neon Mode';
+      btn.className = 'hbadge border-info text-info bg-transparent';
+      // Embed YouTube audio (Escape from Tarkov Main Menu Theme)
+      audioContainer.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/CMKuhNXF3ws?autoplay=1&loop=1&playlist=CMKuhNXF3ws" frameborder="0" allow="autoplay"></iframe>';
+    } else {
+      btn.innerHTML = '⚒️ Tarkov Mode';
+      btn.className = 'hbadge border-warning text-warning bg-transparent';
+      audioContainer.innerHTML = ''; // Stop audio
+    }
   }
 </script>
 </body>
