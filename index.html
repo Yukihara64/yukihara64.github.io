@@ -679,8 +679,8 @@
 
   // ── TARKOV THEME TOGGLE ──
   const tarkovBackgrounds = [
-    'img/tarkov1.jpg', 'img/tarkov2.jpg', 'img/tarkov3.jpg',
-    'img/tarkov4.jpg', 'img/tarkov5.jpg', 'img/tarkov6.jpg'
+    'img/tarkov1.jpeg', 'img/tarkov2.jpeg', 'img/tarkov3.jpeg',
+    'img/tarvko4.jpeg', 'img/tarkov5.jpeg', 'img/tarkov6.jpeg'
   ];
   const tarkovSongs = [
     'CMKuhNXF3ws', // Main Theme
@@ -712,6 +712,7 @@
         bgLayer.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.75)), url('${randomBG}')`;
       };
       img.onerror = () => {
+        console.error('Failed to load Tarkov BG:', randomBG);
         bgLayer.style.backgroundImage = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)';
       };
       img.src = randomBG;
