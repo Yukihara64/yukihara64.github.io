@@ -290,6 +290,8 @@ body::before {
 .text-neon-lav { color: var(--neon-lav) !important; text-shadow: var(--glow-lav); }
 .text-neon-cyan { color: var(--neon-cyan) !important; text-shadow: var(--glow-cyan); }
 .text-muted-lavender { color: #a088b0 !important; }
-.border-dashed { border-style: dashed !important; }
+.text-muted-bright { color: #c8a8d8 !important; }
+.text-light-lavender { color: #e0d0f0 !important; }
+.border-dashed { border-style: dashed !important; border-color: rgba(255,105,180,0.2) !important; }
 .fw-black { font-weight: 900 !important; }
 .text-sakura { color: var(--sakura) !important; }
