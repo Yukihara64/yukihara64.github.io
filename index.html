@@ -678,20 +678,50 @@
   }
 
   // ── TARKOV THEME TOGGLE ──
+  const tarkovBackgrounds = [
+    'img/tarkov1.jpg', 'img/tarkov2.jpg', 'img/tarkov3.jpg',
+    'img/tarkov4.jpg', 'img/tarkov5.jpg', 'img/tarkov6.jpg'
+  ];
+  const tarkovSongs = [
+    'CMKuhNXF3ws', // Main Theme
+    'wq9deTUvcy0', // Eclipse (from your playlist)
+    'O4_XFp6U-yI', // The Lab
+    'lC8uVvT3X9E', // Prepare for Escape
+    'A0p_YmK7iZk', // Rules of Engagement
+    'bI9n9lK3l6g'  // Denial
+  ];
+
   function toggleTarkov() {
     const body = document.body;
     const btn = document.getElementById('tarkov-btn');
     const audioContainer = document.getElementById('tarkov-audio-container');
+    const bgLayer = document.querySelector('.bg-grad');
     const isTarkov = body.classList.toggle('tarkov-theme');
     
     if (isTarkov) {
       btn.innerHTML = '⚡ Neon Mode';
       btn.className = 'hbadge border-info text-info bg-transparent';
-      // Embed YouTube audio (Escape from Tarkov Main Menu Theme)
-      audioContainer.innerHTML = '<iframe width="1" height="1" src="https://www.youtube.com/embed/CMKuhNXF3ws?autoplay=1&loop=1&playlist=CMKuhNXF3ws" frameborder="0" allow="autoplay"></iframe>';
+      
+      // Select random assets
+      const randomBG = tarkovBackgrounds[Math.floor(Math.random() * tarkovBackgrounds.length)];
+      const randomSong = tarkovSongs[Math.floor(Math.random() * tarkovSongs.length)];
+      
+      // Robust image loading
+      const img = new Image();
+      img.onload = () => {
+        bgLayer.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.75)), url('${randomBG}')`;
+      };
+      img.onerror = () => {
+        bgLayer.style.backgroundImage = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)';
+      };
+      img.src = randomBG;
+      
+      // Embed YouTube audio with random Geneburn track
+      audioContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${randomSong}?autoplay=1&loop=1&playlist=${randomSong}" frameborder="0" allow="autoplay"></iframe>`;
     } else {
       btn.innerHTML = '⚒️ Tarkov Mode';
       btn.className = 'hbadge border-warning text-warning bg-transparent';
+      bgLayer.style.backgroundImage = ''; // Restore original gradients
       audioContainer.innerHTML = ''; // Stop audio
     }
   }
