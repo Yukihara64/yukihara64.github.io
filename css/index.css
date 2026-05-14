@@ -302,3 +302,68 @@ body::before {
 .border-dashed { border-style: dashed !important; border-color: rgba(255,105,180,0.2) !important; }
 .fw-black { font-weight: 900 !important; }
 .text-sakura { color: var(--sakura) !important; }
+
+/* ── TARKOV THEME ── */
+body.tarkov-theme {
+  --bg: #0a0a0a;
+  --bg2: #141414;
+  --card: rgba(20, 20, 20, 0.98);
+  --border: #4a4a3a;
+  --neon-pink: #9a8866; /* Khaki/Brass */
+  --neon-lav: #5c5c4a;
+  --neon-cyan: #7a7a5c;
+  --sakura: #d1b26b;
+  --text: #d0d0d0;
+  --muted: #666655;
+  --glow-pink: 0 0 10px rgba(154, 136, 102, 0.3);
+  --glow-lav: 0 0 10px rgba(92, 92, 74, 0.3);
+  --glow-cyan: 0 0 10px rgba(122, 122, 92, 0.2);
+  filter: sepia(0.15) contrast(1.05);
+}
+
+body.tarkov-theme::before {
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 1px,
+    rgba(255,255,255,0.03) 1px, rgba(255,255,255,0.03) 2px
+  );
+  mix-blend-mode: overlay;
+}
+
+body.tarkov-theme .bg-grad {
+  background: 
+    radial-gradient(circle at 50% 50%, rgba(122, 122, 92, 0.15) 0%, transparent 80%),
+    url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+}
+
+body.tarkov-theme .petal { display: none !important; }
+body.tarkov-theme .kanji-bg { opacity: 0.015; filter: grayscale(1); }
+
+body.tarkov-theme .hero, body.tarkov-theme .section {
+  border-radius: 0;
+  border-color: var(--border);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.8);
+}
+
+body.tarkov-theme .hero::before, body.tarkov-theme .hero::after, 
+body.tarkov-theme .section::before, body.tarkov-theme .section::after {
+  border-color: #666655;
+  width: 10px; height: 10px;
+}
+
+body.tarkov-theme h1, body.tarkov-theme h3, body.tarkov-theme .sec-title {
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+body.tarkov-theme .progress-bar {
+  background: #7a7a5c !important;
+  border-radius: 0;
+}
+
+body.tarkov-theme .sk:hover {
+  background: #333322;
+  box-shadow: none;
+  transform: none;
+  border-color: #9a8866;
+}
