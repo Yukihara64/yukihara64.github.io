@@ -1,4 +1,7 @@
 // functions/api/steam.js
+/**
+ * Cloudflare Pages API Endpoint for Steam Integration
+ */
 
 const STEAM_API_BASE = "https://api.steampowered.com";
 const DEFAULT_STEAM_ID = "76561198012828824";
