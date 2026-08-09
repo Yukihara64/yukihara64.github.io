@@ -838,9 +838,10 @@ body.arona-active .avatar-frame {
   object-fit: contain;
   margin-bottom: 2px;
   transition: transform 0.2s ease;
-  mix-blend-mode: multiply;
   background: transparent !important;
   border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 .dock-item:hover .ba-dock-icon {
   transform: scale(1.15) translateY(-2px);
@@ -1387,132 +1388,205 @@ body.arona-active .avatar-frame {
 }
 
 /* ==========================================================================
-   TARKOV THEME OVERRIDES (RUGGED COMBAT STYLE)
+   TARKOV THEME OVERRIDES (AUTHENTIC ESCAPE FROM TARKOV HUD)
    ========================================================================== */
 body.tarkov-theme {
-  --bg: #0a0a0a;
-  --bg2: #141414;
-  --card: rgba(20, 20, 20, 0.98);
-  --border: #4a4a3a;
-  --neon-pink: #9a8866; /* Khaki/Brass */
-  --neon-lav: #5c5c4a;
-  --neon-cyan: #7a7a5c;
-  --sakura: #d1b26b;
-  --text: #d0d0d0;
-  --muted: #666655;
-  --glow-pink: 0 0 10px rgba(154, 136, 102, 0.3);
-  --glow-lav: 0 0 10px rgba(92, 92, 74, 0.3);
-  --glow-cyan: 0 0 10px rgba(122, 122, 92, 0.2);
-  filter: sepia(0.15) contrast(1.05);
+  --bg: #0c0d0b;
+  --bg2: #121411;
+  --card: #151814;
+  --border: #383d32;
+  --neon-pink: #d8a436; /* Tarkov Gold */
+  --neon-lav: #8a8b7c;  /* Tactical Khaki */
+  --neon-cyan: #4a6b47; /* Military Green */
+  --sakura: #ff7b00;    /* Raid Orange */
+  --text: #e8e8e8;
+  --muted: #727467;
+  --glow-pink: 0 0 10px rgba(216, 164, 54, 0.3);
+  --glow-lav: 0 0 10px rgba(138, 139, 124, 0.3);
+  --glow-cyan: 0 0 10px rgba(74, 107, 71, 0.3);
+  font-family: 'Outfit', 'Nunito', sans-serif;
+  filter: contrast(1.08) brightness(0.95);
 }
+
 body.tarkov-theme::before {
-  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.03) 1px, rgba(255,255,255,0.03) 2px);
-  mix-blend-mode: overlay;
+  content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.75) 100%),
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
 }
-body.tarkov-theme .bg-grad {
-  background: linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7));
-  animation: none;
-}
-body.tarkov-theme .petal { display: none !important; }
-body.tarkov-theme .kanji-bg { opacity: 0.01; filter: grayscale(1); }
-body.tarkov-theme .avatar-halo { display: none !important; }
-body.tarkov-theme .avatar-inner img { animation: none; }
+
 body.tarkov-theme .ba-lobby {
-  background: #0a0a0e !important;
+  background: #0e0f0d url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat !important;
 }
+
 body.tarkov-theme .ba-lobby > div:first-child {
   display: none !important;
 }
-body.tarkov-theme .ba-dock-icon {
-  filter: sepia(0.8) hue-rotate(10deg) brightness(0.9);
+
+body.tarkov-theme .petal { display: none !important; }
+body.tarkov-theme .kanji-bg { display: none !important; }
+body.tarkov-theme .avatar-frame { display: none !important; }
+
+/* Topbar Header styling */
+body.tarkov-theme .lobby-topbar {
+  background: linear-gradient(180deg, rgba(14, 15, 13, 0.95) 0%, transparent 100%);
+  border-bottom: 1px solid #282b23;
+  padding: 10px 24px;
 }
 
-/* Slanted topbar items */
-body.tarkov-theme .account-card-slant,
-body.tarkov-theme .topbar-card,
-body.tarkov-theme .topbar-square-btn,
-body.tarkov-theme .topbar-mini-btn,
-body.tarkov-theme .ba-event-banner {
-  background: #181814 !important;
-  border-color: #4a4a3a !important;
+body.tarkov-theme .account-card-slant {
+  background: #181b16 !important;
+  border: 1px solid #3d4237 !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
+  transform: none !important;
+}
+body.tarkov-theme .account-card-content { transform: none !important; }
+body.tarkov-theme .account-lv-col {
+  background: #d8a436 !important;
+  color: #0e0f0d !important;
   border-radius: 0 !important;
 }
-body.tarkov-theme .topbar-square-btn:hover,
-body.tarkov-theme .topbar-mini-btn:hover {
-  background: #2a2a22 !important;
-  border-color: #9a8866 !important;
+body.tarkov-theme .account-lv-lbl { color: #0e0f0d !important; font-weight: 900; }
+body.tarkov-theme .account-lv-val { color: #0e0f0d !important; font-weight: 900; }
+body.tarkov-theme .account-name { color: #e8e8e8 !important; font-weight: 900; letter-spacing: 1px; }
+body.tarkov-theme .account-exp-bar { background: #d8a436 !important; }
+
+/* Topbar currency pills */
+body.tarkov-theme .topbar-card {
+  background: #141713 !important;
+  border: 1px solid #363a30 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
-body.tarkov-theme .account-lv-lbl { color: #9a8866; }
-body.tarkov-theme .account-exp-bar { background: #9a8866; }
-body.tarkov-theme .topbar-card .pill-val { color: #d0d0d0; }
-body.tarkov-theme .topbar-card .pill-plus { background: #4a4a3a; color: #9a8866; border-radius: 0; }
-body.tarkov-theme .topbar-card .pill-plus:hover { background: #5a5a4a; }
-body.tarkov-theme .pill-icon-container {
-  background: rgba(154, 136, 102, 0.15) !important;
-  border-right-color: rgba(154, 136, 102, 0.25) !important;
+body.tarkov-theme .topbar-card .pill-icon,
+body.tarkov-theme .topbar-card .pill-val {
+  transform: none !important;
+  color: #d8a436 !important;
+  font-weight: 900;
 }
-body.tarkov-theme .topbar-square-btn .btn-inner,
-body.tarkov-theme .topbar-mini-btn .btn-inner {
-  color: #9a8866;
+body.tarkov-theme .topbar-card .pill-plus {
+  background: #252a22 !important;
+  color: #d8a436 !important;
+  border-left: 1px solid #363a30 !important;
+  border-radius: 0 !important;
+}
+body.tarkov-theme .topbar-card .pill-plus:hover {
+  background: #363e32 !important;
+  color: #fff !important;
+}
+body.tarkov-theme .topbar-square-btn {
+  background: #141713 !important;
+  border: 1px solid #363a30 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+  box-shadow: none !important;
+  color: #d8a436 !important;
+}
+body.tarkov-theme .topbar-square-btn:hover {
+  background: #252a22 !important;
+  border-color: #d8a436 !important;
+}
+body.tarkov-theme .topbar-square-btn .btn-inner {
+  transform: none !important;
+  color: #d8a436 !important;
 }
 
-/* Left/Right actions */
+/* Left/Right Action Stacks */
 body.tarkov-theme .lobby-stack-icon,
 body.tarkov-theme .arona-guide-badge {
-  filter: grayscale(1) sepia(0.85) contrast(1.1) brightness(0.85);
+  filter: grayscale(1) sepia(0.5) brightness(0.8);
 }
 body.tarkov-theme .lobby-stack-label,
 body.tarkov-theme .guide-badge-label {
-  color: #9a8866; text-shadow: none;
+  color: #8a8b7c !important; text-shadow: none !important; font-weight: 900;
 }
+
+/* Right Widgets */
 body.tarkov-theme .lobby-widgets-container {
-  border-color: #4a4a3a;
+  border-color: #363a30;
 }
 body.tarkov-theme .widget-card {
-  background: #141412; border-color: #4a4a3a; box-shadow: none; border-radius: 0;
+  background: rgba(18, 20, 17, 0.95) !important;
+  border: 1px solid #363a30 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
-body.tarkov-theme .widget-card:hover { border-color: #9a8866; transform: none; }
+body.tarkov-theme .widget-card:hover { border-color: #d8a436 !important; }
 body.tarkov-theme .widget-header {
-  color: var(--neon-pink); text-shadow: none; border-bottom-color: rgba(154, 136, 102, 0.15);
+  color: #d8a436 !important; text-shadow: none !important; border-bottom-color: #363a30 !important; font-weight: 900; letter-spacing: 2px;
 }
 
-/* Center Speech Bubble */
+/* Speech Bubble in Tarkov Mode */
 body.tarkov-theme .lobby-quote-bubble {
-  background: #181814; border-color: #4a4a3a; box-shadow: none; border-radius: 0; animation: none;
+  background: #141713 !important;
+  border: 1px solid #d8a436 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  border-radius: 0 !important;
+  animation: none !important;
 }
-body.tarkov-theme #lobby-quote-text { color: #d0d0d0; }
-body.tarkov-theme .lobby-quote-bubble::before { border-color: #4a4a3a transparent; }
-body.tarkov-theme .lobby-quote-bubble::after { border-color: #181814 transparent; }
-body.tarkov-theme .char-swap-btn {
-  background: #181814; border-color: #4a4a3a; color: #9a8866; border-radius: 0;
+body.tarkov-theme #lobby-quote-text {
+  color: #e8e8e8 !important;
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
-body.tarkov-theme .char-swap-btn:hover { background: #2a2a22; border-color: #9a8866; }
+body.tarkov-theme .lobby-quote-bubble::before { border-color: #d8a436 transparent !important; }
+body.tarkov-theme .lobby-quote-bubble::after { border-color: #141713 transparent !important; }
 
-/* Bottom Dock */
+/* Bottom Dock (Authentic Tarkov Bottom Bar) */
 body.tarkov-theme .lobby-dock {
-  background: #141412; border-top-color: #4a4a3a; box-shadow: none; border-radius: 0;
+  background: #0f110e !important;
+  border-top: 1px solid #363a30 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
-body.tarkov-theme .dock-item:hover { background: #20201a; }
-body.tarkov-theme .dock-item .dock-label { color: #9a8866; }
-body.tarkov-theme .dock-item:hover .dock-label { color: #d0d0d0; }
+body.tarkov-theme .dock-item:hover {
+  background: rgba(216, 164, 54, 0.1) !important;
+}
+body.tarkov-theme .ba-dock-icon {
+  filter: grayscale(0.8) sepia(0.6) brightness(0.9) !important;
+}
+body.tarkov-theme .dock-item .dock-label {
+  color: #8a8b7c !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+}
+body.tarkov-theme .dock-item:hover .dock-label {
+  color: #d8a436 !important;
+}
 
-/* Campaign Work Button */
+/* Campaign Raid Button */
 body.tarkov-theme .lobby-work-btn {
-  background: linear-gradient(135deg, #332d24 0%, #201b15 100%);
-  border-color: #4a4a3a; color: #9a8866; box-shadow: none; border-radius: 0;
+  background: linear-gradient(135deg, #d8a436 0%, #a67c24 100%) !important;
+  border: 1px solid #ffe596 !important;
+  color: #0e0f0d !important;
+  box-shadow: 0 0 15px rgba(216, 164, 54, 0.4) !important;
+  border-radius: 0 !important;
+  transform: none !important;
 }
-body.tarkov-theme .lobby-work-btn::before { background: #5c5c4a; }
-body.tarkov-theme .lobby-work-btn:hover {
-  background: linear-gradient(135deg, #443c30 0%, #302820 100%);
-  color: #d0d0d0;
+body.tarkov-theme .lobby-work-btn-content { transform: none !important; }
+body.tarkov-theme .campaign-in-progress-badge {
+  background: #ff7b00 !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  transform: none !important;
 }
-body.tarkov-theme .lobby-work-btn-shield svg path { stroke: #9a8866; }
-body.tarkov-theme .lobby-work-btn-shield svg path[fill="#ffffff"] { fill: #9a8866; }
-body.tarkov-theme .lobby-work-btn-shield svg text { fill: #141412; }
-body.tarkov-theme .lobby-clock-hud .hud-keys { color: rgba(154, 136, 102, 0.3); }
-body.tarkov-theme .lobby-clock-hud .hud-clock { color: #9a8866; }
+body.tarkov-theme .lobby-work-btn .work-jp {
+  color: #0e0f0d !important;
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+}
+
+/* HUD Clock */
+body.tarkov-theme .lobby-clock-hud {
+  background: #0f110e !important;
+  border: 1px solid #363a30 !important;
+  border-radius: 0 !important;
+}
+body.tarkov-theme .lobby-clock-hud .hud-keys { color: #8a8b7c !important; }
+body.tarkov-theme .lobby-clock-hud .hud-clock { color: #d8a436 !important; font-family: monospace; }
 
 /* Event Banner */
 body.tarkov-theme .event-banner-img { filter: grayscale(0.8) sepia(0.5) contrast(1.2); }
