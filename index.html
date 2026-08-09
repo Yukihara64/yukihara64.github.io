@@ -107,38 +107,35 @@
     <div class="topbar-right-container">
       <div class="topbar-card">
         <div class="pill-icon-container ap-icon-bg">
-          <span class="pill-icon" style="transform:skewX(15deg)">⚡</span>
+          <span class="pill-icon">⚡</span>
         </div>
         <span class="pill-val">240/240</span>
-        <button class="pill-plus" style="transform:skewX(15deg)">+</button>
+        <button class="pill-plus"><span>+</span></button>
       </div>
       <div class="topbar-card">
         <div class="pill-icon-container credit-icon-bg">
-          <span class="pill-icon" style="transform:skewX(15deg)">💰</span>
+          <span class="pill-icon">💰</span>
         </div>
         <span class="pill-val">5+ Yrs</span>
-        <button class="pill-plus" style="transform:skewX(15deg)">+</button>
+        <button class="pill-plus"><span>+</span></button>
       </div>
       <div class="topbar-card">
         <div class="pill-icon-container gem-icon-bg">
-          <span class="pill-icon" style="transform:skewX(15deg)">💎</span>
+          <span class="pill-icon">💎</span>
         </div>
         <span class="pill-val">24,000</span>
-        <button class="pill-plus" onclick="replenishPyroxenes()" style="transform:skewX(15deg)">+</button>
+        <button class="pill-plus" onclick="replenishPyroxenes()"><span>+</span></button>
       </div>
 
       <div class="topbar-utility-buttons">
         <button class="topbar-square-btn" id="tarkov-btn" onclick="toggleTarkov()" title="Tactical Mode Toggle">
           <span class="btn-inner">⚙️</span>
         </button>
-        <button class="topbar-square-btn" onclick="openBAModal('about')">
-          <span class="btn-inner">👤</span>
-        </button>
-      </div>
-
-      <div class="topbar-sub-buttons">
-        <button class="topbar-mini-btn" id="theme-toggle-btn" onclick="toggleTarkov()">
+        <button class="topbar-square-btn" onclick="swapLobbyCharacter(event)" title="Switch Assistant Character">
           <span class="btn-inner">🔄</span>
+        </button>
+        <button class="topbar-square-btn" onclick="openBAModal('about')" title="Sensei Profile">
+          <span class="btn-inner">👤</span>
         </button>
       </div>
     </div>
@@ -200,10 +197,6 @@
       </div>
       <div class="lvl-badge" id="age-badge"></div>
     </div>
-
-    <button class="char-swap-btn" onclick="swapLobbyCharacter(event)" title="Change assistant character">
-      <span>🔄</span>
-    </button>
   </div>
 
   <!-- Bottom Left Event Banner -->

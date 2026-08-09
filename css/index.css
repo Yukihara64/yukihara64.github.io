@@ -284,6 +284,12 @@ body {
   font-size: 0.75rem;
   transition: background 0.2s ease;
   border: none;
+  padding: 0;
+  margin: 0;
+}
+.topbar-card .pill-plus span {
+  transform: skewX(15deg);
+  display: inline-block;
 }
 .topbar-card .pill-plus:hover {
   background: #008be0;
@@ -410,8 +416,8 @@ body {
 /* ── RIGHT ARONA GUIDE BADGE ── */
 .arona-guide-badge {
   position: absolute;
-  right: 24px;
-  top: 90px;
+  right: 28px;
+  top: 75px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -577,6 +583,9 @@ body {
   position: relative;
   flex-shrink: 0;
   cursor: pointer;
+}
+body.arona-active .avatar-frame {
+  display: none !important;
 }
 .avatar-hex {
   width: 170px;
@@ -829,6 +838,9 @@ body {
   object-fit: contain;
   margin-bottom: 2px;
   transition: transform 0.2s ease;
+  mix-blend-mode: multiply;
+  background: transparent !important;
+  border-radius: 0 !important;
 }
 .dock-item:hover .ba-dock-icon {
   transform: scale(1.15) translateY(-2px);
