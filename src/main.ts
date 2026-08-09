@@ -1484,3 +1484,12 @@
       });
     }
   });
+
+
+// Expose functions to global window object for index.html inline onclick handlers
+(window as any).openBAModal = openBAModal;
+(window as any).closeAllBAModals = closeAllBAModals;
+(window as any).replenishPyroxenes = replenishPyroxenes;
+if (typeof toggleTarkov === 'function') (window as any).toggleTarkov = toggleTarkov;
+if (typeof changeQuote === 'function') (window as any).changeQuote = changeQuote;
+if (typeof swapLobbyCharacter === 'function') (window as any).swapLobbyCharacter = swapLobbyCharacter;
