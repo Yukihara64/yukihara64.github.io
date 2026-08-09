@@ -1,4 +1,3 @@
-// @ts-nocheck
 ﻿  // ── Web Audio Synth Engine (Sound Palette) ──
   const BASound = {
     ctx: null,

@@ -1,4 +1,3 @@
-// @ts-nocheck
 ﻿// functions/api/steam.ts
 export async function onRequest(context: EventContext<any, any, any>) {
   const { env } = context;
@@ -29,15 +28,15 @@ export async function onRequest(context: EventContext<any, any, any>) {
     fetch(`https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_KEY}&steamids=${STEAM_ID}`),
   ]);
 
-  const ownedGames  = (await ownedRes.json())?.response?.games  ?? [];
+  const ownedGames  = ((await ownedRes.json()) as any)?.response?.games  ?? [];
   const recentGames = ((await recentRes.json()) as any)?.response?.games ?? [];
-  const player      = (await summaryRes.json())?.response?.players?.[0];
+  const player      = ((await summaryRes.json()) as any)?.response?.players?.[0];
 
-  const ownedMap  = new Map(ownedGames.map(g => [g.appid, g]));
-  const recentMap = new Map(recentGames.map(g => [g.appid, g]));
+  const ownedMap  = new Map<number, any>(ownedGames.map((g: any) => [g.appid, g]));
+  const recentMap = new Map<number, any>(recentGames.map((g: any) => [g.appid, g]));
 
   // Get best image URL
-  async function getImage(appid) {
+  async function getImage(appid: number) {
     if (appid === 3932890) {
       return "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3932890/e1367f10d469137a2ced522b642a9b1ee10450da/header.jpg?t=1770712130";
     }
@@ -54,7 +53,7 @@ export async function onRequest(context: EventContext<any, any, any>) {
   }
 
   // Build game object — remaps appid for playtime lookup if needed
-  async function buildGame(appid, name, extra = {}) {
+  async function buildGame(appid: number, name: string, extra: any = {}) {
     // Look up playtime from remapped ID if available (e.g. Tarkov 3932890 → 1517290)
     const playtimeId = PLAYTIME_REMAP[appid] ?? appid;
     const owned      = ownedMap.get(playtimeId) ?? ownedMap.get(appid);
