@@ -1,4 +1,4 @@
-﻿  // ── Web Audio Synth Engine (Sound Palette) ──
+  // ── Web Audio Synth Engine (Sound Palette) ──
   const BASound = {
     ctx: null,
     init() {
@@ -1169,6 +1169,7 @@
   // ── Spotify Widget Integration ──
   async function fetchSpotify() {
     const el = (document.getElementById('spotify-content') as any);
+    if (!el) return;
     try {
       const res  = await fetch('/api/spotify');
       const data = (await res.json()) as any;
@@ -1249,6 +1250,7 @@
   // ── Steam Widget Integration ──
   async function fetchSteam() {
     const el = (document.getElementById('steam-content') as any);
+    if (!el) return;
     try {
       const res   = await fetch('/api/steam');
       const data  = (await res.json()) as any;
