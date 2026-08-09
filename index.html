@@ -281,6 +281,71 @@
   </div>
 </div>
 
+<!-- REAL ESCAPE FROM TARKOV OVERLAY MENU (MATCHES OFFICIAL GAME UI) -->
+<div class="tarkov-overlay-menu" id="tarkov-menu">
+  <!-- Top Stencil Logo & Bone Emblem -->
+  <div class="tarkov-header-logo">
+    <div class="tarkov-logo-text">ESCAPE FROM TARKOV</div>
+    <div class="tarkov-sub-logo">BEAR / USEC OPERATOR INTERFACE</div>
+  </div>
+
+  <!-- Center Event Banner Box -->
+  <div class="tarkov-event-banner-box">
+    <div class="tarkov-event-left">
+      <span class="tarkov-shield-badge">🛡️</span>
+      <div>
+        <div class="tarkov-event-title">SEASON 1 // KORD BREACH</div>
+        <div class="tarkov-event-subtitle">OPERATOR CAMPAIGN ACTIVE</div>
+      </div>
+    </div>
+    <div class="tarkov-event-right">
+      <div>PROGRESS: <strong style="color:#d8a436">1 / 53</strong></div>
+      <div>TIMER: <span style="color:#8a8b7c">119d 11h 4m</span></div>
+    </div>
+  </div>
+
+  <!-- Center Vertical Menu Options -->
+  <div class="tarkov-center-menu">
+    <button class="tarkov-menu-btn raid-btn" onclick="openBAModal('experience')">
+      <span class="btn-text">ESCAPE FROM TARKOV</span>
+    </button>
+    <button class="tarkov-menu-btn" onclick="openBAModal('about')">
+      <span class="btn-text">CHARACTER</span>
+    </button>
+    <button class="tarkov-menu-btn" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')">
+      <span class="btn-text">TRADING</span>
+    </button>
+    <button class="tarkov-menu-btn" onclick="openBAModal('crafting')">
+      <span class="btn-text">HIDEOUT</span>
+    </button>
+    <button class="tarkov-menu-btn exit-btn" onclick="toggleTarkov()">
+      <span class="btn-text">EXIT TO SCHALE</span>
+    </button>
+  </div>
+
+  <!-- Bottom Metallic Bar (Tarkov Official HUD Bar) -->
+  <div class="tarkov-bottom-hud">
+    <div class="tarkov-hud-left">
+      <span class="tarkov-expansions-badge">EXPANSIONS</span>
+      <span class="tarkov-version-tag">v0.14.9.0.30626 | PvP S</span>
+    </div>
+    
+    <div class="tarkov-hud-center">
+      <button class="tarkov-hud-btn" onclick="toggleTarkov()"><span class="icon">≡</span> MAIN MENU</button>
+      <button class="tarkov-hud-btn" onclick="openBAModal('crafting')"><span class="icon">🏚️</span> HIDEOUT</button>
+      <button class="tarkov-hud-btn" onclick="openBAModal('about')"><span class="icon">👤</span> CHARACTER</button>
+      <button class="tarkov-hud-btn" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')"><span class="icon">🛒</span> TRADERS</button>
+      <button class="tarkov-hud-btn" onclick="openBAModal('students')"><span class="icon">ℹ️</span> HANDBOOK</button>
+      <button class="tarkov-hud-btn" onclick="openBAModal('momotalk')"><span class="icon">💬</span> MESSENGER</button>
+    </div>
+
+    <div class="tarkov-hud-right">
+      <span class="tarkov-season-badge">PVP SEASON</span>
+      <span class="tarkov-clock" id="tarkov-time-display">18:56</span>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL WINDOW OVERLAYS -->
 
 <div class="ba-modal-overlay" id="modal-overlay" onclick="closeAllBAModals()"></div>
@@ -445,7 +510,7 @@
 </div>
 
 <!-- Modal: Messages (MomoTalk Chat Style) -->
-<div class="ba-modal" id="modal-messages">
+<div class="ba-modal" id="modal-momotalk">
   <div class="momotalk-header d-flex align-items-center justify-content-between px-3 py-2">
     <div class="d-flex align-items-center gap-2">
       <img src="img/icon_momotalk.png" class="momotalk-logo" alt="MomoTalk">
@@ -682,8 +747,8 @@
       </div>
 
       <div class="crafting-inventory-row">
-        <div class="keystone-count">Keystones: <span id="keystone-count-val">5</span> ⚿</div>
-        <button class="craft-btn" id="craft-trigger-btn" onclick="startCrafting()">Start Crafting (1x ⚿)</button>
+        <div class="keystone-count">Keystones: <span id="keystone-count-val">5</span> 🔑</div>
+        <button class="craft-btn" id="craft-trigger-btn" onclick="startCrafting()">Start Crafting (1x 🔑)</button>
       </div>
 
       <div class="sec-title">// COLLECTIBLE ARCHIVE SHOWCASE</div>

@@ -309,7 +309,7 @@
         if (modalId === 'students') renderRoster();
         if (modalId === 'recruit') renderRecruitBanner();
         if (modalId === 'crafting') renderCraftingRoom();
-        if (modalId === 'messages') renderMomoTalk();
+        if (modalId === 'messages' || modalId === 'momotalk') renderMomoTalk();
       }, 250);
       setTimeout(() => { wipe.classList.remove('active'); }, 650);
     } else {
@@ -1375,15 +1375,18 @@
     }
   }
 
-  // ── Real-Time Digital Clock HUD ──
   (function() {
     function updateClock() {
-      const el = (document.getElementById("lobby-time-display") as any);
-      if (!el) return;
       const now = new Date();
       const hrs = String(now.getHours()).padStart(2, '0');
       const mins = String(now.getMinutes()).padStart(2, '0');
-      el.textContent = `${hrs}:${mins}`;
+      const str = `${hrs}:${mins}`;
+      
+      const el = (document.getElementById("lobby-time-display") as any);
+      if (el) el.textContent = str;
+      
+      const tarkovEl = (document.getElementById("tarkov-time-display") as any);
+      if (tarkovEl) tarkovEl.textContent = str;
     }
     updateClock();
     setInterval(updateClock, 1000);

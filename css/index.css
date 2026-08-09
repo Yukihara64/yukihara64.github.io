@@ -1426,6 +1426,203 @@ body.tarkov-theme .petal { display: none !important; }
 body.tarkov-theme .kanji-bg { display: none !important; }
 body.tarkov-theme .avatar-frame { display: none !important; }
 
+/* ── TARKOV OVERLAY MENU (SCREENSHOT 4 MATCH) ── */
+.tarkov-overlay-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  background: radial-gradient(circle at center, rgba(14, 16, 13, 0.75) 0%, rgba(9, 10, 8, 0.95) 100%),
+              url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 20px 60px;
+  user-select: none;
+}
+
+body.tarkov-theme .tarkov-overlay-menu {
+  display: flex !important;
+}
+
+body.tarkov-theme .ba-lobby {
+  display: none !important;
+}
+
+/* Stencil Header Logo */
+.tarkov-header-logo {
+  text-align: center;
+  margin-top: 20px;
+}
+.tarkov-logo-text {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #aebdb2;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(174, 189, 178, 0.2);
+}
+.tarkov-sub-logo {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #6a786e;
+  margin-top: 2px;
+}
+
+/* Event Banner Box */
+.tarkov-event-banner-box {
+  width: 520px;
+  max-width: 90vw;
+  background: rgba(16, 18, 14, 0.9);
+  border: 1px solid #363e32;
+  padding: 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  margin-bottom: 20px;
+}
+.tarkov-event-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tarkov-shield-badge {
+  font-size: 1.5rem;
+}
+.tarkov-event-title {
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #e8e8e8;
+}
+.tarkov-event-subtitle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #7a887d;
+}
+.tarkov-event-right {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: right;
+  color: #a8b8ac;
+}
+
+/* Center Vertical Menu Stack */
+.tarkov-center-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.tarkov-menu-btn {
+  background: transparent;
+  border: none;
+  color: #a8b8ac;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  cursor: pointer;
+  padding: 6px 20px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.tarkov-menu-btn:hover {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 20px rgba(216, 164, 54, 0.4);
+  transform: scale(1.06);
+}
+.tarkov-menu-btn.raid-btn {
+  color: #d8a436;
+  font-size: 1.65rem;
+  text-shadow: 0 0 10px rgba(216, 164, 54, 0.3);
+}
+.tarkov-menu-btn.raid-btn:hover {
+  color: #ffc44d;
+  text-shadow: 0 0 16px rgba(255, 196, 77, 0.8);
+}
+.tarkov-menu-btn.exit-btn {
+  color: #6d786e;
+  font-size: 1.2rem;
+  margin-top: 15px;
+}
+.tarkov-menu-btn.exit-btn:hover {
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+}
+
+/* Bottom Metallic HUD Bar */
+.tarkov-bottom-hud {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 42px;
+  background: #090a08;
+  border-top: 1px solid #2a3025;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 101;
+  font-family: 'Outfit', sans-serif;
+}
+.tarkov-hud-left, .tarkov-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.tarkov-expansions-badge, .tarkov-season-badge {
+  background: #181d16;
+  border: 1px solid #3d4838;
+  color: #d8a436;
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+.tarkov-version-tag {
+  color: #6a786e;
+}
+.tarkov-hud-center {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+}
+.tarkov-hud-btn {
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: #8a9b90;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  padding: 0 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.tarkov-hud-btn:hover {
+  background: #181d16;
+  color: #d8a436;
+  border-top: 2px solid #d8a436;
+}
+.tarkov-hud-btn .icon {
+  font-size: 0.85rem;
+}
+.tarkov-clock {
+  color: #d8a436;
+  font-family: monospace;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
 /* Topbar Header styling */
 body.tarkov-theme .lobby-topbar {
   background: linear-gradient(180deg, rgba(14, 15, 13, 0.95) 0%, transparent 100%);
