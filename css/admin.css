@@ -1,84 +1,205 @@
 :root {
-  --bg: #0d0a14; --card: rgba(30,16,46,0.9);
-  --pink: #ff69b4; --lav: #bf80ff; --cyan: #00e5ff;
-  --text: #f0d6f5; --muted: #a07ab0;
-  --glow: 0 0 12px rgba(255,105,180,0.5);
+  --bg: #0b101d; /* Deep blue-navy */
+  --card: rgba(15, 23, 42, 0.85); /* Slate-navy card */
+  --pink: #f36c8b; /* Coral pink */
+  --lav: #8c7ae6; /* Cyber purple */
+  --cyan: #00a3ff; /* Sky blue */
+  --text: #e2f1ff; /* Ice blue-white text */
+  --muted: #8fa4bf; /* Blue-grey muted text */
+  --glow: 0 0 12px rgba(0, 163, 255, 0.6);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:40px 20px; }
-.admin-container { max-width:900px; margin:0 auto; }
+body { 
+  font-family:'Outfit','Nunito',sans-serif; 
+  background:var(--bg); 
+  color:var(--text); 
+  min-height:100vh; 
+  padding:40px 20px; 
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(0, 163, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 163, 255, 0.02) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.admin-container { max-width:900px; margin:0 auto; position: relative; z-index: 1; }
 h1 { font-family:'Zen Maru Gothic',sans-serif; font-size:1.6rem; color:var(--pink); text-shadow:var(--glow); margin-bottom:8px; }
 .subtitle { color:var(--muted); font-size:.85rem; margin-bottom:32px; }
 
 /* login */
-#login { text-align:center; margin-top:20vh; }
-#login h2 { font-family:'Zen Maru Gothic',sans-serif; color:var(--pink); margin-bottom:20px; font-size:1.4rem; }
+#login {
+  text-align: center;
+  max-width: 420px;
+  margin: 15vh auto;
+  padding: 35px 25px;
+  background: var(--card);
+  border: 1px solid var(--cyan);
+  border-radius: 4px;
+  box-shadow: var(--glow), inset 0 0 30px rgba(0, 163, 255, 0.05);
+  position: relative;
+  z-index: 1;
+}
+#login::before, #login::after {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  border-color: var(--pink); border-style: solid;
+}
+#login::before { top: 0; left: 0; border-width: 2px 0 0 2px; }
+#login::after { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+#login h2 { font-family:'Zen Maru Gothic',sans-serif; color:var(--cyan); text-shadow: var(--glow); margin-bottom:24px; font-size:1.5rem; letter-spacing: 1.5px; }
 #login input {
-  background:rgba(255,255,255,.05); border:1px solid rgba(255,105,180,.4);
-  border-radius:6px; padding:12px 18px; color:var(--text); font-size:1rem;
-  width:280px; outline:none; margin-bottom:12px; display:block; margin:0 auto 12px;
+  background: rgba(0, 163, 255, 0.04); border:1px solid rgba(0, 163, 255, 0.35);
+  border-radius:4px; padding:12px 18px; color:var(--text); font-size:1rem;
+  width:100%; max-width:280px; outline:none; margin:0 auto 16px; display:block;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#login input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 163, 255, 0.3);
 }
 #login button {
-  background:linear-gradient(135deg,var(--pink),var(--lav));
-  border:none; border-radius:6px; padding:12px 32px;
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  border:none; border-radius:4px; padding:12px 36px;
   color:#fff; font-size:.95rem; font-weight:900; cursor:pointer;
-  transition:transform .2s;
+  transition:transform .2s, box-shadow .2s;
+  letter-spacing: 1px;
 }
-#login button:hover { transform:scale(1.04); }
-.error-msg { color:#ff6b6b; font-size:.82rem; margin-top:10px; }
+#login button:hover { transform:scale(1.03); box-shadow: 0 0 15px rgba(0, 163, 255, 0.4); }
+.error-msg { color:#ff6b6b; font-size:.82rem; margin-top:10px; font-weight: bold; }
 
 /* tabs */
-#app { display:none; }
+#app { display:none; position: relative; z-index: 1; }
 .tabs { display:flex; gap:12px; margin-bottom:28px; }
 .tab {
-  padding:8px 22px; border-radius:6px; border:1px solid rgba(255,105,180,.3);
+  padding:8px 22px; border-radius:4px; border:1px solid rgba(0, 163, 255,.3);
   background:transparent; color:var(--muted); font-size:.85rem; font-weight:700;
   cursor:pointer; transition:all .2s;
 }
-.tab.active { background:rgba(255,105,180,.15); border-color:var(--pink); color:var(--pink); text-shadow:var(--glow); }
+.tab.active { background:rgba(0, 163, 255,.15); border-color:var(--cyan); color:var(--cyan); text-shadow:var(--glow); }
 
 /* Admin Theme Updates */
-.admin-card { background: var(--card) !important; border-color: rgba(255,105,180,0.2) !important; }
+.admin-card { background: var(--card) !important; border-color: rgba(0, 163, 255, 0.2) !important; }
 .btn-outline-pink { color: var(--pink); border-color: var(--pink); }
 .btn-outline-pink:hover { background: var(--pink); color: #fff; }
-.bg-pink-glow { background: var(--pink) !important; box-shadow: var(--glow); }
-.bg-lav-glow { background: var(--lav) !important; box-shadow: 0 0 12px rgba(191,128,255,0.5); }
+.bg-pink-glow { background: var(--pink) !important; box-shadow: 0 0 12px rgba(243, 108, 139, 0.5); }
+.bg-lav-glow { background: var(--cyan) !important; box-shadow: var(--glow); }
 
-.tab-pill { color: var(--muted) !important; border: 1px solid rgba(255,105,180,0.3) !important; margin-bottom: 5px; }
-.tab-pill.active { background: rgba(255,105,180,0.15) !important; border-color: var(--pink) !important; color: var(--pink) !important; text-shadow: var(--glow); }
+.tab-pill { color: var(--muted) !important; border: 1px solid rgba(0, 163, 255, 0.3) !important; margin-bottom: 5px; border-radius: 4px !important; }
+.tab-pill.active { background: rgba(0, 163, 255, 0.15) !important; border-color: var(--cyan) !important; color: var(--cyan) !important; text-shadow: var(--glow); }
 
 /* cards */
 .card {
-  background:var(--card); border:1px solid rgba(255,105,180,.2);
-  border-radius:8px; padding:18px 20px; margin-bottom:14px;
+  background:var(--card); border:1px solid rgba(0, 163, 255,.2);
+  border-radius:4px; padding:18px 20px; margin-bottom:14px;
   position:relative;
 }
 .card .meta { font-size:.72rem; color:var(--muted); margin-bottom:8px; }
 .card .msg { font-size:.9rem; line-height:1.6; color:var(--text); }
 .card .del-btn {
   position:absolute; top:14px; right:16px;
-  background:rgba(255,80,80,.15); border:1px solid rgba(255,80,80,.3);
-  border-radius:4px; padding:3px 10px; color:#ff6b6b;
+  background:rgba(243, 108, 139, 0.1); border:1px solid rgba(243, 108, 139, 0.3);
+  border-radius:4px; padding:3px 10px; color:var(--pink);
   font-size:.72rem; font-weight:700; cursor:pointer; transition:all .2s;
 }
-.card .del-btn:hover { background:rgba(255,80,80,.3); }
+.card .del-btn:hover { background:rgba(243, 108, 139, 0.25); box-shadow: 0 0 8px rgba(243, 108, 139, 0.3); }
 .empty { color:var(--muted); font-size:.9rem; text-align:center; padding:40px 0; }
 
 /* drawing cards */
-.drawing-card { background:var(--card); border:1px solid rgba(191,128,255,.2); border-radius:8px; padding:16px; margin-bottom:14px; }
-.drawing-card img { width:100%; max-width:400px; border-radius:6px; border:1px solid rgba(191,128,255,.3); display:block; }
+.drawing-card { background:var(--card); border:1px solid rgba(0, 163, 255,.2); border-radius:4px; padding:16px; margin-bottom:14px; }
+.drawing-card img { width:100%; max-width:400px; border-radius:4px; border:1px solid rgba(0, 163, 255,.3); display:block; }
 .drawing-card .draw-msg { font-size:.85rem; color:var(--muted); margin-top:8px; font-style:italic; }
 .drawing-card .meta { font-size:.72rem; color:var(--muted); margin-bottom:10px; }
 .drawing-card .del-btn {
-  margin-top:10px; background:rgba(255,80,80,.15); border:1px solid rgba(255,80,80,.3);
-  border-radius:4px; padding:4px 12px; color:#ff6b6b;
-  font-size:.72rem; font-weight:700; cursor:pointer;
+  margin-top:10px; background:rgba(243, 108, 139, 0.1); border:1px solid rgba(243, 108, 139, 0.3);
+  border-radius:4px; padding:4px 12px; color:var(--pink);
+  font-size:.72rem; font-weight:700; cursor:pointer; transition:all .2s;
 }
+.drawing-card .del-btn:hover { background:rgba(243, 108, 139, 0.25); box-shadow: 0 0 8px rgba(243, 108, 139, 0.3); }
 
 .count-badge {
-  background:rgba(255,105,180,.15); border:1px solid rgba(255,105,180,.3);
-  border-radius:20px; padding:2px 10px; font-size:.72rem; color:var(--pink);
+  background:rgba(0, 163, 255,.15); border:1px solid rgba(0, 163, 255,.3);
+  border-radius:20px; padding:2px 10px; font-size:.72rem; color:var(--cyan);
   margin-left:8px;
 }
-.logout { float:right; background:transparent; border:1px solid rgba(255,105,180,.3); border-radius:6px; padding:6px 16px; color:var(--muted); font-size:.78rem; cursor:pointer; }
-.logout:hover { color:var(--pink); border-color:var(--pink); }
+.logout { float:right; background:transparent; border:1px solid rgba(243, 108, 139,.3); border-radius:4px; padding:6px 16px; color:var(--muted); font-size:.78rem; cursor:pointer; }
+.logout:hover { color:var(--pink); border-color:var(--pink); background: rgba(243, 108, 139, 0.05); }
+
+/* ── MOMOTALK CHAT & SHITTIM CHEST STYLES ── */
+.console-boot-text {
+  font-family: 'Outfit', monospace;
+  font-size: 0.73rem;
+  color: var(--muted);
+  line-height: 1.5;
+  border-left: 2px solid var(--pink);
+  padding-left: 12px;
+  text-align: left;
+  display: inline-block;
+  margin: 0 auto 20px;
+}
+.shittim-chest-emblem {
+  display: flex;
+  justify-content: center;
+}
+
+.momotalk-message {
+  background: var(--card);
+  border: 1px solid rgba(0, 163, 255, 0.2);
+  border-radius: 4px;
+  padding: 16px;
+  position: relative;
+  box-shadow: inset 0 0 15px rgba(0, 163, 255, 0.03);
+}
+.momotalk-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 163, 255, 0.12);
+  border: 1.5px solid var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(0, 163, 255, 0.25);
+}
+.momotalk-bubble-container {
+  max-width: 80%;
+}
+.momotalk-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--cyan);
+  margin-bottom: 4px;
+}
+.momotalk-time {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-left: 8px;
+  font-weight: normal;
+}
+.momotalk-bubble {
+  background: rgba(0, 163, 255, 0.06);
+  border: 1px solid rgba(0, 163, 255, 0.2);
+  border-radius: 0 12px 12px 12px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  word-break: break-word;
+}
+.momotalk-message .del-btn {
+  background: rgba(243, 108, 139, 0.1);
+  border: 1px solid rgba(243, 108, 139, 0.35);
+  color: var(--pink);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.momotalk-message .del-btn:hover {
+  background: rgba(243, 108, 139, 0.25);
+  box-shadow: 0 0 8px rgba(243, 108, 139, 0.3);
+}

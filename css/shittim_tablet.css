@@ -1,0 +1,1124 @@
+/* ==========================================================================
+   SHITTIM TABLET STYLESHEET (BLUE ARCHIVE SYSTEM INTERFACES)
+   ========================================================================== */
+
+:root {
+  --ba-blue: #00a3ff;
+  --ba-pink: #f36c8b;
+  --ba-dark: #0d2145;
+  --ba-light-blue: #e2f1ff;
+  --ba-gold: #ffb830;
+  --ba-purple: #8c7ae6;
+  --ba-green: #00e8b4;
+  --ba-bg-blur: rgba(13, 33, 69, 0.85);
+  
+  --glow-shittim-cyan: 0 0 15px rgba(0, 163, 255, 0.6);
+  --glow-shittim-pink: 0 0 15px rgba(243, 108, 139, 0.6);
+  --glow-shittim-gold: 0 0 15px rgba(255, 184, 48, 0.6);
+}
+
+/* ==========================================================================
+   1. DIGITAL BOOT SCREEN OVERLAY
+   ========================================================================== */
+.ba-boot-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #070c16;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  color: var(--ba-light-blue);
+  overflow: hidden;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+}
+
+.ba-boot-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.boot-scanlines {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 163, 255, 0.08) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 4px, 6px 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.boot-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0, 163, 255, 0.1) 1px, transparent 1px), linear-gradient(rgba(0, 163, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 163, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px, 40px 40px, 40px 40px;
+  background-position: center;
+  z-index: 0;
+}
+
+.boot-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.boot-hologram {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 24px;
+}
+
+.hologram-ring-outer {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed var(--ba-blue);
+  border-radius: 50%;
+  animation: spinClockwise 12s linear infinite;
+  box-shadow: var(--glow-shittim-cyan);
+}
+
+.hologram-ring-inner {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(243, 108, 139, 0.5);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinCounterClockwise 6s linear infinite;
+}
+
+.hologram-logo {
+  position: absolute;
+  inset: 24px;
+  background: var(--ba-dark);
+  border: 2px solid var(--ba-blue);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-shadow: var(--glow-shittim-cyan);
+  box-shadow: inset 0 0 10px rgba(0, 163, 255, 0.5);
+}
+
+.boot-logs {
+  width: 100%;
+  height: 85px;
+  background: rgba(13, 33, 69, 0.6);
+  border: 1.5px solid rgba(0, 163, 255, 0.3);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  text-align: left;
+  line-height: 1.4;
+  overflow: hidden;
+  color: var(--ba-light-blue);
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+}
+
+.boot-log-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+.boot-log-line.cyan { color: #00e5ff; }
+.boot-log-line.pink { color: var(--ba-pink); }
+.boot-log-line.success { color: var(--ba-green); font-weight: bold; }
+
+.boot-progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid rgba(0, 163, 255, 0.2);
+}
+
+.boot-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--ba-blue), var(--ba-green));
+  border-radius: 3px;
+  transition: width 0.05s linear;
+}
+
+.boot-percent-text {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+}
+
+.boot-scanner-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.boot-scanner-wrapper.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.boot-scanner-btn {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(13, 33, 69, 0.9);
+  border: 3.5px solid var(--ba-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  box-shadow: var(--glow-shittim-cyan), inset 0 0 15px rgba(0, 163, 255, 0.3);
+  transition: all 0.25s ease;
+  margin-bottom: 12px;
+}
+
+.boot-scanner-btn:hover {
+  transform: scale(1.05);
+  border-color: var(--ba-pink);
+  box-shadow: var(--glow-shittim-pink);
+}
+
+.boot-scanner-btn svg {
+  width: 48px;
+  height: 48px;
+  fill: var(--ba-blue);
+  transition: fill 0.25s;
+}
+
+.boot-scanner-btn:hover svg {
+  fill: var(--ba-pink);
+}
+
+.boot-scanner-laser {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: var(--ba-blue);
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--ba-blue);
+}
+
+.boot-scanner-btn.scanning .boot-scanner-laser {
+  opacity: 1;
+  animation: laserSweep 1.5s ease-in-out infinite;
+}
+
+.boot-scanner-btn.scanning {
+  border-color: var(--ba-pink);
+  animation: pulseScan 0.5s ease-in-out infinite alternate;
+}
+
+.boot-scanner-btn.scanning svg {
+  fill: var(--ba-pink);
+}
+
+.boot-scan-label {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--ba-light-blue);
+  text-transform: uppercase;
+  animation: blinkText 1.5s infinite;
+}
+
+@keyframes spinClockwise { to { transform: rotate(360deg); } }
+@keyframes spinCounterClockwise { to { transform: rotate(-360deg); } }
+@keyframes laserSweep { 0%, 100% { top: 10%; } 50% { top: 90%; } }
+@keyframes pulseScan { from { box-shadow: 0 0 15px rgba(243, 108, 139, 0.4); } to { box-shadow: 0 0 25px rgba(243, 108, 139, 0.8); } }
+@keyframes blinkText { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ==========================================================================
+   2. RECRUITMENT GACHA MODAL
+   ========================================================================== */
+.gacha-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gacha-banner-art {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #0b1d3d 0%, #1e4b8f 100%);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1.5px solid rgba(0, 163, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.gacha-banner-info {
+  z-index: 2;
+  max-width: 60%;
+}
+
+.gacha-banner-title {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  margin-bottom: 4px;
+}
+
+.gacha-banner-subtitle {
+  color: var(--ba-light-blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.gacha-banner-chibi {
+  z-index: 2;
+  height: 160px;
+  object-fit: contain;
+  margin-bottom: -15px;
+}
+
+.gacha-banner-overlay-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(0,163,255,0.1) 1px, transparent 1px);
+  background-size: 10px 10px;
+  z-index: 1;
+}
+
+.gacha-buttons-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.gacha-pull-btn {
+  flex: 1;
+  height: 60px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--ba-blue) 0%, #0076de 100%);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 163, 255, 0.2);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.gacha-pull-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 163, 255, 0.4);
+}
+
+.gacha-pull-btn:active {
+  transform: scale(0.98);
+}
+
+.gacha-pull-btn.pull-10 {
+  background: linear-gradient(135deg, var(--ba-pink) 0%, #d64f6f 100%);
+  box-shadow: 0 4px 12px rgba(243, 108, 139, 0.2);
+}
+
+.gacha-pull-btn.pull-10:hover {
+  box-shadow: 0 6px 18px rgba(243, 108, 139, 0.4);
+}
+
+.gacha-btn-cost {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.gacha-sign-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gacha-drawing-board {
+  width: 100%;
+  max-width: 580px;
+  background: #fdfaf0;
+  border: 3px solid #dcd3c1;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+
+.gacha-reveal-desk {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  padding: 20px 0;
+  justify-items: center;
+}
+
+@media (max-width: 576px) {
+  .gacha-reveal-desk {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+.gacha-envelope {
+  position: relative;
+  width: 90px;
+  height: 140px;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  transform-style: preserve-3d;
+}
+
+.gacha-envelope::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100%;
+  background: repeating-linear-gradient(45deg, #f3f6fa, #f3f6fa 6px, #ffffff 6px, #ffffff 12px);
+  border-radius: 4px;
+}
+
+.gacha-envelope::after {
+  content: 'SCHALE';
+  position: absolute;
+  bottom: 12px; right: 8px;
+  border: 1.5px solid var(--ba-blue);
+  color: var(--ba-blue);
+  font-size: 0.52rem;
+  font-weight: 900;
+  padding: 1px 3px;
+  border-radius: 2px;
+  transform: rotate(-10deg);
+  opacity: 0.7;
+}
+
+.gacha-envelope:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+}
+
+.gacha-envelope.opened {
+  transform: rotateY(180deg) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gacha-envelope.rarity-1 {
+  border-color: var(--ba-blue);
+  box-shadow: 0 0 10px rgba(0, 163, 255, 0.3);
+}
+
+.gacha-envelope.rarity-2 {
+  border-color: var(--ba-gold);
+  box-shadow: 0 0 12px rgba(255, 184, 48, 0.4);
+}
+
+.gacha-envelope.rarity-2::after {
+  border-color: var(--ba-gold);
+  color: var(--ba-gold);
+}
+
+.gacha-envelope.rarity-3 {
+  border-color: var(--ba-pink);
+  box-shadow: 0 0 18px rgba(243, 108, 139, 0.6);
+  animation: pulseRarity3 1.5s ease-in-out infinite alternate;
+}
+
+.gacha-envelope.rarity-3::after {
+  border-color: var(--ba-pink);
+  color: var(--ba-pink);
+}
+
+@keyframes pulseRarity3 {
+  from { box-shadow: 0 0 10px rgba(243, 108, 139, 0.5); }
+  to { box-shadow: 0 0 25px rgba(243, 108, 139, 0.9); }
+}
+
+.gacha-card-reveal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--ba-bg-blur);
+  z-index: 150000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.gacha-card-reveal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gacha-card-reveal-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.7);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+}
+
+.gacha-card-reveal-overlay.active .gacha-card-reveal-stage {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.student-card {
+  width: 250px;
+  background: #fff;
+  border: 4px solid var(--ba-blue);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.student-card.rarity-2 { border-color: var(--ba-gold); }
+.student-card.rarity-3 { border-color: var(--ba-pink); box-shadow: var(--glow-shittim-pink), 0 15px 35px rgba(0,0,0,0.35); }
+
+.card-img-container {
+  width: 100%; height: 180px;
+  background: #0d2145;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.card-img-container img { width: 100%; height: 100%; object-fit: cover; }
+.card-stars { position: absolute; top: 10px; left: 10px; display: flex; gap: 2px; z-index: 3; }
+.card-star { color: var(--ba-gold); font-size: 1.1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+.card-role-badge {
+  position: absolute; bottom: 8px; left: 8px;
+  background: rgba(13, 33, 69, 0.85);
+  border: 1px solid var(--ba-blue);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  z-index: 3;
+  text-transform: uppercase;
+}
+
+.card-body { padding: 16px; color: var(--ba-dark); text-align: center; }
+.card-name { font-size: 1.25rem; font-weight: 900; margin-bottom: 2px; }
+.card-title-label { font-size: 0.65rem; font-weight: 800; color: var(--ba-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.card-desc { font-size: 0.75rem; color: #4a5b73; line-height: 1.4; margin-bottom: 0; }
+.card-confirm-btn {
+  margin-top: 20px;
+  background: var(--ba-dark);
+  border: 1.5px solid var(--ba-blue);
+  border-radius: 4px;
+  padding: 8px 24px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,163,255,0.15);
+  transition: all 0.2s;
+}
+.card-confirm-btn:hover { background: var(--ba-blue); box-shadow: var(--glow-shittim-cyan); }
+
+/* ==========================================================================
+   3. CAFE LOUNGE MODAL
+   ========================================================================== */
+.cafe-lounge-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+.cafe-room-display {
+  width: 100%; height: 280px;
+  background: linear-gradient(to bottom, #dbe9f6, #f3f6fa);
+  border: 2px solid rgba(0, 163, 255, 0.25);
+  border-radius: 8px;
+  position: relative; overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 163, 255, 0.08);
+}
+
+.cafe-floor-grid {
+  position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+  background-image: linear-gradient(90deg, rgba(0, 163, 255, 0.06) 1px, transparent 1px), linear-gradient(rgba(0, 163, 255, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: rotateX(60deg) rotateZ(45deg);
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.cafe-chibi {
+  position: absolute; width: 50px; height: 60px;
+  cursor: pointer; z-index: 10;
+  transform: translate(-50%, -50%);
+  transition: left 0.8s ease, top 0.8s ease;
+}
+
+.chibi-avatar-frame { width: 100%; height: 100%; position: relative; }
+.chibi-avatar-frame img { width: 100%; height: 100%; object-fit: contain; animation: chibiBob 0.6s ease-in-out infinite alternate; }
+@keyframes chibiBob { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+.chibi-halo {
+  position: absolute; top: -6px; left: 50%;
+  transform: translateX(-50%) rotateX(60deg);
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--ba-blue);
+  border-radius: 50%;
+  box-shadow: 0 0 5px var(--ba-blue);
+}
+
+.chibi-bubble {
+  position: absolute; top: -38px; left: 50%; transform: translateX(-50%);
+  background: #fff; border: 1.5px solid var(--ba-blue); border-radius: 6px;
+  padding: 4px 8px; font-size: 0.58rem; font-weight: 700; color: var(--ba-dark);
+  white-space: nowrap; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  pointer-events: none; opacity: 0; transition: opacity 0.2s ease; z-index: 20;
+}
+.chibi-bubble::after { content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); border-width: 5px 4px 0; border-style: solid; border-color: #fff transparent; }
+.chibi-bubble::before { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); border-width: 6px 5px 0; border-style: solid; border-color: var(--ba-blue) transparent; z-index: -1; }
+.cafe-chibi:hover .chibi-bubble, .cafe-chibi.active .chibi-bubble { opacity: 1; }
+
+.chibi-heart {
+  position: absolute; font-size: 1.2rem; color: var(--ba-pink);
+  pointer-events: none; z-index: 25;
+  animation: floatHeart 1s forwards ease-out;
+}
+@keyframes floatHeart { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; } 100% { transform: translate(-50%, -120px) scale(1.2); opacity: 0; } }
+
+.cafe-controls { width: 100%; margin-top: 16px; display: flex; gap: 12px; justify-content: space-between; align-items: center; }
+.cafe-invite-btn { background: #fff; border: 1.5px solid var(--ba-blue); border-radius: 4px; padding: 8px 16px; color: var(--ba-blue); font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; }
+.cafe-invite-btn:hover { background: var(--ba-blue); color: #fff; }
+.cafe-stats-row { font-size: 0.78rem; font-weight: 700; color: var(--ba-dark); }
+.cafe-stats-row span { color: var(--ba-pink); font-weight: 900; }
+
+/* ==========================================================================
+   4. SCHEDULE MAP MODAL
+   ========================================================================== */
+.schedule-container { display: flex; flex-direction: column; width: 100%; }
+.schedule-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.schedule-tickets { font-size: 0.8rem; font-weight: 800; color: var(--ba-dark); }
+.schedule-tickets span { color: var(--ba-blue); font-weight: 900; }
+.schedule-map {
+  width: 100%; height: 300px;
+  background: linear-gradient(rgba(13, 33, 69, 0.4), rgba(13, 33, 69, 0.4)), url('https://i.imgur.com/sm4phBs.png') center/cover;
+  border-radius: 8px; border: 2px solid rgba(0, 163, 255, 0.25);
+  position: relative; overflow: hidden;
+}
+.schedule-map::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,163,255,0.12) 1.5px, transparent 1.5px); background-size: 8px 8px; pointer-events: none; }
+
+.schedule-pin { position: absolute; cursor: pointer; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 10; }
+.pin-ring { width: 24px; height: 24px; border: 3px solid var(--ba-blue); border-radius: 50%; background: #fff; box-shadow: var(--glow-shittim-cyan); position: relative; animation: pinPulse 1.5s infinite ease-in-out; }
+.pin-ring::after { content: ''; position: absolute; width: 8px; height: 8px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--ba-blue); border-radius: 50%; }
+.schedule-pin:hover .pin-ring { border-color: var(--ba-pink); box-shadow: var(--glow-shittim-pink); }
+.schedule-pin:hover .pin-ring::after { background: var(--ba-pink); }
+.pin-label { margin-top: 6px; font-size: 0.58rem; font-weight: 900; color: #fff; background: rgba(13, 33, 69, 0.85); border: 1px solid var(--ba-blue); border-radius: 4px; padding: 2px 6px; white-space: nowrap; letter-spacing: 0.5px; }
+.schedule-pin:hover .pin-label { border-color: var(--ba-pink); background: var(--ba-pink); }
+@keyframes pinPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+.schedule-event-overlay { position: absolute; inset: 0; background: rgba(13, 33, 69, 0.7); z-index: 100; display: flex; align-items: flex-end; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.schedule-event-overlay.active { opacity: 1; pointer-events: auto; }
+.schedule-dialog-box { width: 100%; background: #fff; border: 3px solid var(--ba-blue); border-radius: 8px; padding: 16px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; flex-direction: column; transform: translateY(30px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.schedule-event-overlay.active .schedule-dialog-box { transform: translateY(0); }
+.dialog-speaker { font-weight: 900; font-size: 0.85rem; color: var(--ba-blue); letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+.dialog-text { font-size: 0.82rem; color: var(--ba-dark); line-height: 1.5; margin-bottom: 12px; }
+.dialog-close-btn { align-self: flex-end; background: var(--ba-dark); border: none; border-radius: 4px; padding: 6px 16px; color: #fff; font-size: 0.72rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
+.dialog-close-btn:hover { background: var(--ba-blue); }
+
+/* ==========================================================================
+   5. STUDENT ROSTER (生徒) MODAL
+   ========================================================================== */
+.roster-container { display: flex; flex-direction: column; width: 100%; }
+.roster-search-bar { width: 100%; padding: 10px 14px; border: 1.5px solid rgba(0, 163, 255, 0.25); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.85rem; color: var(--ba-dark); outline: none; margin-bottom: 16px; }
+.roster-search-bar:focus { border-color: var(--ba-blue); }
+.roster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+@media (max-width: 768px) { .roster-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 576px) { .roster-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.roster-item { border: 2px solid rgba(0, 163, 255, 0.2); border-radius: 8px; background: rgba(0, 163, 255, 0.02); padding: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; }
+.roster-item:hover { border-color: var(--ba-blue); background: rgba(0, 163, 255, 0.06); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,163,255,0.1); }
+.roster-item.locked { filter: grayscale(1) opacity(0.5); }
+.roster-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--ba-blue); overflow: hidden; margin-bottom: 8px; }
+.roster-item.locked .roster-avatar { border-color: #999; }
+.roster-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.roster-name { font-size: 0.78rem; font-weight: 800; color: var(--ba-dark); text-align: center; margin-bottom: 2px; }
+.roster-stars { display: flex; gap: 1px; font-size: 0.65rem; color: var(--ba-gold); }
+.roster-locked-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5rem; color: #333; opacity: 0.8; z-index: 10; display: none; }
+.roster-item.locked .roster-locked-icon { display: block; }
+
+/* ==========================================================================
+   6. INTERACTIVE MOMOTALK CHAT
+   ========================================================================== */
+.momotalk-layout { display: flex; height: calc(85vh - 55px); width: 100%; }
+.momotalk-sidebar { width: 180px; background: #fff; border-right: 1.5px solid #dcd3c1; display: flex; flex-direction: column; overflow-y: auto; }
+@media (max-width: 576px) { .momotalk-sidebar { width: 60px; } .momotalk-chat-name { display: none; } }
+.momotalk-chat-tab { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid rgba(0, 163, 255, 0.08); transition: background 0.2s; }
+.momotalk-chat-tab:hover { background: rgba(243, 108, 139, 0.05); }
+.momotalk-chat-tab.active { background: rgba(243, 108, 139, 0.1); border-right: 3px solid var(--ba-pink); }
+.momotalk-chat-avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--ba-pink); overflow: hidden; flex-shrink: 0; }
+.momotalk-chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.momotalk-chat-name { font-size: 0.78rem; font-weight: 800; color: var(--ba-dark); }
+.momotalk-chat-area-enhanced { flex: 1; display: flex; flex-direction: column; background: #f3f6f9; }
+
+.momotalk-choices-panel { background: #fff; border-top: 1.5px solid #dcd3c1; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.momotalk-choice-btn { width: 100%; background: #fff; border: 2px solid var(--ba-pink); border-radius: 20px; padding: 8px 16px; color: var(--ba-pink); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; text-align: left; }
+.momotalk-choice-btn:hover { background: var(--ba-pink); color: #fff; }
+.momotalk-anonymous-tab { padding: 12px 16px; }
+
+/* ==========================================================================
+   7. CRAFTING ROOM MODAL (製造)
+   ========================================================================== */
+.crafting-container { display: flex; flex-direction: column; align-items: center; width: 100%; font-family: 'Outfit', sans-serif; }
+.crafting-chamber {
+  width: 100%; max-width: 400px; height: 200px; border-radius: 12px;
+  background: linear-gradient(135deg, #0d2145 0%, #061124 100%);
+  border: 2.5px solid var(--ba-blue); box-shadow: var(--glow-shittim-cyan);
+  position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.crafting-chamber::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(0,163,255,0.1) 1px, transparent 1px); background-size: 12px 12px; }
+
+.crafting-ring { position: absolute; border: 1.5px dashed var(--ba-blue); border-radius: 50%; animation: spinClockwise 10s linear infinite; opacity: 0.6; }
+.crafting-ring.ring-1 { width: 140px; height: 140px; }
+.crafting-ring.ring-2 { width: 100px; height: 100px; animation-duration: 6s; animation-direction: reverse; border-color: var(--ba-pink); }
+.crafting-ring.ring-3 { width: 60px; height: 60px; animation-duration: 4s; }
+.crafting-core { width: 30px; height: 30px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px #fff, 0 0 30px var(--ba-blue); z-index: 5; animation: corePulse 1s alternate infinite ease-in-out; }
+@keyframes corePulse { from { transform: scale(0.9); opacity: 0.7; } to { transform: scale(1.1); opacity: 1; } }
+
+.crafting-status-label { font-size: 0.8rem; font-weight: 800; color: var(--ba-light-blue); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 10px; z-index: 10; position: absolute; bottom: 15px; }
+.crafting-inventory-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 16px; font-size: 0.82rem; font-weight: 700; }
+.keystone-count span { color: var(--ba-gold); font-weight: 900; }
+
+.craft-btn {
+  background: linear-gradient(135deg, var(--ba-blue) 0%, #0076de 100%);
+  border: none; border-radius: 4px; padding: 10px 24px; color: #fff; font-weight: 800;
+  cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,163,255,0.2);
+}
+.craft-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(0,163,255,0.35); }
+.craft-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+.crafted-item-popup {
+  position: absolute; inset: 0; background: var(--ba-bg-blur);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+  padding: 16px; color: #fff; text-align: center;
+}
+.crafted-item-popup.active { opacity: 1; pointer-events: auto; }
+.crafted-card { width: 180px; background: #fff; border: 3px solid var(--ba-gold); border-radius: 8px; padding: 14px; color: var(--ba-dark); margin-bottom: 16px; transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.crafted-item-popup.active .crafted-card { transform: scale(1); }
+.crafted-card-icon { font-size: 2.2rem; margin-bottom: 8px; }
+.crafted-card-name { font-size: 0.85rem; font-weight: 900; margin-bottom: 4px; }
+.crafted-card-desc { font-size: 0.68rem; color: #555; line-height: 1.3; }
+
+/* ==========================================================================
+   LOBBY VISUAL EXACT MATCHES OVERRIDES
+   ========================================================================== */
+
+/* Arona Active Mode (Full screen Live2D video style) */
+body.arona-active .bg-grad {
+  background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), url('../img/ezgif-3151758b9efd3b14.gif') center/cover no-repeat fixed !important;
+  animation: none !important;
+}
+body.arona-active .avatar-frame {
+  display: none !important;
+}
+body.arona-active .lobby-quote-bubble {
+  bottom: 220px !important;
+}
+body.arona-active .char-swap-btn {
+  left: calc(50% - 15px) !important;
+  bottom: -60px !important;
+}
+
+/* Click target for Arona when she is in the background */
+.lobby-char-click-zone {
+  position: absolute;
+  top: 15vh;
+  left: 30vw;
+  width: 40vw;
+  height: 55vh;
+  cursor: pointer;
+  z-index: 3;
+  display: none;
+  background: transparent;
+}
+body.arona-active .lobby-char-click-zone {
+  display: block;
+}
+
+/* Hide widgets on the right during Arona's full-screen Live2D recollection lobby */
+body.arona-active .lobby-widgets-container {
+  display: none !important;
+}
+
+/* Exact copy of Blue Archive Bottom Dock */
+.lobby-dock {
+  background: rgba(243, 246, 250, 0.96) !important;
+  border-top: 3px solid #00a3ff !important;
+  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.05) !important;
+  padding: 10px 18px !important;
+  height: 70px !important;
+  padding-right: 320px !important; /* leave room for clock and campaign buttons container */
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+}
+
+.dock-item {
+  transform: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 4px !important;
+  padding: 4px 6px !important;
+  height: 48px !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.dock-item:hover {
+  background: transparent !important;
+  transform: translateY(-2px) !important;
+}
+
+.dock-item * {
+  transform: none !important;
+}
+
+.dock-item .dock-label {
+  color: #0d2145 !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px !important;
+  text-shadow: none !important;
+}
+
+.dock-item:hover .dock-label {
+  color: var(--ba-blue) !important;
+}
+
+.ba-dock-icon {
+  width: 32px !important;
+  height: 32px !important;
+  background: #00a3ff !important;
+  border-radius: 50% !important;
+  padding: 6px !important;
+  object-fit: contain !important;
+  filter: brightness(0) invert(1) !important; /* Invert color icons to clean white */
+  box-shadow: 0 2px 4px rgba(0, 163, 255, 0.2) !important;
+  transition: transform 0.2s !important;
+  margin-bottom: 3px !important;
+}
+
+.dock-item:hover .ba-dock-icon {
+  transform: scale(1.1) !important;
+  background: #008be0 !important;
+}
+
+/* Left Stack Buttons: Circular White Icons on Grey Border */
+.lobby-left-stack {
+  gap: 12px 14px !important;
+}
+.lobby-stack-btn {
+  transform: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 75px !important;
+  transition: all 0.2s !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+.lobby-stack-btn:hover {
+  background: transparent !important;
+  transform: translateY(-2px) !important;
+}
+.lobby-stack-btn * {
+  transform: none !important;
+}
+.lobby-stack-icon {
+  width: 44px !important;
+  height: 44px !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  border: 1.5px solid #e2edf7 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.06) !important;
+  margin: 0 auto 4px !important;
+  transition: all 0.2s ease !important;
+}
+.lobby-stack-btn:hover .lobby-stack-icon {
+  transform: scale(1.08) !important;
+  border-color: #00a3ff !important;
+}
+.ba-stack-icon {
+  height: 26px !important;
+  margin: 0 !important;
+}
+.lobby-stack-label {
+  color: #0d2145 !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+.lobby-stack-btn:hover .lobby-stack-label {
+  color: var(--ba-blue) !important;
+}
+
+/* Exact copy of Blue Archive Campaign & Event Recap buttons side-by-side */
+.lobby-campaign-container {
+  position: fixed !important;
+  right: 135px !important;
+  bottom: 8px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 8px !important;
+  z-index: 10 !important;
+}
+
+.lobby-event-recap-btn {
+  height: 65px !important;
+  width: 80px !important;
+  background: #ffffff !important;
+  border: 1.5px solid #d0e0f0 !important;
+  border-radius: 6px !important;
+  transform: skewX(-15deg) !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.lobby-event-recap-btn:hover {
+  transform: skewX(-15deg) scale(1.03) translateY(-1px) !important;
+  border-color: #00a3ff !important;
+}
+
+.recap-content {
+  transform: skewX(15deg) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #0d2145 !important;
+}
+
+.recap-calendar-icon {
+  color: #f36c8b !important;
+  margin-bottom: 2px !important;
+}
+
+.recap-text {
+  font-size: 0.55rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2px !important;
+}
+
+.lobby-work-btn {
+  position: relative !important;
+  height: 75px !important;
+  width: 110px !important;
+  background: linear-gradient(135deg, #00a3ff 0%, #0076de 100%) !important;
+  border: 2px solid #fff !important;
+  border-radius: 8px !important;
+  transform: skewX(-15deg) !important;
+  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.2) !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.lobby-work-btn::before {
+  display: none !important;
+}
+
+.lobby-work-btn:hover {
+  background: linear-gradient(135deg, #00b0ff 0%, #0085f2 100%) !important;
+  box-shadow: 0 6px 14px rgba(0, 163, 255, 0.3) !important;
+  transform: skewX(-15deg) scale(1.03) translateY(-1px) !important;
+}
+
+.lobby-work-btn-content {
+  transform: skewX(15deg) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  gap: 2px !important;
+}
+
+.lobby-work-btn-folder {
+  color: #fff !important;
+  margin-bottom: 2px !important;
+  opacity: 0.95 !important;
+}
+
+.lobby-work-btn .work-jp {
+  font-size: 0.85rem !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  letter-spacing: 0.5px !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+  margin: 0 !important;
+}
+
+/* Pink "In Progress" badge */
+.campaign-in-progress-badge {
+  position: absolute !important;
+  top: -8px !important;
+  right: -5px !important;
+  background: #f36c8b !important;
+  color: #fff !important;
+  font-size: 0.52rem !important;
+  font-weight: 900 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid #fff !important;
+  transform: skewX(15deg) !important;
+  box-shadow: 0 2px 4px rgba(243, 108, 139, 0.3) !important;
+  z-index: 12 !important;
+  text-transform: uppercase;
+}
+
+/* HUD Clock Panel */
+.lobby-clock-hud {
+  background: rgba(13, 33, 69, 0.75) !important;
+  border: 1px solid rgba(0, 163, 255, 0.3) !important;
+  border-radius: 4px !important;
+  padding: 6px 12px !important;
+  right: 15px !important;
+  bottom: 12px !important;
+  box-shadow: var(--glow-shittim-cyan) !important;
+}
+.lobby-clock-hud .hud-clock {
+  color: #fff !important;
+  font-size: 0.85rem !important;
+}
+.lobby-clock-hud .hud-keys {
+  color: var(--ba-blue) !important;
+}
+
+/* Non-Arona Cutouts */
+.avatar-frame {
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  width: 320px !important;
+  height: 70vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.avatar-hex {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+.avatar-hex::before { display: none !important; }
+
+.avatar-inner {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+.avatar-inner::after { display: none !important; }
+
+.avatar-inner img {
+  width: auto !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25)) !important;
+  animation: characterFloat 5s ease-in-out infinite !important;
+}
+
+.avatar-halo {
+  width: 140px !important;
+  height: 140px !important;
+  top: -20px !important;
+  left: calc(50% - 70px) !important;
+  z-index: 10 !important;
+}
+
+.avatar-frame .lvl-badge {
+  position: absolute !important;
+  bottom: 0px !important;
+  right: calc(50% - 40px) !important;
+  background: linear-gradient(135deg, var(--ba-blue), var(--ba-pink)) !important;
+  border: 2px solid #fff !important;
+  border-radius: 4px !important;
+  padding: 2px 8px !important;
+  font-size: 0.68rem !important;
+  font-weight: 900;
+  color: #fff !important;
+  box-shadow: 0 2px 6px rgba(0,163,255,0.4) !important;
+  z-index: 5 !important;
+}

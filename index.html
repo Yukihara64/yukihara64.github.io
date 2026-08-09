@@ -4,64 +4,324 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ゆき — Daniel Guanes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700;900&family=Kosugi+Maru&family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="/src/style.css">
 </head>
 <body>
+<!-- SHITTIM TABLET BOOT SCREEN -->
+<div class="ba-boot-screen" id="boot-screen">
+  <div class="boot-scanlines"></div>
+  <div class="boot-grid-bg"></div>
+  <div class="boot-content">
+    <div class="boot-hologram">
+      <div class="hologram-ring-outer"></div>
+      <div class="hologram-ring-inner"></div>
+      <div class="hologram-logo">✦</div>
+    </div>
+    <h3 style="font-weight: 900; letter-spacing: 1.5px; color: var(--ba-blue); margin-bottom: 5px;">SHITTIM OS v3.2</h3>
+    <div class="boot-logs" id="boot-log-box"></div>
+    <div class="boot-progress-container">
+      <div class="boot-progress-bar" id="boot-progress"></div>
+    </div>
+    <div class="boot-percent-text" id="boot-percent">0%</div>
+    
+    <div class="boot-scanner-wrapper" id="boot-scanner-area">
+      <button class="boot-scanner-btn" id="boot-scanner-btn">
+        <div class="boot-scanner-laser"></div>
+        <svg viewBox="0 0 24 24">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12C20,13.4 19.5,14.6 18.8,15.6L17.4,14.2C17.8,13.5 18,12.8 18,12C18,8.7 15.3,6 12,6C11.2,6 10.5,6.2 9.8,6.6L8.4,5.2C9.4,4.5 10.6,4 12,4M12,8A4,4 0 0,1 16,12C16,12.8 15.7,13.5 15.2,14.1L13.8,12.7C13.9,12.5 14,12.3 14,12A2,2 0 0,0 12,10C11.7,10 11.5,10.1 11.3,10.2L9.9,8.8C10.5,8.3 11.2,8 12,8M8,12A4,4 0 0,1 12,16C12.8,16 13.5,15.7 14.1,15.2L15.6,16.6C14.6,17.4 13.4,18 12,18A8,8 0 0,1 4,12C4,10.6 4.5,9.4 5.2,8.4L6.6,9.8C6.2,10.5 6,11.2 6,11.2A4,4 0 0,1 8,12M12,14A2,2 0 0,0 12,12C12,11.7 11.9,11.5 11.8,11.3L10.2,12.9C10.1,12.7 10,12.5 10,12A2,2 0 0,0 12,14Z"/>
+        </svg>
+      </button>
+      <div class="boot-scan-label">Authorize Sensei Fingerprint</div>
+    </div>
+  </div>
+</div>
 
+
+<!-- Background Layers -->
 <div class="bg-layer">
   <div class="bg-grad"></div>
 </div>
-<div class="kanji-bg">夢</div>
+<div class="kanji-bg">
+  <svg width="260" height="260" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 2"/>
+    <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="0.8"/>
+    <path d="M50 15 V85 M15 50 H85" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 2"/>
+    <path d="M50 30 L52.5 47.5 L70 50 L52.5 52.5 L50 70 L47.5 52.5 L30 50 L47.5 47.5 Z" fill="currentColor" opacity="0.8"/>
+    <path d="M30 50 C 20 30, 65 20, 80 40 C 65 60, 45 45, 30 50 Z" fill="currentColor" opacity="0.25"/>
+  </svg>
+</div>
 
-<div class="custom-container">
+<!-- BLUE ARCHIVE LOBBY CONTAINER (FULL SCREEN VIEWPORT) -->
+<div class="ba-lobby">
+  <div class="ba-lobby-dots-grid"></div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-banner container-fluid py-4 px-4">
-      <div class="row align-items-center g-4 text-center text-md-start">
-        <div class="col-12 col-md-auto avatar-frame">
-          <div class="avatar-hex mx-auto">
-            <div class="avatar-inner" id="avatar-inner">
-              <img id="avatar-img"
-                alt="Daniel Guanes"
-                style="width:104px;height:104px;border-radius:50%;object-fit:cover;"
-                onerror="this.style.display='none';this.parentElement.innerHTML='🐻'"/>
+  <!-- Navigation Chevrons for swapping quotes -->
+  <button class="lobby-nav-arrow arrow-left" onclick="changeQuote()" title="Previous Dialogue">‹</button>
+  <button class="lobby-nav-arrow arrow-right" onclick="changeQuote()" title="Next Dialogue">›</button>
+
+  <!-- Top Status Bar -->
+  <div class="lobby-topbar">
+    <!-- Left: Merged Account Card -->
+    <div class="ba-account-card" onclick="openBAModal('about')" title="Sensei Profile">
+      <div class="account-card-slant">
+        <div class="account-card-content">
+          <div class="account-lv-col">
+            <span class="account-lv-lbl">Lv.</span>
+            <span class="account-lv-val" id="age-badge-topbar">--</span>
+          </div>
+          <div class="account-info-col">
+            <span class="account-name">Daniel Guanes</span>
+            <div class="account-exp-row">
+              <div class="account-exp-bar-container">
+                <div class="account-exp-bar" style="width: 75%;"></div>
+              </div>
+              <span class="account-exp-val">41/66</span>
             </div>
-          </div>
-          <div class="lvl-badge" id="age-badge"></div>
-        </div>
-        <div class="col-12 col-md hero-text text-center text-md-start">
-          <div class="jp-name">✦ だにえる ゆき ✦</div>
-          <h1 class="display-6 fw-black">Daniel (ゆき) Guanes</h1>
-          <div class="role fw-bold" style="color: var(--muted);">
-            <span class="text-neon-cyan">Customer Support Technician</span> <span style="opacity: 0.7;">@ Infobip (Former)</span><br>
-            <span style="color: var(--text); opacity: 0.9;">Junior 3D Artist &nbsp;·&nbsp; Tech Enthusiast &nbsp;·&nbsp; 冒険者</span>
-          </div>
-          <div class="hero-badges d-flex flex-wrap gap-2 justify-content-center justify-content-md-start mt-3">
-            <span class="hbadge pink">📡 Telecom</span>
-            <span class="hbadge lav">🎨 3D Art</span>
-            <span class="hbadge cyan">🗄️ SQL / DBA</span>
-            <button onclick="toggleTarkov()" class="hbadge border-warning text-warning bg-transparent" id="tarkov-btn">⚒️ Tarkov Mode</button>
-            <a href="https://x.com/tsk_yk64" target="_blank" class="hbadge border-light text-light text-decoration-none">𝕏 @tsk_yk64</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="hero-status py-2 px-4 border-top border-secondary border-opacity-10 d-flex align-items-center flex-wrap gap-3">
-      <div class="loc me-md-auto">📍 <span class="text-sakura">Asunción, Paraguay</span></div>
+    
+    <!-- Right: Stat Pills & Utility Buttons -->
+    <div class="topbar-right-container">
+      <!-- 1. AP Pill -->
+      <div class="topbar-card" title="Action Points (AP)">
+        <div class="pill-icon-container ap-icon-bg">
+          <span class="pill-icon">⚡</span>
+        </div>
+        <span class="pill-val">240/240</span>
+        <button class="pill-plus" onclick="openBAModal('experience')">+</button>
+      </div>
+      
+      <!-- 2. Experience/Credits Pill -->
+      <div class="topbar-card d-none d-md-flex" title="Experience">
+        <div class="pill-icon-container credit-icon-bg">
+          <span class="pill-icon">🪙</span>
+        </div>
+        <span class="pill-val">5+ Yrs</span>
+      </div>
+      
+      <!-- 3. Pyroxenes Pill -->
+      <div class="topbar-card" title="Pyroxenes">
+        <div class="pill-icon-container gem-icon-bg">
+          <span class="pill-icon">💎</span>
+        </div>
+        <span class="pill-val">24,000</span>
+        <button class="pill-plus" onclick="replenishPyroxenes()">+</button>
+      </div>
+      
+      <!-- Utility Buttons -->
+      <div class="topbar-utility-buttons">
+        <button class="topbar-square-btn" onclick="openBAModal('about')" title="About Sensei">
+          <span class="btn-inner">👤</span>
+        </button>
+        <button class="topbar-square-btn position-relative" onclick="openBAModal('messages')" title="MomoTalk Chat">
+          <span class="btn-inner">✉️</span>
+          <span class="momotalk-badge-pulse" style="top: -2px; right: -2px;"></span>
+        </button>
+        <button class="topbar-square-btn" onclick="toggleTarkov()" id="tarkov-btn" title="Tarkov Mode Toggle">
+          <span class="btn-inner">⚙️</span>
+        </button>
+      </div>
+
+      <!-- Floating Sub-Buttons (Desktop only) -->
+      <div class="topbar-sub-buttons d-none d-md-flex">
+        <button class="topbar-mini-btn" onclick="changeQuote()" title="Swap Dialogue">
+          <span class="btn-inner">🔄</span>
+        </button>
+        <button class="topbar-mini-btn" onclick="toggleFullScreen()" title="Toggle Fullscreen">
+          <span class="btn-inner">⤢</span>
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Audio Player for Tarkov Mode -->
-  <div id="tarkov-audio-container" style="position:fixed;top:-100px;left:-100px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;"></div>
+  <!-- Left Action Stack (Notice and MomoTalk side-by-side, Missions below) -->
+  <div class="lobby-left-stack">
+    <div class="lobby-stack-btn" onclick="openBAModal('about')" title="Notices / Info">
+      <div class="lobby-stack-icon">
+        <img src="img/icon_notice.png" class="ba-stack-icon" alt="Notice">
+      </div>
+      <div class="lobby-stack-label">Notice</div>
+    </div>
+    <div class="lobby-stack-btn" onclick="openBAModal('messages')" title="MomoTalk Messages">
+      <div class="lobby-stack-icon position-relative">
+        <img src="img/icon_momotalk.png" class="ba-stack-icon" alt="MomoTalk">
+        <span class="momotalk-badge-pulse"></span>
+      </div>
+      <div class="lobby-stack-label">MomoTalk</div>
+    </div>
+    <div class="lobby-stack-btn" onclick="openBAModal('experience')" title="Work Missions">
+      <div class="lobby-stack-icon position-relative">
+        <img src="img/icon_missions.png" class="ba-stack-icon" alt="Missions">
+        <span class="momotalk-badge-pulse" style="background:#ff9800;box-shadow: 0 0 6px rgba(255,152,0,0.6);"></span>
+      </div>
+      <div class="lobby-stack-label">Tasks</div>
+    </div>
+    <div class="lobby-stack-btn" onclick="openBAModal('recruit')" title="Buy Pyroxenes">
+      <div class="lobby-stack-icon">
+        <img src="img/icon_shop.png" class="ba-stack-icon" alt="Buy Pyroxene" style="filter: hue-rotate(180deg) brightness(1.2);">
+      </div>
+      <div class="lobby-stack-label">Buy Pyroxene</div>
+    </div>
+  </div>
 
-  <!-- ABOUT -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 自己紹介 <span class="sec-jp">About</span></div>
+  <!-- Right Arona Guide Mission Badge -->
+  <div class="arona-guide-badge" onclick="openBAModal('skills')" title="Arona Guide Missions">
+    <div class="guide-badge-circle">
+      <img src="img/arona_guide.jpg" alt="Arona Guide">
+    </div>
+    <span class="guide-badge-label">ガイドミッション</span>
+  </div>
+
+  <!-- Right Vertical Widgets Stack -->
+  <div class="lobby-widgets-container">
+    <!-- Sensei Dossier Widget -->
+    <div class="widget-card dossier-widget">
+      <div class="widget-header">// SENSEI DOSSIER // 自己紹介</div>
+      <div class="dossier-stats-grid">
+        <div class="dossier-stat"><span class="d-label">POSITION</span><span class="d-val text-neon-cyan">BACK // SUPPORT</span></div>
+        <div class="dossier-stat"><span class="d-label">ROLE TYPE</span><span class="d-val text-neon-pink">SPECIAL // TECH</span></div>
+        <div class="dossier-stat"><span class="d-label">ARMOR TYPE</span><span class="d-val text-warning">LIGHT ARMOR</span></div>
+        <div class="dossier-stat"><span class="d-label">AFFILIATION</span><span class="d-val text-light-lavender">SCHALE (OFFICE)</span></div>
+      </div>
+    </div>
+    
+    <!-- Spotify Widget -->
+    <div class="widget-card spotify-widget">
+      <div class="widget-header">// SPOTIFY BROADCAST</div>
+      <div id="spotify-content" class="widget-loading">
+        <span>⏳</span> Loading Spotify...
+      </div>
+    </div>
+    
+    <!-- Steam Widget -->
+    <div class="widget-card steam-widget">
+      <div class="widget-header">// STEAM SIMULATION</div>
+      <div id="steam-content" class="widget-loading">
+        <span>⏳</span> Loading Steam...
+      </div>
+    </div>
+  </div>
+
+  <!-- Lobby Center: Sensei Cutout (L2D style breathing frame) -->
+  <div class="lobby-center-area">
+    <div class="lobby-char-click-zone" onclick="changeQuote()"></div>
+    <!-- Speech Bubble -->
+    <div class="lobby-quote-bubble" id="lobby-quote-bubble" onclick="changeQuote()">
+      <span id="lobby-quote-text">Welcome to SCHALE office, Sensei! Click me! 🌸</span>
+    </div>
+    
+    <!-- Breathing Avatar Frame -->
+    <div class="avatar-frame" onclick="changeQuote()">
+      <div class="avatar-halo" id="avatar-halo"></div>
+      <div class="avatar-hex">
+        <div class="avatar-inner" id="avatar-inner">
+          <img id="avatar-img" alt="Lobby Assistant" src="" onerror="this.style.display='none';this.parentElement.innerHTML='🐻'"/>
+        </div>
+      </div>
+      <div class="lvl-badge" id="age-badge"></div>
+    </div>
+
+    <!-- Assistant Swap Button -->
+    <button class="char-swap-btn" onclick="swapLobbyCharacter(event)" title="Change assistant character">
+      <span>🔄</span>
+    </button>
+  </div>
+
+  <!-- Bottom Navigation Dock (8-item full width dock matching game) -->
+  <div class="lobby-dock">
+    <div class="dock-item" onclick="openBAModal('cafe')" title="Cafe (Chibi Lounge)">
+      <img src="img/icon_cafe.png" class="ba-dock-icon" alt="Cafe">
+      <span class="dock-label">Cafe</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('schedule')" title="Schedule Map (Academics)">
+      <img src="img/icon_schedule.png" class="ba-dock-icon" alt="Schedule">
+      <span class="dock-label">Lesson</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('students')" title="Student Roster (Skills & Licences)">
+      <img src="img/icon_student.png" class="ba-dock-icon" alt="Student">
+      <span class="dock-label">Students</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('experience')" title="Formation (Experience Missions)">
+      <img src="img/icon_formation.png" class="ba-dock-icon" alt="Formation">
+      <span class="dock-label">Formation</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('about')" title="Circle (About Sensei)">
+      <img src="img/icon_circle.png" class="ba-dock-icon" alt="Circle">
+      <span class="dock-label">Social</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('crafting')" title="Manufacturing (Crafting Node)">
+      <img src="img/icon_craft.png" class="ba-dock-icon" alt="Manufacturing">
+      <span class="dock-label">Crafting</span>
+    </div>
+    <div class="dock-item" onclick="window.open('https://www.linkedin.com/in/danielguanes/', '_blank')" title="Shop (LinkedIn)">
+      <img src="img/icon_shop.png" class="ba-dock-icon" alt="Shop">
+      <span class="dock-label">Shop</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('recruit')" title="Recruit (Gacha Banner)">
+      <img src="img/icon_recruit.png" class="ba-dock-icon" alt="Recruiting">
+      <span class="dock-label">Recruit</span>
+    </div>
+  </div>
+
+  <!-- Campaign Work and Event Recap container -->
+  <div class="lobby-campaign-container">
+    <button class="lobby-event-recap-btn" onclick="openBAModal('schedule')" title="Event Recap">
+      <div class="recap-content">
+        <div class="recap-calendar-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v2h-5v-2z"/>
+          </svg>
+        </div>
+        <span class="recap-text">Event Recap</span>
+      </div>
+    </button>
+    <button class="lobby-work-btn" onclick="openBAModal('experience')" title="Campaign Work">
+      <span class="campaign-in-progress-badge">In Progress</span>
+      <div class="lobby-work-btn-content">
+        <div class="lobby-work-btn-folder">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+          </svg>
+        </div>
+        <span class="work-jp">Campaign</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- Event Banner (Bottom Left) -->
+  <div class="ba-event-banner d-none d-md-block" onclick="window.open('https://x.com/tsk_yk64', '_blank')" title="Twitter Profile">
+    <span class="event-tag">EVENT!</span>
+    <div class="event-banner-content">
+      <img src="img/event_banner.jpg" class="event-banner-img" alt="Event Banner">
+      <div class="event-banner-overlay"></div>
+      <div class="event-banner-text-box">
+        <div class="event-banner-text">SCHALE RECRUITMENT ACTIVE // 募集</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lobby Clock & Key HUD (Far Right corner side-by-side with campaign button) -->
+  <div class="lobby-clock-hud">
+    <span class="hud-keys">Δ × + ◯</span>
+    <span class="hud-clock" id="lobby-time-display">12:00</span>
+  </div>
+</div>
+
+<!-- MODAL WINDOW OVERLAYS -->
+<div class="ba-modal-overlay" id="modal-overlay" onclick="closeAllBAModals()"></div>
+
+<!-- Modal: About Profile -->
+<div class="ba-modal" id="modal-about">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// PROFILE PROFILE // 自己紹介</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
     <p class="about-text">
       I handle support in the area of <strong>databases</strong>, using platforms such as
       <em>Oracle</em>, <em>Sybase</em>, <em>Postgres</em> and <em>SqlDbx</em>.
@@ -82,12 +342,15 @@
       Always learning — certified in 3D modeling and data protection. 🌸
     </div>
   </div>
+</div>
 
-  <!-- EXPERIENCE -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 職歴 <span class="sec-jp">Experience</span></div>
-    
+<!-- Modal: Work Experience -->
+<div class="ba-modal" id="modal-experience">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// WORK MISSION LOG // 職歴</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
     <div class="exp-row">
       <div class="exp-icon">📡</div>
       <div class="exp-body">
@@ -97,7 +360,6 @@
         <p class="text-light-lavender">Technical assistance and customer service for global messaging and SaaS communication solutions. Specialized in resolving complex telecom incidents.</p>
       </div>
     </div>
-
     <div class="exp-row">
       <div class="exp-icon c">🏦</div>
       <div class="exp-body">
@@ -107,7 +369,6 @@
         <p class="text-light-lavender">Outsourced DBA support for Paraguay's central financial institution.</p>
       </div>
     </div>
-
     <div class="exp-row">
       <div class="exp-icon m">⚙️</div>
       <div class="exp-body">
@@ -117,7 +378,6 @@
         <p class="text-light-lavender">Technical engineering focused on SQL and problem resolution.</p>
       </div>
     </div>
-
     <div class="exp-row">
       <div class="exp-icon s">📋</div>
       <div class="exp-body">
@@ -128,12 +388,17 @@
       </div>
     </div>
   </div>
+</div>
 
-  <!-- SKILLS -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// スキル <span class="sec-jp">Skills</span></div>
-    <div class="skill-grid">
+<!-- Modal: Skills -->
+<div class="ba-modal" id="modal-skills">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// ABILITIES & LICENSES // スキル</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="sec-title">// CRITICAL SKILLS SYSTEM</div>
+    <div class="skill-grid mb-4">
       <div class="sk"><span class="si">📡</span>Telecom</div>
       <div class="sk"><span class="si">🗄️</span>SQL</div>
       <div class="sk"><span class="si">☁️</span>SaaS</div>
@@ -151,69 +416,40 @@
       <div class="sk"><span class="si">📦</span>Procurement</div>
       <div class="sk"><span class="si">🤝</span>Customer Service</div>
     </div>
-  </div>
-
-  <!-- CERTIFICATIONS -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 資格 <span class="sec-jp">Certifications</span></div>
+    
+    <div class="sec-title">// OFFICIATED LICENSES</div>
     <div class="cert-grid row g-3">
-      <div class="col-12 col-md-6 col-lg-4">
+      <div class="col-12 col-md-6">
         <div class="cert-card h-100">
           <div class="cert-icon">🎨</div>
           <div class="cert-name">3D Organic Modelling</div>
-          <div class="cert-issuer text-neon-lav">TECH Universidad Global</div>
-          <div class="cert-date small text-muted">Mar 2024 · ID: BDADCEAFBIFF50C</div>
+          <div class="cert-issuer text-neon-lav">TECH Universidad</div>
           <div class="cert-tags mt-2">
             <span class="ctag">ZBrush</span><span class="ctag">Blender</span>
-            <span class="ctag">Substance</span><span class="ctag">Mari</span><span class="ctag">3ds Max</span>
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-4">
+      <div class="col-12 col-md-6">
         <div class="cert-card h-100">
           <div class="cert-icon">🔒</div>
           <div class="cert-name">ISC2 Candidate</div>
           <div class="cert-issuer text-neon-lav">ISC2</div>
-          <div class="cert-date small text-muted">Mar 2024 · Exp Mar 2025</div>
           <div class="cert-tags mt-2"><span class="ctag">Cybersecurity</span></div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="cert-card h-100">
-          <div class="cert-icon">🐘</div>
-          <div class="cert-name">PostgreSQL</div>
-          <div class="cert-issuer text-neon-lav">SNPP</div>
-          <div class="cert-date small text-muted">Aug 2020</div>
-          <div class="cert-tags mt-2"><span class="ctag">PostgreSQL</span><span class="ctag">SQL</span></div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="cert-card h-100">
-          <div class="cert-icon">🛡️</div>
-          <div class="cert-name">Ciberseguridad de Sistemas</div>
-          <div class="cert-issuer text-neon-lav">SNPP</div>
-          <div class="cert-date small text-muted">Mar 2023</div>
-          <div class="cert-tags mt-2"><span class="ctag">Cybersecurity</span></div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="cert-card h-100">
-          <div class="cert-icon">🗄️</div>
-          <div class="cert-name">Microsoft SQL Server</div>
-          <div class="cert-issuer text-neon-lav">Udemy</div>
-          <div class="cert-date small text-muted">Dec 2022 · Basic → Advanced</div>
-          <div class="cert-tags mt-2"><span class="ctag">SQL</span><span class="ctag">MS SQL Server</span></div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- EDUCATION -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 学歴 <span class="sec-jp">Education</span></div>
-    <div class="edu-row">
+<!-- Modal: Academics -->
+<div class="ba-modal" id="modal-academics">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// ACADEMICS & COGNITION // 学歴</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="sec-title">// ACADEMIC RECORD</div>
+    <div class="edu-row mb-4">
       <div class="edu-icon2">🏯</div>
       <div class="edu-body">
         <h3>Universidad Nihon Gakko</h3>
@@ -221,526 +457,302 @@
         <div class="sub text-muted-bright">Computer Engineering · Asunción, Paraguay</div>
       </div>
     </div>
-    <div class="edu-row">
-      <div class="edu-icon2">🎓</div>
-      <div class="edu-body">
-        <h3>TECH Universidad</h3>
-        <div class="deg text-neon-lav">Master of Arts · Modelado 3D Orgánico</div>
-        <div class="sub text-muted-bright">Apr 2023 – Apr 2024 · Unreal Engine · Modelado 3D</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LANGUAGES -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 言語 <span class="sec-jp">Languages</span></div>
+    
+    <div class="sec-title">// TRANSLATION PROTOCOLS</div>
     <div class="lang-item">
       <div class="lang-flag"><img src="https://flagcdn.com/w40/es.png" width="22" alt="ES"></div>
-      <div class="lang-name">Español <span class="lang-jp">スペイン語</span></div>
-      <div class="stat-bar">
-        <div class="progress-bar" role="progressbar" style="width: 100%; height: 100%; background: linear-gradient(90deg,var(--neon-pink),var(--neon-lav));" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="stat-label">Native</div>
+      <div class="lang-name">Español</div>
+      <div class="stat-bar"><div class="stat-fill es"></div></div>
+      <span class="stat-label">Native</span>
     </div>
-    <div class="lang-item">
+    <div class="lang-item mt-2">
       <div class="lang-flag"><img src="https://flagcdn.com/w40/us.png" width="22" alt="US"></div>
-      <div class="lang-name">English <span class="lang-jp">英語</span></div>
-      <div class="stat-bar">
-        <div class="progress-bar" role="progressbar" style="width: 90%; height: 100%; background: linear-gradient(90deg,var(--neon-cyan),var(--neon-mint));" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="stat-label">Fluent</div>
-    </div>
-    <div class="lang-item">
-      <div class="lang-flag"><img src="https://flagcdn.com/w40/jp.png" width="22" alt="JP"></div>
-      <div class="lang-name">日本語 <span class="lang-jp">にほんご</span></div>
-      <div class="stat-bar">
-        <div class="progress-bar" role="progressbar" style="width: 65%; height: 100%; background: linear-gradient(90deg,var(--gold),#ff9800);" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      <div class="stat-label">Inter.</div>
+      <div class="lang-name">English</div>
+      <div class="stat-bar"><div class="stat-fill en"></div></div>
+      <span class="stat-label">90%</span>
     </div>
   </div>
-
-  <!-- SPOTIFY -->
-  <div class="section" id="spotify-section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 音楽 <span class="sec-jp">Now Playing</span></div>
-    <div id="spotify-content" style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;">
-      <span style="animation:blink 1s infinite;display:inline-block;">⏳</span> Loading Spotify...
-    </div>
-  </div>
-
-  <!-- STEAM -->
-  <div class="section" id="steam-section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 最近プレイ中 <span class="sec-jp">Last Played</span></div>
-    <div id="steam-content" style="display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.85rem;">
-      <span style="animation:blink 1s infinite;display:inline-block;">⏳</span> Loading Steam data...
-    </div>
-  </div>
-
-  <!-- ANONYMOUS MESSAGES -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// 匿名メッセージ <span class="sec-jp">Send a message</span></div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">Leave me an anonymous message — I read every one! 🌸</p>
-    <textarea id="msg-input" placeholder="Write something nice... or not 👀" maxlength="500"
-      style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,105,180,.3);border-radius:6px;
-             padding:12px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:.88rem;
-             resize:vertical;min-height:100px;outline:none;transition:border-color .2s;"
-      onfocus="this.style.borderColor='var(--neon-pink)'"
-      onblur="this.style.borderColor='rgba(255,105,180,.3)'"
-    ></textarea>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-      <span id="msg-char" style="font-size:.72rem;color:var(--muted);">0 / 500</span>
-      <button id="msg-btn" onclick="sendMessage()"
-        style="background:linear-gradient(135deg,var(--neon-pink),var(--neon-lav));border:none;
-               border-radius:6px;padding:9px 24px;color:#fff;font-size:.85rem;font-weight:900;
-               cursor:pointer;transition:transform .2s,opacity .2s;"
-        onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-        送信 Send →
-      </button>
-    </div>
-    <div id="msg-status" style="font-size:.82rem;margin-top:10px;display:none;"></div>
-  </div>
-
-  <!-- DRAWING PAD -->
-  <div class="section">
-    <div class="section-glow"></div>
-    <div class="sec-title">// お絵かき <span class="sec-jp">Drawing pad</span></div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;">Draw something and send it to me! 🎨</p>
-
-    <!-- Tools -->
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-      <div style="display:flex;gap:4px;">
-        <button class="draw-tool active" id="tool-pen"   onclick="setTool('pen')"   title="Pen">✏️</button>
-        <button class="draw-tool"        id="tool-eraser" onclick="setTool('eraser')" title="Eraser">🧹</button>
-      </div>
-      <input type="color" id="draw-color" value="#ff69b4" title="Color"
-        style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0;"/>
-      <input type="range" id="draw-size" min="1" max="30" value="4" title="Brush size"
-        style="width:80px;accent-color:var(--neon-pink);"/>
-      <button onclick="clearCanvas()"
-        style="background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);border-radius:6px;
-               padding:6px 12px;color:#ff6b6b;font-size:.78rem;font-weight:700;cursor:pointer;">
-        Clear
-      </button>
-    </div>
-
-    <canvas id="draw-canvas" width="700" height="300"
-      style="width:100%;height:250px;background:#1a0a2e;border:1px solid rgba(191,128,255,.3);
-             border-radius:8px;cursor:crosshair;touch-action:none;display:block;"></canvas>
-
-    <!-- Optional message with drawing -->
-    <input type="text" id="draw-msg" placeholder="Add a message with your drawing... (optional)" maxlength="200"
-      style="width:100%;margin-top:10px;background:rgba(255,255,255,.04);border:1px solid rgba(191,128,255,.3);
-             border-radius:6px;padding:10px 14px;color:var(--text);font-family:'Nunito',sans-serif;
-             font-size:.85rem;outline:none;"
-      onfocus="this.style.borderColor='var(--neon-lav)'"
-      onblur="this.style.borderColor='rgba(191,128,255,.3)'"/>
-
-    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-      <button id="draw-btn" onclick="sendDrawing()"
-        style="background:linear-gradient(135deg,var(--neon-lav),var(--neon-cyan));border:none;
-               border-radius:6px;padding:9px 24px;color:#fff;font-size:.85rem;font-weight:900;
-               cursor:pointer;transition:transform .2s;"
-        onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-        🎨 Send Drawing →
-      </button>
-    </div>
-    <div id="draw-status" style="font-size:.82rem;margin-top:10px;display:none;"></div>
-  </div>
-
-  <!-- FOOTER -->  <div class="footer">
-    <a href="https://www.linkedin.com/in/danielguanes/" target="_blank">🔗 LinkedIn</a>
-    &nbsp;·&nbsp;
-    <a href="https://x.com/tsk_yk64" target="_blank">𝕏 Twitter</a>
-    &nbsp;·&nbsp; Asunción, Paraguay
-    <div class="jp-footer">夢を諦めない — Never give up on your dreams ✨</div>
-  </div>
-
 </div>
 
-<script>
-  // ── Avatar — cache bust daily so Twitter pic always updates ──
-  (function() {
-    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    const img   = document.getElementById('avatar-img');
-    if (img) img.src = `https://unavatar.io/twitter/tsk_yk64?v=${today}`;
-  })();
-
-  // ── Dynamic age in Japanese ──
-  (function() {
-    const BIRTH = new Date(1999, 9, 4); // October 4, 1999 (month is 0-indexed)
-    const now   = new Date();
-    let age = now.getFullYear() - BIRTH.getFullYear();
-    // If birthday hasnt happened yet this year, subtract 1
-    if (now < new Date(now.getFullYear(), 9, 4)) age--;
-    // Convert age to Japanese kanji
-    const kanjiMap = { 0:"零",1:"一",2:"二",3:"三",4:"四",5:"五",6:"六",7:"七",8:"八",9:"九",
-      10:"十",20:"二十",21:"二十一",22:"二十二",23:"二十三",24:"二十四",25:"二十五",
-      26:"二十六",27:"二十七",28:"二十八",29:"二十九",30:"三十" };
-    const kanjiAge = kanjiMap[age] ?? age;
-    const badge = document.getElementById("age-badge");
-    if (badge) badge.textContent = kanjiAge + "歳";
-  })();
-  // ── Spotify now playing ──
-  async function fetchSpotify() {
-    const el = document.getElementById('spotify-content');
-    try {
-      const res  = await fetch('/api/spotify');
-      const data = await res.json();
-
-      if (!data.track) {
-        el.innerHTML = `<span style="color:var(--muted)">🎵 Not listening to anything right now...</span>`;
-        return;
-      }
-
-      const t      = data.track;
-      const isLive = data.source === 'live';
-      const fmtTime = ms => `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
-
-      // Only rebuild the DOM if the song changed to avoid flickering
-      const currentSong = el.dataset.trackUrl;
-      if (currentSong !== t.url) {
-        const progress = t.duration ? Math.round((t.progress / t.duration) * 100) : 0;
-        el.dataset.trackUrl = t.url;
-        el.innerHTML = `
-          <a href="${t.url}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
-            ${t.cover ? `<img src="${t.cover}" alt="${t.album}"
-              style="width:90px;height:90px;border-radius:10px;flex-shrink:0;
-                     border:1px solid rgba(29,185,84,.35);box-shadow:0 0 20px rgba(29,185,84,.2);
-                     transition:transform .2s,box-shadow .2s;"
-              onmouseover="this.style.transform='scale(1.06)';this.style.boxShadow='0 0 32px rgba(29,185,84,.45)'"
-              onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(29,185,84,.2)'"/>` : ''}
-            <div style="flex:1;min-width:0;">
-              <div id="spotify-status-label" style="font-size:.65rem;letter-spacing:3px;font-weight:900;margin-bottom:6px;
-                          display:flex;align-items:center;gap:8px;
-                          color:#1db954;text-shadow:0 0 10px rgba(29,185,84,.5);">
-                ${isLive
-                  ? `<span style="width:8px;height:8px;background:#1db954;border-radius:50%;
-                                 box-shadow:0 0 8px #1db954;display:inline-block;
-                                 animation:blink 1s infinite;flex-shrink:0;"></span> LISTENING NOW // 再生中`
-                  : 'LAST PLAYED // 最近再生'}
-              </div>
-              <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1rem;font-weight:900;
-                          color:#f0d6f5;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-                          text-shadow:0 0 10px rgba(29,185,84,.3);">
-                🎵 ${t.name}
-              </div>
-              <div style="font-size:.82rem;color:#1db954;font-weight:700;margin-bottom:2px;">${t.artist}</div>
-              <div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;">${t.album}</div>
-              ${isLive ? `
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span id="spotify-elapsed" style="font-size:.7rem;color:var(--muted);min-width:32px;">${fmtTime(t.progress)}</span>
-                <div style="flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;">
-                  <div id="spotify-bar" style="width:${progress}%;height:100%;background:#1db954;border-radius:4px;
-                               box-shadow:0 0 8px rgba(29,185,84,.6);transition:width .9s linear;"></div>
-                </div>
-                <span style="font-size:.7rem;color:var(--muted);min-width:32px;text-align:right;">${fmtTime(t.duration)}</span>
-              </div>` : ''}
-            </div>
-          </a>`;
-
-        // Start local progress ticker if live
-        if (isLive) {
-          clearInterval(window._spotifyTicker);
-          let elapsed  = t.progress;
-          const duration = t.duration;
-          window._spotifyTicker = setInterval(() => {
-            elapsed += 1000;
-            if (elapsed > duration) { clearInterval(window._spotifyTicker); return; }
-            const bar = document.getElementById('spotify-bar');
-            const elp = document.getElementById('spotify-elapsed');
-            if (bar) bar.style.width = `${Math.min((elapsed / duration) * 100, 100)}%`;
-            if (elp) elp.textContent = fmtTime(elapsed);
-          }, 1000);
-        }
-      } else if (isLive) {
-        // Same song — just sync the progress from API without rebuilding DOM
-        const bar = document.getElementById('spotify-bar');
-        const elp = document.getElementById('spotify-elapsed');
-        if (bar) bar.style.width = `${Math.round((t.progress / t.duration) * 100)}%`;
-        if (elp) elp.textContent = fmtTime(t.progress);
-        // Restart ticker with synced position
-        clearInterval(window._spotifyTicker);
-        let elapsed = t.progress;
-        const duration = t.duration;
-        window._spotifyTicker = setInterval(() => {
-          elapsed += 1000;
-          if (elapsed > duration) { clearInterval(window._spotifyTicker); return; }
-          const b = document.getElementById('spotify-bar');
-          const e = document.getElementById('spotify-elapsed');
-          if (b) b.style.width = `${Math.min((elapsed / duration) * 100, 100)}%`;
-          if (e) e.textContent = fmtTime(elapsed);
-        }, 1000);
-      }
-
-    } catch(e) {
-      el.innerHTML = `<span style="color:var(--muted);font-size:.82rem;">⚠️ Could not load Spotify data.</span>`;
-    }
-  }
-  fetchSpotify();
-  // Poll every 10 seconds — updates song, progress bar and live status automatically
-  setInterval(fetchSpotify, 10000);
-
-  // ── Steam last played ──
-  async function fetchSteam() {
-    const el = document.getElementById('steam-content');
-    try {
-      const res   = await fetch('/api/steam');
-      const data  = await res.json();
-      const games = data.game ? [data.game] : null;
-
-      if (!games || games.length === 0) {
-        el.innerHTML = `<span style="color:var(--muted)">😴 No recent games found — maybe ゆき is taking a break!</span>`;
-        return;
-      }
-
-      const game   = games[0];
-      const appId  = game.appid;
-      const name   = game.name;
-      const img    = game.img;
-      const hrs2w  = (game.playtime_2weeks / 60).toFixed(1);
-      const hrsAll = (game.playtime_forever / 60).toFixed(0);
-      const storeUrl = game.url;
-
-      el.innerHTML = `
-        <a href="${storeUrl}" target="_blank" style="text-decoration:none;display:flex;gap:20px;align-items:center;flex-wrap:wrap;width:100%;">
-          <img src="${img}" alt="${name}"
-            style="width:184px;border-radius:6px;border:1px solid rgba(255,105,180,.35);flex-shrink:0;
-                   box-shadow:0 0 20px rgba(255,105,180,.25);transition:transform .2s,box-shadow .2s;"
-            onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 0 32px rgba(255,105,180,.5)'"
-            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 0 20px rgba(255,105,180,.25)'"
-            onerror="this.style.display='none'"/>
-          <div>
-            <div style="font-size:.68rem;letter-spacing:3px;color:var(--neon-pink);font-weight:900;margin-bottom:6px;text-shadow:var(--glow-pink);display:flex;align-items:center;gap:8px;">
-              ${data.source === 'live'
-                ? '<span style="width:8px;height:8px;background:#43e97b;border-radius:50%;box-shadow:0 0 8px #43e97b;display:inline-block;animation:blink 1s infinite;flex-shrink:0;"></span> IN-GAME NOW // プレイ中'
-                : data.source === 'alltime'
-                ? 'MOST PLAYED // 最多プレイ'
-                : 'LAST PLAYED // 最近プレイ'}
-            </div>
-            <div style="font-family:'Zen Maru Gothic',sans-serif;font-size:1.1rem;font-weight:900;
-                        color:#f0d6f5;margin-bottom:8px;text-shadow:0 0 12px rgba(255,105,180,.4);">
-              🎮 ${name}
-            </div>
-            <div style="font-size:.8rem;color:var(--neon-cyan);font-weight:700;margin-bottom:4px;text-shadow:var(--glow-cyan);">
-              ⏱ ${hrs2w}h played in last 2 weeks
-            </div>
-            <div style="font-size:.76rem;color:var(--muted);margin-bottom:12px;">
-              ${hrsAll}h total playtime
-            </div>
-            <span style="border:1px solid rgba(0,229,255,.4);border-radius:3px;padding:3px 12px;
-                         font-size:.7rem;font-weight:700;color:var(--neon-cyan);letter-spacing:1px;">
-              🕹 View on Steam →
-            </span>
+<!-- Modal: Messages (MomoTalk Chat Style) -->
+<div class="ba-modal" id="modal-messages">
+  <div class="momotalk-header d-flex align-items-center justify-content-between px-3 py-2">
+    <div class="d-flex align-items-center gap-2">
+      <img src="img/icon_momotalk.png" class="momotalk-logo" alt="MomoTalk">
+      <span class="momotalk-title">MomoTalk</span>
+    </div>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body momotalk-body p-0">
+    <!-- MomoTalk Tabs/Sidebar -->
+    <div class="momotalk-layout">
+      <div class="momotalk-sidebar" id="momotalk-chats-tabs">
+        <!-- Sidebar tabs injected dynamically -->
+      </div>
+      
+      <div class="momotalk-chat-area-enhanced">
+        <!-- Tab 1: Chat flow -->
+        <div style="flex:1; display:flex; flex-direction:column; min-height:0;">
+          <div class="momotalk-chat-area p-3" id="momotalk-chat-history" style="flex:1;">
+            <!-- Message bubbles -->
           </div>
-        </a>`;
-    } catch(e) {
-      el.innerHTML = `<span style="color:var(--muted);font-size:.82rem;">⚠️ Could not load Steam data right now. Try again later!</span>`;
-      console.error('Steam fetch error:', e);
-    }
-  }
-  fetchSteam();
+          <div class="momotalk-choices-panel" id="momotalk-choices-container">
+            <!-- Choice buttons -->
+          </div>
+        </div>
+        
+        <!-- Tab 2: Original Anonymous message desk -->
+        <div class="momotalk-anonymous-tab" style="border-top:1.5px solid #dcd3c1; background:#fff;">
+          <div style="font-size:0.68rem; font-weight:bold; color:var(--ba-pink); margin-bottom:4px;">✏️ ANONYMOUS DESK (WRITE TO DANIEL)</div>
+          <div class="d-flex gap-2 align-items-center">
+            <textarea id="msg-input" placeholder="Write message to Daniel's backend logs..." maxlength="500" style="flex:1; height:34px; padding:6px 10px; font-size:0.75rem; border:1px solid #dcd3c1; border-radius:4px; outline:none; resize:none;"></textarea>
+            <button id="msg-btn" onclick="sendMessage()" style="background:var(--ba-pink); border:none; border-radius:4px; padding:6px 14px; color:#fff; font-size:0.75rem; font-weight:bold; cursor:pointer;">Send</button>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-1" style="font-size:0.6rem; color:var(--muted);">
+            <span id="msg-char">0 / 500</span>
+            <div id="msg-status" style="display:none; font-weight: bold;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  // ── Anonymous messages ──
-  const msgInput = document.getElementById('msg-input');
-  msgInput.addEventListener('input', () => {
-    document.getElementById('msg-char').textContent = `${msgInput.value.length} / 500`;
-  });
+<!-- Modal: Drawing Pad Cafe Board -->
+<div class="ba-modal" id="modal-drawing">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// CAFE BOARD // Drawing Pad</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="gacha-folder" style="box-shadow:none;border-radius:4px;padding:12px 0 0;">
+      <div class="gacha-stamp">
+        <svg width="60" height="60" viewBox="0 0 100 100" fill="currentColor">
+          <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="2" fill="none"/>
+          <polygon points="50,15 62,40 85,50 62,60 50,85 38,60 15,50 38,40"/>
+        </svg>
+      </div>
+      <div class="gacha-folder-tag">RECRUITMENT REGISTER</div>
+      
+      <div class="sec-title" style="color: #6d4c1b !important; text-shadow: none; font-weight: 900;">// RECRUITMENT CONTRACT</div>
+      <p style="font-size:.82rem;color:#7a5a3a;margin-bottom:16px;font-weight: bold;">Sign the contract or draw a picture to register at SCHALE! ✍️</p>
 
-  async function sendMessage() {
-    const msg    = msgInput.value.trim();
-    const status = document.getElementById('msg-status');
-    const btn    = document.getElementById('msg-btn');
-    if (!msg) return;
-    btn.disabled = true; btn.style.opacity = '.6';
-    status.style.display = 'none';
-    try {
-      const res  = await fetch('/api/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        msgInput.value = '';
-        document.getElementById('msg-char').textContent = '0 / 500';
-        status.style.display = 'block';
-        status.style.color   = '#80ffcc';
-        status.textContent   = '✅ Message sent! ありがとう 🌸';
-      } else {
-        throw new Error(data.error ?? 'Unknown error');
-      }
-    } catch(e) {
-      status.style.display = 'block';
-      status.style.color   = '#ff6b6b';
-      status.textContent   = `❌ ${e.message || 'Failed to send. Try again!'}`;
-    }
-    btn.disabled = false; btn.style.opacity = '1';
-  }
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;position: relative;z-index: 5;">
+        <div style="display:flex;gap:4px;">
+          <button class="draw-tool active gacha-tool" id="tool-pen" onclick="setTool('pen')" title="Pen">✏️</button>
+          <button class="draw-tool gacha-tool" id="tool-eraser" onclick="setTool('eraser')" title="Eraser">🧹</button>
+        </div>
+        <input type="color" id="draw-color" value="#00a3ff" style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0;"/>
+        <input type="range" id="draw-size" min="1" max="30" value="4" style="width:80px;accent-color:var(--neon-cyan);"/>
+        <button onclick="clearCanvas()" style="background:rgba(109,76,27,.08);border:1px solid rgba(109,76,27,.25);border-radius:4px;padding:6px 12px;color:#6d4c1b;font-size:.78rem;font-weight:700;cursor:pointer;">Clear</button>
+      </div>
 
-  // ── Drawing pad ──
-  const canvas  = document.getElementById('draw-canvas');
-  const ctx     = canvas.getContext('2d');
-  let drawing   = false;
-  let tool      = 'pen';
-  let lastX = 0, lastY = 0;
+      <canvas id="draw-canvas" width="700" height="300" class="gacha-paper" style="width:100%;height:220px;background:#fdfaf0;border:2px solid #dcd3c1;border-radius:2px;cursor:crosshair;touch-action:none;display:block;position: relative;z-index: 3;"></canvas>
 
-  function setTool(t) {
-    tool = t;
-    document.querySelectorAll('.draw-tool').forEach(b => b.classList.remove('active'));
-    document.getElementById(`tool-${t}`).classList.add('active');
-  }
+      <input type="text" id="draw-msg" placeholder="Write your signature message..." maxlength="200" style="width:100%;margin-top:10px;background:rgba(255,255,255,.65);border:1.5px solid #dcd3c1;border-radius:4px;padding:10px 14px;color:#5a3f1d;font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;position: relative;z-index: 3;" onfocus="this.style.borderColor='#00a3ff'" onblur="this.style.borderColor='#dcd3c1'"/>
 
-  function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
+      <div style="display:flex;justify-content:flex-end;margin-top:12px;position: relative;z-index: 3;">
+        <button id="draw-btn" onclick="sendDrawing()" style="background:linear-gradient(135deg,var(--neon-pink),var(--neon-cyan));border:none;border-radius:4px;padding:9px 24px;color:#fff;font-size:.85rem;font-weight:900;cursor:pointer;transition:transform .2s;box-shadow: 0 4px 12px rgba(0, 163, 255, 0.2);" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">✍️ SIGN CONTRACT →</button>
+      </div>
+      <div id="draw-status" style="font-size:.82rem;margin-top:10px;display:none;"></div>
+    </div>
+  </div>
+</div>
 
-  function getPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width  / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return [(clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY];
-  }
+<!-- MODAL: CAFE CHIBI LOUNGE -->
+<div class="ba-modal" id="modal-cafe">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// SCHALE CAFE // カフェ</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="cafe-lounge-container">
+      <p class="about-text" style="text-align:center;margin-bottom:12px;">Welcome to the SCHALE Cafe, Sensei! Tap the students to raise relationship levels! 🌸</p>
+      <div class="cafe-room-display" id="cafe-room">
+        <div class="cafe-floor-grid"></div>
+        <!-- Chibi elements will be injected dynamically -->
+      </div>
+      <div class="cafe-controls">
+        <button class="cafe-invite-btn" onclick="inviteStudentToCafe()">Invite Student</button>
+        <div class="cafe-stats-row">Cafe Comfort: <span id="cafe-comfort-val">4500</span> pts</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  canvas.addEventListener('pointerdown', e => {
-    drawing = true;
-    [lastX, lastY] = getPos(e);
-  });
-  canvas.addEventListener('pointermove', e => {
-    if (!drawing) return;
-    const [x, y] = getPos(e);
-    ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
-    ctx.strokeStyle = document.getElementById('draw-color').value;
-    ctx.lineWidth   = document.getElementById('draw-size').value;
-    ctx.lineCap     = 'round';
-    ctx.lineJoin    = 'round';
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    [lastX, lastY] = [x, y];
-  });
-  canvas.addEventListener('pointerup',   () => drawing = false);
-  canvas.addEventListener('pointerout',  () => drawing = false);
+<!-- MODAL: SCHEDULE CITY MAP -->
+<div class="ba-modal" id="modal-schedule">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// CITY SCHEDULE // スケジュール</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="schedule-container">
+      <div class="schedule-header-row">
+        <p class="about-text m-0">Visit different academy campuses to interact with students and unlock CV data!</p>
+        <div class="schedule-tickets">Tickets: <span id="schedule-tickets-val">3/3</span></div>
+      </div>
+      <div class="schedule-map" id="schedule-map">
+        <!-- Pins will be injected dynamically -->
+        <div class="schedule-event-overlay" id="schedule-event-overlay">
+          <div class="schedule-dialog-box">
+            <div class="dialog-speaker" id="dialog-speaker">Arona</div>
+            <div class="dialog-text" id="dialog-text">Loading event data...</div>
+            <button class="dialog-close-btn" onclick="closeScheduleEvent()">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  async function sendDrawing() {
-    const status = document.getElementById('draw-status');
-    const btn    = document.getElementById('draw-btn');
-    const msg    = document.getElementById('draw-msg').value.trim();
+<!-- MODAL: STUDENT ROSTER (SKILLS SUMMARY) -->
+<div class="ba-modal" id="modal-students">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// STUDENT DOSSIER // 生徒一覧</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="roster-container">
+      <input type="text" class="roster-search-bar" id="roster-search" placeholder="Search students / skills..." oninput="filterRoster()"/>
+      <div class="roster-grid" id="roster-grid">
+        <!-- Student slots injected dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
 
-    // Check canvas is not blank
-    const blank = document.createElement('canvas');
-    blank.width = canvas.width; blank.height = canvas.height;
-    if (canvas.toDataURL() === blank.toDataURL()) {
-      status.style.display = 'block'; status.style.color = '#ff6b6b';
-      status.textContent = '✏️ Draw something first!'; return;
-    }
-
-    btn.disabled = true; btn.style.opacity = '.6';
-    status.style.display = 'none';
-    try {
-      const res  = await fetch('/api/drawings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_data: canvas.toDataURL('image/png'), message: msg }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        clearCanvas();
-        document.getElementById('draw-msg').value = '';
-        status.style.display = 'block'; status.style.color = '#80ffcc';
-        status.textContent = '✅ Drawing sent! 絵をありがとう 🎨';
-      } else { throw new Error(data.error); }
-    } catch(e) {
-      status.style.display = 'block'; status.style.color = '#ff6b6b';
-      status.textContent = '❌ Failed to send. Try again!';
-    }
-    btn.disabled = false; btn.style.opacity = '1';
-  }
-
-  const petals = ['🌸','🌺','✿','❀','🌷'];
-  for (let i = 0; i < 22; i++) {
-    const p = document.createElement('div');
-    p.className = 'petal';
-    p.textContent = petals[Math.floor(Math.random()*petals.length)];
-    p.style.cssText = `
-      left:${Math.random()*100}%;
-      animation-duration:${12+Math.random()*18}s;
-      animation-delay:-${Math.random()*20}s;
-      font-size:${10+Math.random()*10}px;
-    `;
-    document.querySelector('.bg-layer').appendChild(p);
-  }
-
-  // ── TARKOV THEME TOGGLE ──
-  const tarkovBackgrounds = [
-    'img/tarkov1.jpeg', 'img/tarkov2.jpeg', 'img/tarkov3.jpeg',
-    'img/tarvko4.jpeg', 'img/tarkov5.jpeg', 'img/tarkov6.jpeg'
-  ];
-  const tarkovSongs = [
-    '00xprBmokcI', // Prepare for Escape
-    'LDQEqhZ0TQc', // Rules of Engagement
-    'zr5CCXjnZ8k', // Exfiltration
-    'UxHruHuWKt4', // Eclipse
-    '1nS3lkNc408', // Countdown
-    'Krg0yrh8o0M', // Left Behind
-    'wq9deTUvcy0', // Denial
-    'CMKuhNXF3ws'  // Desolated
-  ];
-
-  let lastTarkovBG = null;
-  let lastTarkovSong = null;
-
-  function toggleTarkov() {
-    const body = document.body;
-    const btn = document.getElementById('tarkov-btn');
-    const audioContainer = document.getElementById('tarkov-audio-container');
-    const bgLayer = document.querySelector('.bg-grad');
-    const isTarkov = body.classList.toggle('tarkov-theme');
+<!-- MODAL: GACHA RECRUITMENT BANNER -->
+<div class="ba-modal" id="modal-recruit">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// RECRUITMENT TERMINAL // 募集</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="gacha-container" id="gacha-home">
+      <div class="gacha-banner-art">
+        <div class="gacha-banner-overlay-grid"></div>
+        <div class="gacha-banner-info">
+          <span class="event-tag" style="position:static;display:inline-block;margin-bottom:6px;">RATE UP!</span>
+          <div class="gacha-banner-title">SCHALE Special Support Pool</div>
+          <div class="gacha-banner-subtitle">Recruit Daniel's skills & certifications!</div>
+        </div>
+        <img src="img/arona_guide.jpg" class="gacha-banner-chibi" alt="Arona Banner">
+      </div>
+      
+      <div class="gacha-buttons-row">
+        <button class="gacha-pull-btn" onclick="startGacha(1)">
+          RECRUIT 1x
+          <span class="gacha-btn-cost">💎 120 Pyroxenes</span>
+        </button>
+        <button class="gacha-pull-btn pull-10" onclick="startGacha(10)">
+          RECRUIT 10x
+          <span class="gacha-btn-cost">💎 1200 Pyroxenes</span>
+        </button>
+      </div>
+    </div>
     
-    if (isTarkov) {
-      btn.innerHTML = '⚡ Neon Mode';
-      btn.className = 'hbadge border-info text-info bg-transparent';
+    <!-- Sign Contract panel -->
+    <div class="gacha-sign-panel" id="gacha-sign" style="display:none;">
+      <div class="sec-title">// SIGN STUDENT RECRUITMENT CONTRACT</div>
+      <p class="about-text" style="font-size:.8rem;font-weight:bold;">Please sign or draw on the contract below to initialize scanning...</p>
       
-      // Select random assets (avoid repeats)
-      let randomBG, randomSong;
-      do {
-        randomBG = tarkovBackgrounds[Math.floor(Math.random() * tarkovBackgrounds.length)];
-      } while (randomBG === lastTarkovBG && tarkovBackgrounds.length > 1);
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;position: relative;z-index: 5;">
+        <div style="display:flex;gap:4px;">
+          <button class="draw-tool active gacha-tool" id="tool-pen-gacha" onclick="setGachaTool('pen')" title="Pen">✏️</button>
+          <button class="draw-tool gacha-tool" id="tool-eraser-gacha" onclick="setGachaTool('eraser')" title="Eraser">🧹</button>
+        </div>
+        <input type="color" id="draw-color-gacha" value="#00a3ff" style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0;"/>
+        <input type="range" id="draw-size-gacha" min="1" max="30" value="4" style="width:80px;accent-color:var(--neon-cyan);"/>
+        <button onclick="clearGachaCanvas()" style="background:rgba(13,33,69,.08);border:1px solid rgba(13,33,69,.25);border-radius:4px;padding:6px 12px;color:var(--ba-dark);font-size:.78rem;font-weight:700;cursor:pointer;">Clear</button>
+      </div>
+
+      <canvas id="gacha-canvas" width="700" height="250" style="width:100%;height:180px;background:#fdfaf0;border:2px solid #dcd3c1;border-radius:4px;cursor:crosshair;touch-action:none;display:block;"></canvas>
       
-      do {
-        randomSong = tarkovSongs[Math.floor(Math.random() * tarkovSongs.length)];
-      } while (randomSong === lastTarkovSong && tarkovSongs.length > 1);
+      <button class="gacha-pull-btn mt-3" style="width:100%;" onclick="confirmSignature()">SUBMIT SIGNATURE & RECRUIT →</button>
+    </div>
+
+    <!-- Reveal Envelopes panel -->
+    <div id="gacha-reveal" style="display:none; width:100%;">
+      <div class="sec-title">// DIGITAL STUDENT RECORDS RETURNED</div>
+      <p class="about-text" style="font-weight:bold;">Tap the envelopes below to inspect the dossiers!</p>
+      <div class="gacha-reveal-desk" id="gacha-reveal-desk">
+        <!-- Folders/Envelopes injected dynamically -->
+      </div>
+      <button class="gacha-pull-btn mt-3" id="gacha-finish-btn" style="width:100%; display:none;" onclick="finishRecruitment()">Return to Banner</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MANUFACTURING (CRAFTING ROOM) -->
+<div class="ba-modal" id="modal-crafting">
+  <div class="ba-modal-header">
+    <span class="ba-modal-title">// SHITTIM CHEST MANUFACTURING // 製造</span>
+    <button class="ba-modal-close" onclick="closeAllBAModals()">✕</button>
+  </div>
+  <div class="ba-modal-body">
+    <div class="crafting-container">
+      <p class="about-text" style="text-align:center;">Generate collectible portfolio archives using Keystones earned from tasks!</p>
       
-      lastTarkovBG = randomBG;
-      lastTarkovSong = randomSong;
-      
-      // Robust image loading
-      const img = new Image();
-      img.onload = () => {
-        bgLayer.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.75)), url('${randomBG}')`;
-      };
-      img.onerror = () => {
-        console.error('Failed to load Tarkov BG:', randomBG);
-        bgLayer.style.backgroundImage = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)';
-      };
-      img.src = randomBG;
-      
-      // Embed YouTube audio with random Geneburn track
-      // playlist parameter is required for loop=1 to work
-      audioContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${randomSong}?autoplay=1&loop=1&playlist=${randomSong}&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
-    } else {
-      btn.innerHTML = '⚒️ Tarkov Mode';
-      btn.className = 'hbadge border-warning text-warning bg-transparent';
-      bgLayer.style.backgroundImage = ''; // Restore original gradients
-      audioContainer.innerHTML = ''; // Stop audio
-    }
-  }
-</script>
+      <div class="crafting-chamber">
+        <div class="crafting-ring ring-1"></div>
+        <div class="crafting-ring ring-2"></div>
+        <div class="crafting-ring ring-3"></div>
+        <div class="crafting-core"></div>
+        <div class="crafting-status-label" id="craft-status-lbl">Chamber Standby</div>
+        
+        <div class="crafted-item-popup" id="crafted-popup">
+          <div class="crafted-card">
+            <div class="crafted-card-icon" id="crafted-icon">🎨</div>
+            <div class="crafted-card-name" id="crafted-name">Item Name</div>
+            <div class="crafted-card-desc" id="crafted-desc">Description of item</div>
+          </div>
+          <button class="dialog-close-btn" onclick="closeCraftedPopup()">Confirm</button>
+        </div>
+      </div>
+
+      <div class="crafting-inventory-row">
+        <div class="keystone-count">Keystones: <span id="keystone-count-val">5</span> ⚿</div>
+        <button class="craft-btn" id="craft-trigger-btn" onclick="startCrafting()">Start Crafting (1x ⚿)</button>
+      </div>
+
+      <div class="sec-title">// COLLECTIBLE ARCHIVE SHOWCASE</div>
+      <div class="row g-2 w-100" id="showcase-grid" style="max-height: 180px; overflow-y: auto;">
+        <!-- Crafted items showcase -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GACHA CARD REVEAL ANIMATION OVERLAY -->
+<div class="gacha-card-reveal-overlay" id="gacha-reveal-overlay">
+  <div class="gacha-card-reveal-stage">
+    <div class="student-card" id="revealed-student-card">
+      <div class="card-img-container">
+        <div class="card-stars" id="revealed-card-stars"></div>
+        <img src="" id="revealed-card-img" alt="Student Splash">
+        <span class="card-role-badge" id="revealed-card-role">Support</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name" id="revealed-card-name">Student Name</div>
+        <div class="card-title-label" id="revealed-card-title">Database Admin</div>
+        <p class="card-desc" id="revealed-card-desc">Description about skill</p>
+      </div>
+    </div>
+    <button class="card-confirm-btn" onclick="confirmCardReveal()">TAP TO CONFIRM</button>
+  </div>
+</div>
+
+<!-- Hidden Tarkov Audio Container -->
+<div id="tarkov-audio-container"></div>
+
+<!-- Wipe Transition Overlay (Diag sweep load effect) -->
+<div class="ba-wipe-transition" id="ba-wipe">
+  <div class="ba-wipe-logo">✦</div>
+</div>
+
+<script type="module" src="/src/main.ts"></script>
+
+
 </body>
 </html>
