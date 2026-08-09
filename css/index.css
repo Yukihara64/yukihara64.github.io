@@ -1406,11 +1406,14 @@ body.tarkov-theme .petal { display: none !important; }
 body.tarkov-theme .kanji-bg { opacity: 0.01; filter: grayscale(1); }
 body.tarkov-theme .avatar-halo { display: none !important; }
 body.tarkov-theme .avatar-inner img { animation: none; }
-body.tarkov-theme .ba-lobby-dots-grid {
-  background-image: radial-gradient(rgba(154, 136, 102, 0.25) 1.5px, transparent 1.5px);
-}
 body.tarkov-theme .ba-lobby {
-  background: rgba(20, 20, 20, 0.95);
+  background: #0a0a0e !important;
+}
+body.tarkov-theme .ba-lobby > div:first-child {
+  display: none !important;
+}
+body.tarkov-theme .ba-dock-icon {
+  filter: sepia(0.8) hue-rotate(10deg) brightness(0.9);
 }
 
 /* Slanted topbar items */

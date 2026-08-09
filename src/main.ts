@@ -1068,18 +1068,26 @@
   function loadLobbyCharacter() {
     const char = characters[currentCharIndex];
     const img = (document.getElementById('avatar-img') as any);
+    const halo = (document.getElementById('avatar-halo') as any);
     if (!img) return;
 
-    img.style.display = 'block';
-    if (char.type === 'twitter') {
-      const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-      img.src = `${char.src}?v=${today}`;
+    if (currentCharIndex === 1) {
+      // Live2D Memorial Lobby background active
+      img.style.display = 'none';
+      if (halo) halo.style.display = 'none';
+      document.body.classList.add('arona-active');
     } else {
-      img.src = char.src;
+      img.style.display = 'block';
+      if (halo) halo.style.display = 'block';
+      document.body.classList.remove('arona-active');
+
+      if (char.type === 'twitter') {
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        img.src = `${char.src}?v=${today}`;
+      } else {
+        img.src = char.src;
+      }
     }
-    
-    // Toggle full-screen Live2D mode when Arona (index 1) is active
-    document.body.classList.toggle('arona-active', currentCharIndex === 1);
   }
 
   function swapLobbyCharacter(event) {
@@ -1424,11 +1432,15 @@
     const body = document.body;
     const btn = (document.getElementById('tarkov-btn') as any);
     const audioContainer = (document.getElementById('tarkov-audio-container') as any);
-    const bgLayer = (document.querySelector('.bg-grad') as any);
+    const baLobby = (document.querySelector('.ba-lobby') as any);
+    const textEl = (document.getElementById('lobby-quote-text') as any);
+    const clockKeys = (document.querySelector('.lobby-clock-hud .hud-keys') as any);
+    const workJp = (document.querySelector('.lobby-work-btn .work-jp') as any);
+
     const isTarkov = body.classList.toggle('tarkov-theme');
     
     if (isTarkov) {
-      btn.innerHTML = '<span class="btn-inner">⚡</span>';
+      if (btn) btn.innerHTML = '<span class="btn-inner">⚡</span>';
       
       let randomBG, randomSong;
       do {
@@ -1441,21 +1453,28 @@
       
       lastTarkovBG = randomBG;
       lastTarkovSong = randomSong;
+
+      if (baLobby) {
+        baLobby.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('${randomBG}')`;
+        baLobby.style.backgroundSize = 'cover';
+        baLobby.style.backgroundPosition = 'center';
+      }
       
-      const img = new Image();
-      img.onload = () => {
-        bgLayer.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.65), rgba(10, 10, 10, 0.65)), url('${randomBG}')`;
-      };
-      img.onerror = () => {
-        bgLayer.style.backgroundImage = 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)';
-      };
-      img.src = randomBG;
-      
-      audioContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${randomSong}?autoplay=1&loop=1&playlist=${randomSong}&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+      if (audioContainer) {
+        audioContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${randomSong}?autoplay=1&loop=1&playlist=${randomSong}&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+      }
+
+      if (textEl) textEl.textContent = "[BEAR COMMS] Tactical Raid in progress. Deploying to Tarkov Customs. 🪖";
+      if (clockKeys) clockKeys.textContent = "✦ BEAR OS / TARKOV METRO";
+      if (workJp) workJp.textContent = "TACTICAL RAID";
     } else {
-      btn.innerHTML = '<span class="btn-inner">⚙️</span>';
-      bgLayer.style.backgroundImage = '';
-      audioContainer.innerHTML = '';
+      if (btn) btn.innerHTML = '<span class="btn-inner">⚙️</span>';
+      if (baLobby) baLobby.style.backgroundImage = '';
+      if (audioContainer) audioContainer.innerHTML = '';
+
+      if (textEl) textEl.textContent = "Welcome to SCHALE office, Sensei! 🌸";
+      if (clockKeys) clockKeys.textContent = "Δ × + ◯";
+      if (workJp) workJp.textContent = "お仕事";
     }
   }
 
