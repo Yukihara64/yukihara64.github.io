@@ -1,5 +1,5 @@
-﻿// @ts-nocheck
-// functions/api/steam.ts
+// @ts-nocheck
+﻿// functions/api/steam.ts
 export async function onRequest(context: EventContext<any, any, any>) {
   const { env } = context;
 

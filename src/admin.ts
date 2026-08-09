@@ -1,5 +1,5 @@
-﻿// @ts-nocheck
-  let PASSWORD = '';
+// @ts-nocheck
+﻿  let PASSWORD = '';
 
   function doLogin() {
     const pw = (document.getElementById('pw-input') as any).value;

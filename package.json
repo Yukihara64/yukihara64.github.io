@@ -17,5 +17,9 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.2.1"
+  },
+  "dependencies": {
+    "@pixi/spine-pixi": "^2.1.1",
+    "pixi.js": "^8.19.0"
   }
 }
