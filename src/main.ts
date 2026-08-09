@@ -197,7 +197,7 @@
     GameState.save();
     BASound.playSuccess();
     // Quote bubble chimes
-    const textEl = ((document.getElementById('lobby-quote-text') || {}) as any);
+    const textEl = (document.getElementById('lobby-quote-text') as any);
     if (textEl) {
       textEl.textContent = "Thank you, Sensei! You successfully replenished Pyroxenes! 💎";
     }
@@ -1067,7 +1067,7 @@
 
   function loadLobbyCharacter() {
     const char = characters[currentCharIndex];
-    const img = ((document.getElementById('avatar-img') || {}) as any);
+    const img = (document.getElementById('avatar-img') as any);
     if (!img) return;
 
     img.style.display = 'block';
@@ -1097,7 +1097,7 @@
     }
     
     // change quote to greet as the new character
-    const textEl = ((document.getElementById('lobby-quote-text') || {}) as any);
+    const textEl = (document.getElementById('lobby-quote-text') as any);
     if (textEl) {
       if (currentCharIndex === 0) {
         textEl.textContent = "Daniel Guanes, reporting! Sensei is ready for developer tasks! ⚡";
@@ -1123,8 +1123,8 @@
   ];
   let quoteIndex = 0;
   function changeQuote() {
-    const textEl = ((document.getElementById('lobby-quote-text') || {}) as any);
-    const bubble = ((document.getElementById('lobby-quote-bubble') || {}) as any);
+    const textEl = (document.getElementById('lobby-quote-text') as any);
+    const bubble = (document.getElementById('lobby-quote-bubble') as any);
     if (!textEl) return;
     
     if (bubble) {
