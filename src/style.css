@@ -1,10 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  /* We import the original CSS into components layer so it plays nicely with Tailwind */
-  @import '../css/index.css';
-  @import '../css/shittim_tablet.css';
-  @import '../css/admin.css';
-}
+/* Main stylesheet — imports all CSS modules */
+@import '../css/index.css';
+@import '../css/shittim_tablet.css';
+@import '../css/admin.css';

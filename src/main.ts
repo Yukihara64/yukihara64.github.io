@@ -1491,6 +1491,12 @@
 (window as any).openBAModal = openBAModal;
 (window as any).closeAllBAModals = closeAllBAModals;
 (window as any).replenishPyroxenes = replenishPyroxenes;
-if (typeof toggleTarkov === 'function') (window as any).toggleTarkov = toggleTarkov;
-if (typeof changeQuote === 'function') (window as any).changeQuote = changeQuote;
-if (typeof swapLobbyCharacter === 'function') (window as any).swapLobbyCharacter = swapLobbyCharacter;
+(window as any).toggleTarkov = toggleTarkov;
+(window as any).changeQuote = changeQuote;
+(window as any).swapLobbyCharacter = swapLobbyCharacter;
+(window as any).startGacha = startGacha;
+(window as any).setGachaTool = setGachaTool;
+(window as any).clearGachaCanvas = clearGachaCanvas;
+(window as any).confirmSignature = confirmSignature;
+(window as any).finishRecruitment = finishRecruitment;
+

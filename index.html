@@ -71,68 +71,113 @@
 
 
 <!-- BLUE ARCHIVE LOBBY CONTAINER (FULL SCREEN VIEWPORT) -->
-<div class="ba-lobby relative w-full h-full overflow-hidden select-none">
+<div class="ba-lobby">
   <!-- Mika Background (Live2D / Image Fallback) -->
-  <div class="absolute inset-0 z-0 bg-black">
-    <img src="https://static.miraheze.org/bluearchivewiki/thumb/9/91/Mika_lobby.png/1200px-Mika_lobby.png" class="absolute inset-0 w-full h-full object-cover object-center" alt="Mika Memorial Lobby">
-    <iframe class="absolute inset-0 w-full h-full opacity-100 object-cover pointer-events-none scale-105" src="https://www.youtube.com/embed/SFETQKiqPu4?autoplay=1&mute=1&controls=0&loop=1&playlist=SFETQKiqPu4&modestbranding=1&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  <div style="position:absolute;inset:0;z-index:0;background:#000;">
+    <img src="https://static.miraheze.org/bluearchivewiki/thumb/9/91/Mika_lobby.png/1200px-Mika_lobby.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;" alt="Mika Memorial Lobby">
+    <iframe style="position:absolute;inset:0;width:100%;height:100%;opacity:1;pointer-events:none;transform:scale(1.05);border:none;" src="https://www.youtube.com/embed/SFETQKiqPu4?autoplay=1&mute=1&controls=0&loop=1&playlist=SFETQKiqPu4&modestbranding=1&showinfo=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
   </div>
 
-  <div class="ba-lobby-dots-grid absolute inset-0 z-0 pointer-events-none opacity-50"></div>
+  <div class="ba-lobby-dots-grid"></div>
 
   <!-- Top Status Bar -->
-  <header class="absolute top-0 left-0 w-full h-16 flex justify-between items-start p-4 z-20 bg-gradient-to-b from-black/60 to-transparent">
+  <div class="lobby-topbar">
     <!-- Left: Account Info -->
-    <div class="flex items-center gap-3 cursor-pointer hover:scale-105 transition-transform origin-top-left" onclick="openBAModal('about')">
-      <div class="bg-ba-blue text-white font-black text-xl px-3 py-1 rounded-sm skew-x-[-15deg] shadow-[0_0_10px_rgba(35,137,215,0.8)]">
-        <span class="block skew-x-[15deg]">Lv.<span id="age-badge-topbar">--</span></span>
-      </div>
-      <div class="flex flex-col">
-        <span class="text-white font-bold text-lg leading-tight shadow-black drop-shadow-md">Daniel Guanes</span>
-        <div class="flex items-center gap-2">
-          <div class="w-32 h-2 bg-gray-800/80 rounded-full overflow-hidden border border-gray-600">
-            <div class="h-full bg-ba-pink" style="width: 75%;"></div>
+    <div class="ba-account-card" onclick="openBAModal('about')">
+      <div class="account-card-slant">
+        <div class="account-card-content">
+          <div class="account-lv-col">
+            <span class="account-lv-lbl">Lv.</span>
+            <span class="account-lv-val" id="age-badge-topbar">--</span>
           </div>
-          <span class="text-xs text-white drop-shadow-md font-bold">41/66</span>
+          <div class="account-info-col">
+            <span class="account-name">Daniel Guanes</span>
+            <div class="account-exp-row">
+              <div class="account-exp-bar-container">
+                <div class="account-exp-bar" style="width:75%"></div>
+              </div>
+              <span class="account-exp-val">41/66</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Right: AP, Credits, Pyroxenes -->
-    <div class="flex gap-4 items-center">
-      <div class="flex items-center bg-gray-900/60 rounded-full pr-3 border border-white/20 backdrop-blur-sm shadow-lg">
-        <div class="w-8 h-8 rounded-full bg-yellow-400 flex items-center justify-center -ml-1 border-2 border-white shadow-[0_0_8px_rgba(250,204,21,0.8)]">⚡</div>
-        <span class="text-white font-bold mx-3">240/240</span>
-        <button class="text-yellow-400 font-bold hover:text-white transition-colors" onclick="openBAModal('experience')">+</button>
+    <!-- Right: Resources & Utility -->
+    <div class="topbar-right-container">
+      <div class="topbar-card">
+        <div class="pill-icon-container ap-icon-bg">
+          <span class="pill-icon" style="transform:skewX(15deg)">⚡</span>
+        </div>
+        <span class="pill-val">240/240</span>
+        <button class="pill-plus" style="transform:skewX(15deg)">+</button>
       </div>
-      <div class="hidden md:flex items-center bg-gray-900/60 rounded-full pr-3 border border-white/20 backdrop-blur-sm shadow-lg">
-        <div class="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center -ml-1 border-2 border-white shadow-[0_0_8px_rgba(96,165,250,0.8)]">🪙</div>
-        <span class="text-white font-bold mx-3">5+ Yrs</span>
+      <div class="topbar-card">
+        <div class="pill-icon-container credit-icon-bg">
+          <span class="pill-icon" style="transform:skewX(15deg)">💰</span>
+        </div>
+        <span class="pill-val">5+ Yrs</span>
+        <button class="pill-plus" style="transform:skewX(15deg)">+</button>
       </div>
-      <div class="flex items-center bg-gray-900/60 rounded-full pr-3 border border-white/20 backdrop-blur-sm shadow-lg">
-        <div class="w-8 h-8 rounded-full bg-ba-pink flex items-center justify-center -ml-1 border-2 border-white shadow-[0_0_8px_rgba(255,107,158,0.8)]">💎</div>
-        <span class="text-white font-bold mx-3">24,000</span>
-        <button class="text-ba-pink font-bold hover:text-white transition-colors" onclick="replenishPyroxenes()">+</button>
+      <div class="topbar-card">
+        <div class="pill-icon-container gem-icon-bg">
+          <span class="pill-icon" style="transform:skewX(15deg)">💎</span>
+        </div>
+        <span class="pill-val">24,000</span>
+        <button class="pill-plus" onclick="replenishPyroxenes()" style="transform:skewX(15deg)">+</button>
       </div>
-      
-      <div class="flex gap-2 ml-4">
-        <button class="w-10 h-10 bg-white/90 text-ba-blue rounded-md font-bold hover:bg-ba-blue hover:text-white transition-colors shadow-md" id="tarkov-btn" onclick="toggleTarkov()" title="Tactical Mode Toggle">
+
+      <div class="topbar-utility-buttons">
+        <button class="topbar-square-btn" id="tarkov-btn" onclick="toggleTarkov()" title="Tactical Mode Toggle">
           <span class="btn-inner">⚙️</span>
         </button>
-        <button class="w-10 h-10 bg-white/90 text-ba-blue rounded-md font-bold hover:bg-ba-blue hover:text-white transition-colors shadow-md" onclick="openBAModal('about')">👤</button>
+        <button class="topbar-square-btn" onclick="openBAModal('about')">
+          <span class="btn-inner">👤</span>
+        </button>
+      </div>
+
+      <div class="topbar-sub-buttons">
+        <button class="topbar-mini-btn" id="theme-toggle-btn" onclick="toggleTarkov()">
+          <span class="btn-inner">🔄</span>
+        </button>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Right Vertical Widgets Stack (Spotify / Steam broadcast) -->
+  <!-- Left Action Stack (Notice, MomoTalk) -->
+  <div class="lobby-left-stack">
+    <div class="lobby-stack-btn" onclick="openBAModal('about')">
+      <div class="lobby-stack-icon">
+        <img src="img/icon_notice.png" class="ba-stack-icon" alt="Notice">
+      </div>
+      <span class="lobby-stack-label">Notice</span>
+    </div>
+    <div class="lobby-stack-btn" onclick="openBAModal('momotalk')">
+      <div class="lobby-stack-icon" style="position:relative">
+        <img src="img/icon_momotalk.png" class="ba-stack-icon" alt="MomoTalk">
+        <span class="momotalk-badge-pulse"></span>
+      </div>
+      <span class="lobby-stack-label">MomoTalk</span>
+    </div>
+  </div>
+
+  <!-- Right Arona Guide Badge -->
+  <div class="arona-guide-badge" onclick="openBAModal('about')">
+    <div class="guide-badge-circle">
+      <img src="img/arona_guide.jpg" alt="Arona Guide">
+    </div>
+    <span class="guide-badge-label">アロナ</span>
+  </div>
+
+  <!-- Right Widgets Stack (Spotify, Steam) -->
   <div class="lobby-widgets-container">
-    <div class="widget-card spotify-widget">
+    <div class="widget-card">
       <div class="widget-header">// SPOTIFY BROADCAST</div>
       <div id="spotify-content" class="widget-loading">
         <span>⏳</span> Loading Spotify...
       </div>
     </div>
-    <div class="widget-card steam-widget">
+    <div class="widget-card">
       <div class="widget-header">// STEAM SIMULATION</div>
       <div id="steam-content" class="widget-loading">
         <span>⏳</span> Loading Steam...
@@ -140,7 +185,7 @@
     </div>
   </div>
 
-  <!-- Lobby Center: Sensei Cutout (Avatar / Quote bubble) -->
+  <!-- Center Character Area -->
   <div class="lobby-center-area">
     <div class="lobby-quote-bubble" id="lobby-quote-bubble" onclick="changeQuote()">
       <span id="lobby-quote-text">Welcome to SCHALE office, Sensei! Click me! 🌸</span>
@@ -161,89 +206,86 @@
     </button>
   </div>
 
-  <!-- Lobby Clock HUD -->
+  <!-- Bottom Left Event Banner -->
+  <div class="ba-event-banner" onclick="openBAModal('schedule')">
+    <span class="event-tag">NEW</span>
+    <div class="event-banner-content">
+      <img src="img/event_banner.jpg" class="event-banner-img" alt="Event">
+      <div class="event-banner-overlay"></div>
+      <div class="event-banner-text-box">
+        <span class="event-banner-text">✦ Latest Projects & Events</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Arrows -->
+  <button class="lobby-nav-arrow arrow-left">‹</button>
+  <button class="lobby-nav-arrow arrow-right">›</button>
+
+  <!-- Bottom Navigation Dock -->
+  <nav class="lobby-dock">
+    <div class="dock-item" onclick="openBAModal('about')">
+      <img src="img/icon_cafe.png" class="ba-dock-icon" alt="Cafe">
+      <span class="dock-label">Cafe</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('schedule')">
+      <img src="img/icon_schedule.png" class="ba-dock-icon" alt="Schedule">
+      <span class="dock-label">Schedule</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('students')">
+      <img src="img/icon_student.png" class="ba-dock-icon" alt="Student">
+      <span class="dock-label">Student</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('experience')">
+      <img src="img/icon_formation.png" class="ba-dock-icon" alt="Formation">
+      <span class="dock-label">Formation</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('about')">
+      <img src="img/icon_circle.png" class="ba-dock-icon" alt="Club">
+      <span class="dock-label">Club</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('crafting')">
+      <img src="img/icon_craft.png" class="ba-dock-icon" alt="Crafting">
+      <span class="dock-label">Crafting</span>
+    </div>
+    <div class="dock-item" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')">
+      <img src="img/icon_shop.png" class="ba-dock-icon" alt="Shop">
+      <span class="dock-label">Shop</span>
+    </div>
+    <div class="dock-item" onclick="openBAModal('recruit')">
+      <img src="img/icon_recruit.png" class="ba-dock-icon" alt="Recruit">
+      <span class="dock-label">Recruit</span>
+    </div>
+  </nav>
+
+  <!-- Campaign & Work Buttons -->
+  <div class="lobby-campaign-container">
+    <button class="lobby-event-recap-btn" onclick="openBAModal('schedule')">
+      <div class="recap-content">
+        <span class="recap-calendar-icon">📅</span>
+        <span class="recap-text">Events</span>
+      </div>
+    </button>
+    <button class="lobby-work-btn" onclick="openBAModal('experience')">
+      <span class="campaign-in-progress-badge">In Progress</span>
+      <div class="lobby-work-btn-content">
+        <span class="work-btn-symbols">✦✦✦✦✦</span>
+        <div class="lobby-work-btn-folder">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
+            <text x="12" y="15" font-size="5" font-weight="900" fill="#0076de" text-anchor="middle" font-family="sans-serif">TASK</text>
+          </svg>
+        </div>
+        <span class="work-jp">お仕事</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- HUD Clock -->
   <div class="lobby-clock-hud">
     <span class="hud-keys">Δ × + ◯</span>
     <span class="hud-clock" id="lobby-time-display">12:00</span>
   </div>
-
-  <!-- Left Sidebar (Notice, Events, MomoTalk) -->
-  <aside class="absolute left-4 top-24 flex flex-col gap-4 z-20">
-    <button class="group flex flex-col items-center gap-1 w-20" onclick="openBAModal('about')">
-      <div class="w-16 h-16 bg-white/90 rounded-2xl flex items-center justify-center border-4 border-transparent group-hover:border-ba-blue transition-all shadow-lg">
-        <img src="img/icon_notice.png" class="w-10 h-10 object-contain">
-      </div>
-      <span class="text-white font-bold text-sm drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">Notice</span>
-    </button>
-    <button class="group flex flex-col items-center gap-1 w-20 relative" onclick="openBAModal('messages')">
-      <div class="w-16 h-16 bg-white/90 rounded-2xl flex items-center justify-center border-4 border-transparent group-hover:border-ba-pink transition-all shadow-lg">
-        <img src="img/icon_momotalk.png" class="w-10 h-10 object-contain">
-      </div>
-      <span class="absolute top-0 right-1 w-4 h-4 bg-red-500 rounded-full animate-ping opacity-75"></span>
-      <span class="absolute top-0 right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></span>
-      <span class="text-white font-bold text-sm drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">MomoTalk</span>
-    </button>
-  </aside>
-
-  <!-- Right Menu Grid (Authentic 3x3 Layout) -->
-  <aside class="absolute right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-2 mt-4">
-    <div class="grid grid-cols-3 gap-2 skew-x-[-2deg]">
-      <!-- Row 1 -->
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('about')">
-        <img src="img/icon_cafe.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Cafe</span>
-      </button>
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('schedule')">
-        <img src="img/icon_schedule.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Schedule</span>
-      </button>
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('students')">
-        <img src="img/icon_student.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Student</span>
-      </button>
-
-      <!-- Row 2 -->
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('experience')">
-        <img src="img/icon_formation.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Formation</span>
-      </button>
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('about')">
-        <img src="img/icon_circle.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Club</span>
-      </button>
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('crafting')">
-        <img src="img/icon_craft.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Crafting</span>
-      </button>
-
-      <!-- Row 3 -->
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')">
-        <img src="img/icon_shop.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Shop</span>
-      </button>
-      <button class="w-[85px] h-[85px] bg-white/90 rounded flex flex-col items-center justify-center gap-1 border border-transparent hover:border-ba-blue hover:scale-105 transition-all shadow-lg group" onclick="openBAModal('recruit')">
-        <img src="img/icon_recruit.png" class="w-10 h-10 object-contain group-hover:-translate-y-1 transition-transform">
-        <span class="text-ba-blue font-bold text-[11px] uppercase tracking-wider">Recruit</span>
-      </button>
-      <div class="w-[85px] h-[85px] opacity-0 pointer-events-none"></div>
-    </div>
-    <!-- Campaign Button (Wide) -->
-    <button class="w-full h-[85px] bg-ba-blue text-white rounded skew-x-[-10deg] flex items-center justify-end pr-8 relative overflow-hidden group border-2 border-transparent hover:border-white shadow-[0_0_15px_rgba(35,137,215,0.8)] transition-all mt-1" onclick="openBAModal('experience')">
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/20 group-hover:translate-x-full transition-transform duration-500 skew-x-[10deg]"></div>
-      <img src="img/icon_missions.png" class="absolute left-4 top-1/2 -translate-y-1/2 w-16 h-16 skew-x-[10deg] opacity-80 group-hover:opacity-100 transition-opacity">
-      <span class="text-3xl font-black italic skew-x-[10deg] tracking-wider drop-shadow-md">CAMPAIGN</span>
-    </button>
-  </aside>
-
-  <!-- Bottom Bar (Tasks, Story) -->
-  <footer class="absolute bottom-4 left-4 flex gap-4 z-20">
-    <button class="flex items-center justify-center gap-2 bg-gray-900/60 text-white w-48 h-12 rounded-full border border-white/20 hover:bg-ba-blue transition-colors backdrop-blur-sm shadow-lg" onclick="openBAModal('experience')">
-      <span class="font-black text-sm tracking-widest drop-shadow-md uppercase">▶ Story</span>
-    </button>
-    <button class="flex items-center justify-center gap-2 bg-gray-900/60 text-white w-48 h-12 rounded-full border border-white/20 hover:bg-ba-pink transition-colors backdrop-blur-sm shadow-lg" onclick="openBAModal('experience')">
-      <span class="font-black text-sm tracking-widest drop-shadow-md uppercase">📋 Tasks</span>
-    </button>
-  </footer>
 </div>
 
 <!-- MODAL WINDOW OVERLAYS -->
