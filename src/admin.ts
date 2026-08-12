@@ -92,3 +92,7 @@
   function escHtmlAdmin(str: string) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
+  // admin.html is intentionally kept simple and uses inline handlers. Because
+  // this entry point is a module, publish those handlers explicitly.
+  Object.assign(window, { doLogin, logout, showTab, deleteMsg, deleteDraw });

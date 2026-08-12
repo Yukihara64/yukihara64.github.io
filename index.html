@@ -70,280 +70,171 @@
 </div>
 
 
-<!-- BLUE ARCHIVE LOBBY CONTAINER (FULL SCREEN VIEWPORT) -->
-<div class="ba-lobby">
-  <!-- Mika Background (Live2D / Image Fallback) -->
-  <div style="position:absolute;inset:0;z-index:0;background:#000;">
-    <img src="https://static.miraheze.org/bluearchivewiki/thumb/9/91/Mika_lobby.png/1200px-Mika_lobby.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;" alt="Mika Memorial Lobby">
-    <iframe style="position:absolute;inset:0;width:100%;height:100%;opacity:1;pointer-events:none;transform:scale(1.05);border:none;" src="https://www.youtube.com/embed/SFETQKiqPu4?autoplay=1&mute=1&controls=0&loop=1&playlist=SFETQKiqPu4&modestbranding=1&showinfo=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<!-- BLUE ARCHIVE HOME — reference-first composition -->
+<div class="ba-lobby" aria-label="Blue Archive Home">
+  <div class="ba-home-scene" aria-hidden="true">
+    <img id="lobby-background-image" src="img/blue_archive_bg.png" alt="" loading="eager">
+    <div class="ba-home-scene-wash"></div>
+    <div class="ba-home-particles"></div>
   </div>
 
-  <div class="ba-lobby-dots-grid"></div>
-
-  <!-- Top Status Bar -->
-  <div class="lobby-topbar">
-    <!-- Left: Account Info -->
-    <div class="ba-account-card" onclick="openBAModal('about')">
-      <div class="account-card-slant">
-        <div class="account-card-content">
-          <div class="account-lv-col">
-            <span class="account-lv-lbl">Lv.</span>
-            <span class="account-lv-val" id="age-badge-topbar">--</span>
-          </div>
-          <div class="account-info-col">
-            <span class="account-name">Daniel Guanes</span>
-            <div class="account-exp-row">
-              <div class="account-exp-bar-container">
-                <div class="account-exp-bar" style="width:75%"></div>
-              </div>
-              <span class="account-exp-val">41/66</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: Resources & Utility -->
-    <div class="topbar-right-container">
-      <div class="topbar-card">
-        <div class="pill-icon-container ap-icon-bg">
-          <span class="pill-icon">⚡</span>
-        </div>
-        <span class="pill-val">240/240</span>
-        <button class="pill-plus"><span>+</span></button>
-      </div>
-      <div class="topbar-card">
-        <div class="pill-icon-container credit-icon-bg">
-          <span class="pill-icon">💰</span>
-        </div>
-        <span class="pill-val">5+ Yrs</span>
-        <button class="pill-plus"><span>+</span></button>
-      </div>
-      <div class="topbar-card">
-        <div class="pill-icon-container gem-icon-bg">
-          <span class="pill-icon">💎</span>
-        </div>
-        <span class="pill-val">24,000</span>
-        <button class="pill-plus" onclick="replenishPyroxenes()"><span>+</span></button>
-      </div>
-
-      <div class="topbar-utility-buttons">
-        <button class="topbar-square-btn" id="tarkov-btn" onclick="toggleTarkov()" title="Tactical Mode Toggle">
-          <span class="btn-inner">⚙️</span>
-        </button>
-        <button class="topbar-square-btn" onclick="swapLobbyCharacter(event)" title="Switch Assistant Character">
-          <span class="btn-inner">🔄</span>
-        </button>
-        <button class="topbar-square-btn" onclick="openBAModal('about')" title="Sensei Profile">
-          <span class="btn-inner">👤</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Left Action Stack (Notice, MomoTalk) -->
-  <div class="lobby-left-stack">
-    <div class="lobby-stack-btn" onclick="openBAModal('about')">
-      <div class="lobby-stack-icon">
-        <img src="img/icon_notice.png" class="ba-stack-icon" alt="Notice">
-      </div>
-      <span class="lobby-stack-label">Notice</span>
-    </div>
-    <div class="lobby-stack-btn" onclick="openBAModal('momotalk')">
-      <div class="lobby-stack-icon" style="position:relative">
-        <img src="img/icon_momotalk.png" class="ba-stack-icon" alt="MomoTalk">
-        <span class="momotalk-badge-pulse"></span>
-      </div>
-      <span class="lobby-stack-label">MomoTalk</span>
-    </div>
-  </div>
-
-  <!-- Right Arona Guide Badge -->
-  <div class="arona-guide-badge" onclick="openBAModal('about')">
-    <div class="guide-badge-circle">
-      <img src="img/arona_guide.jpg" alt="Arona Guide">
-    </div>
-    <span class="guide-badge-label">アロナ</span>
-  </div>
-
-  <!-- Right Widgets Stack (Spotify, Steam) -->
-  <div class="lobby-widgets-container">
-    <div class="widget-card">
-      <div class="widget-header">// SPOTIFY BROADCAST</div>
-      <div id="spotify-content" class="widget-loading">
-        <span>⏳</span> Loading Spotify...
-      </div>
-    </div>
-    <div class="widget-card">
-      <div class="widget-header">// STEAM SIMULATION</div>
-      <div id="steam-content" class="widget-loading">
-        <span>⏳</span> Loading Steam...
-      </div>
-    </div>
-  </div>
-
-  <!-- Center Character Area -->
-  <div class="lobby-center-area">
-    <div class="lobby-quote-bubble" id="lobby-quote-bubble" onclick="changeQuote()">
-      <span id="lobby-quote-text">Welcome to SCHALE office, Sensei! Click me! 🌸</span>
-    </div>
-
-    <div class="avatar-frame" onclick="changeQuote()">
-      <div class="avatar-halo" id="avatar-halo"></div>
-      <div class="avatar-hex">
-        <div class="avatar-inner" id="avatar-inner">
-          <img id="avatar-img" alt="Lobby Assistant" src="" onerror="this.style.display='none';this.parentElement.innerHTML='🐻'"/>
-        </div>
-      </div>
-      <div class="lvl-badge" id="age-badge"></div>
-    </div>
-  </div>
-
-  <!-- Bottom Left Event Banner -->
-  <div class="ba-event-banner" onclick="openBAModal('schedule')">
-    <span class="event-tag">NEW</span>
-    <div class="event-banner-content">
-      <img src="img/event_banner.jpg" class="event-banner-img" alt="Event">
-      <div class="event-banner-overlay"></div>
-      <div class="event-banner-text-box">
-        <span class="event-banner-text">✦ Latest Projects & Events</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Navigation Arrows -->
-  <button class="lobby-nav-arrow arrow-left">‹</button>
-  <button class="lobby-nav-arrow arrow-right">›</button>
-
-  <!-- Bottom Navigation Dock -->
-  <nav class="lobby-dock">
-    <div class="dock-item" onclick="openBAModal('about')">
-      <img src="img/icon_cafe.png" class="ba-dock-icon" alt="Cafe">
-      <span class="dock-label">Cafe</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('schedule')">
-      <img src="img/icon_schedule.png" class="ba-dock-icon" alt="Schedule">
-      <span class="dock-label">Schedule</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('students')">
-      <img src="img/icon_student.png" class="ba-dock-icon" alt="Student">
-      <span class="dock-label">Student</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('experience')">
-      <img src="img/icon_formation.png" class="ba-dock-icon" alt="Formation">
-      <span class="dock-label">Formation</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('about')">
-      <img src="img/icon_circle.png" class="ba-dock-icon" alt="Club">
-      <span class="dock-label">Club</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('crafting')">
-      <img src="img/icon_craft.png" class="ba-dock-icon" alt="Crafting">
-      <span class="dock-label">Crafting</span>
-    </div>
-    <div class="dock-item" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')">
-      <img src="img/icon_shop.png" class="ba-dock-icon" alt="Shop">
-      <span class="dock-label">Shop</span>
-    </div>
-    <div class="dock-item" onclick="openBAModal('recruit')">
-      <img src="img/icon_recruit.png" class="ba-dock-icon" alt="Recruit">
-      <span class="dock-label">Recruit</span>
-    </div>
-  </nav>
-
-  <!-- Campaign & Work Buttons -->
-  <div class="lobby-campaign-container">
-    <button class="lobby-event-recap-btn" onclick="openBAModal('schedule')">
-      <div class="recap-content">
-        <span class="recap-calendar-icon">📅</span>
-        <span class="recap-text">Events</span>
-      </div>
+  <header class="ba-home-header" aria-label="Sensei status">
+    <button class="ba-home-profile" type="button" onclick="openBAModal('about')" aria-label="Open Sensei profile">
+      <span class="ba-home-profile-level">Lv. <strong id="age-badge-topbar">26</strong></span>
+      <span class="ba-home-profile-name">ゆかり</span>
+      <span class="ba-home-profile-progress">41/66</span>
     </button>
-    <button class="lobby-work-btn" onclick="openBAModal('experience')">
-      <span class="campaign-in-progress-badge">In Progress</span>
-      <div class="lobby-work-btn-content">
-        <span class="work-btn-symbols">✦✦✦✦✦</span>
-        <div class="lobby-work-btn-folder">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6Z" fill="#ffffff" stroke="#ffffff" stroke-width="0.5"/>
-            <text x="12" y="15" font-size="5" font-weight="900" fill="#0076de" text-anchor="middle" font-family="sans-serif">TASK</text>
-          </svg>
-        </div>
-        <span class="work-jp">お仕事</span>
+
+    <div class="ba-home-resources" aria-label="Resources">
+      <div class="ba-home-resource ba-home-resource-ap">
+        <img src="img/ba-reference/icon_stamina.png" alt="" aria-hidden="true"><strong>340/56</strong>
+        <button type="button" onclick="openBAModal('experience')" aria-label="Restore AP">＋</button>
       </div>
+      <div class="ba-home-resource">
+        <img src="img/ba-reference/icon_gold.png" alt="" aria-hidden="true"><strong>258874</strong>
+      </div>
+      <div class="ba-home-resource">
+        <img src="img/ba-reference/icon_diamond.png" alt="" aria-hidden="true"><strong>980</strong>
+        <button type="button" onclick="replenishPyroxenes()" aria-label="Buy Pyroxenes">＋</button>
+      </div>
+    </div>
+
+    <nav class="ba-home-utilities" aria-label="Home utilities">
+      <button type="button" onclick="openBACharacterSelector()" aria-label="Change Memorial Lobby"><img src="img/ba-reference/icon_change.png" alt=""></button>
+      <button type="button" onclick="openBAModal('messages')" aria-label="Open mailbox"><span>✉</span></button>
+      <button type="button" onclick="toggleBAQuickMenu()" aria-label="Open home menu"><span>▦</span></button>
+      <button type="button" onclick="toggleBAUI()" aria-label="Hide interface"><img src="img/ba-reference/icon_ui_hide.png" alt=""></button>
+    </nav>
+  </header>
+
+  <aside class="ba-home-quick-menu" id="ba-quick-menu" aria-label="Home quick menu" aria-hidden="true">
+    <button type="button" onclick="openBAModal('about')">OPTIONS</button>
+    <button type="button" onclick="openBAModal('about')">ACCOUNT</button>
+    <button type="button" onclick="openBAModal('experience')">TEAM</button>
+    <button type="button" onclick="openBAModal('crafting')">ITEMS</button>
+    <button class="ba-home-mode-link mode-toggle" id="tarkov-btn" type="button" onclick="toggleTarkov()">TACTICAL MODE</button>
+  </aside>
+
+  <aside class="ba-home-rail" aria-label="Home alerts and communication">
+    <button class="ba-home-rail-action" type="button" onclick="openBAModal('about')">
+      <img src="img/icon_notice.png" alt=""><span>NOTICE</span>
     </button>
+    <button class="ba-home-rail-action ba-home-rail-momotalk" type="button" onclick="openBAModal('messages')">
+      <img src="img/ba-reference/icon_momotalk.png" alt=""><span>MOMOTALK</span><i aria-label="Unread messages"></i>
+    </button>
+    <button class="ba-home-rail-action" type="button" onclick="openBAModal('experience')">
+      <img src="img/icon_missions.png" alt=""><span>MISSION</span>
+    </button>
+  </aside>
+
+  <main class="ba-memorial-stage" aria-label="Memorial Lobby">
+    <button class="ba-memorial-character" type="button" onclick="handleBALobbyTap(event)" aria-label="Interact with Arona">
+      <img id="avatar-img" src="img/arona_full.webp" alt="Arona, Blue Archive lobby character">
+    </button>
+    <div class="ba-memorial-dialogue" id="lobby-quote-bubble" role="status" aria-live="polite">
+      <span class="ba-memorial-dialogue-kicker">SCHALE // MEMORIAL LOBBY</span>
+      <span id="lobby-quote-text">Welcome to the SCHALE office, Sensei!</span>
+    </div>
+    <span id="age-badge" hidden>26</span>
+  </main>
+
+  <button class="ba-home-work" type="button" onclick="openBAWork()" aria-label="Open work and campaign">
+    <img src="img/ba_campaign_icon.png" alt="" aria-hidden="true"><span>WORK</span><small>CAMPAIGN</small>
+  </button>
+
+  <div class="lobby-widgets-container ba-data-integrations" aria-hidden="true">
+    <div id="spotify-content"></div><div id="steam-content"></div>
   </div>
 
-  <!-- HUD Clock -->
-  <div class="lobby-clock-hud">
-    <span class="hud-keys">Δ × + ◯</span>
-    <span class="hud-clock" id="lobby-time-display">12:00</span>
+  <footer class="ba-home-footer" aria-label="Blue Archive main navigation">
+    <nav class="ba-home-dock">
+      <button type="button" onclick="openBAModal('cafe')"><img src="img/icon_cafe.png" alt=""><span>CAFE</span></button>
+      <button type="button" onclick="openBAModal('schedule')"><img src="img/icon_schedule.png" alt=""><span>SCHEDULE</span></button>
+      <button type="button" onclick="openBAModal('students')"><img src="img/icon_student.png" alt=""><span>STUDENTS</span></button>
+      <button type="button" onclick="openBAModal('experience')"><img src="img/icon_formation.png" alt=""><span>FORMATION</span></button>
+      <button type="button" onclick="openBAModal('about')"><img src="img/icon_circle.png" alt=""><span>CIRCLE</span></button>
+      <button type="button" onclick="openBAModal('crafting')"><img src="img/icon_craft.png" alt=""><span>CRAFTING</span></button>
+      <button type="button" onclick="openBAModal('about')"><img src="img/icon_shop.png" alt=""><span>SHOP</span></button>
+      <button type="button" onclick="openBAModal('recruit')"><img src="img/icon_recruit.png" alt=""><span>RECRUIT</span></button>
+    </nav>
+    <div class="ba-home-clock"><span>LOCAL TIME</span><strong id="lobby-time-display">--:--</strong></div>
+  </footer>
+  <button class="ba-ui-return" type="button" onclick="toggleBAUI()" aria-label="Show Blue Archive interface" hidden>SHOW UI</button>
+</div>
+
+<div class="ba-modal ba-character-select-modal" id="modal-character-select" role="dialog" aria-label="Memorial Lobby selector">
+  <div class="ba-modal-header"><span class="ba-modal-title">// MEMORIAL LOBBY // 当番変更</span><button class="ba-modal-close" onclick="closeAllBAModals()">✕</button></div>
+  <div class="ba-modal-body">
+    <p class="ba-selector-copy">Select the student who appears in the Home lobby.</p>
+    <div class="ba-character-select-grid">
+      <button type="button" onclick="selectBALobbyCharacter(1)"><img src="img/arona_full.webp" alt="Arona"><span>ARONA</span><i>ACTIVE</i></button>
+      <button type="button" onclick="selectBALobbyCharacter(0)"><span class="ba-selector-placeholder">S</span><span>SENSEI</span></button>
+      <button type="button" onclick="selectBALobbyCharacter(2)"><img src="img/SweetBabyHachiware2.webp" alt="Hachiware"><span>HACHIWARE</span></button>
+      <button type="button" disabled><span class="ba-selector-lock">LOCKED</span><span>MEMORIAL</span></button>
+      <button type="button" disabled><span class="ba-selector-lock">LOCKED</span><span>MEMORIAL</span></button>
+    </div>
   </div>
 </div>
 
-<!-- REAL ESCAPE FROM TARKOV OVERLAY MENU (MATCHES OFFICIAL GAME UI) -->
-<div class="tarkov-overlay-menu" id="tarkov-menu">
-  <!-- Top Stencil Logo & Bone Emblem -->
-  <div class="tarkov-header-logo">
-    <div class="tarkov-logo-text">ESCAPE FROM TARKOV</div>
-    <div class="tarkov-sub-logo">BEAR / USEC OPERATOR INTERFACE</div>
-  </div>
+  <!-- ESCAPE FROM TARKOV — staged reference reconstruction -->
+  <section id="tarkov-lobby" class="tarkov-lobby-screen" hidden aria-label="Escape from Tarkov main menu">
+    <div class="tarkov-backdrop"></div>
+    <div class="tarkov-backdrop-shift" aria-hidden="true"></div>
+    <div class="tarkov-vignette" aria-hidden="true"></div>
+    <div class="tarkov-noise" aria-hidden="true"></div>
 
-  <!-- Center Event Banner Box -->
-  <div class="tarkov-event-banner-box">
-    <div class="tarkov-event-left">
-      <span class="tarkov-shield-badge">🛡️</span>
-      <div>
-        <div class="tarkov-event-title">SEASON 1 // KORD BREACH</div>
-        <div class="tarkov-event-subtitle">OPERATOR CAMPAIGN ACTIVE</div>
+    <header class="tarkov-main-header">
+      <span class="tarkov-beta-label">BETA TESTING</span>
+      <img class="tarkov-main-wordmark" src="/img/tarkov_logo.png" alt="Escape from Tarkov">
+      <span class="tarkov-main-version">0.16.1.3.35392</span>
+    </header>
+
+    <aside class="tarkov-beta-notice" aria-label="Beta notice">
+      <span class="tarkov-beta-notice-stripe"></span>
+      <p><strong>ATTENTION!</strong> This is a Beta version of Escape from Tarkov. The project is under development.</p>
+    </aside>
+
+    <main class="tarkov-main-menu-screen">
+      <nav class="tarkov-main-menu" aria-label="Escape from Tarkov primary navigation">
+        <button class="tarkov-main-menu-item tarkov-main-menu-primary" type="button" onclick="openTarkovSurface('prepare')"><span>ESCAPE FROM TARKOV</span><i>PREPARE TO ESCAPE</i></button>
+        <button class="tarkov-main-menu-item" type="button" onclick="openTarkovSurface('character')"><span>CHARACTER</span><i>GEAR · HEALTH · SKILLS</i></button>
+        <button class="tarkov-main-menu-item" type="button" onclick="openTarkovSurface('trading')"><span>TRADING</span><i>TRADERS · FLEA MARKET</i></button>
+        <button class="tarkov-main-menu-item" type="button" onclick="openTarkovSurface('hideout')"><span>HIDEOUT</span><i>STASH · STATIONS</i></button>
+        <button class="tarkov-main-menu-item tarkov-main-menu-exit" type="button" onclick="toggleTarkov()"><span>EXIT</span><i>RETURN TO BLUE ARCHIVE</i></button>
+      </nav>
+    </main>
+
+    <footer class="tarkov-main-footer" aria-label="Escape from Tarkov quick navigation">
+      <div class="tarkov-footer-left">
+        <button class="active" type="button" onclick="closeTarkovSurface()">MAIN MENU</button>
+        <button type="button" onclick="openTarkovSurface('hideout')">HIDEOUT</button>
       </div>
-    </div>
-    <div class="tarkov-event-right">
-      <div>PROGRESS: <strong style="color:#d8a436">1 / 53</strong></div>
-      <div>TIMER: <span style="color:#8a8b7c">119d 11h 4m</span></div>
-    </div>
-  </div>
+      <nav class="tarkov-footer-actions">
+        <button type="button" onclick="openTarkovSurface('character')"><b>▣</b><span>CHARACTER</span></button>
+        <button type="button" onclick="openTarkovSurface('trading')"><b>◉</b><span>TRADERS</span></button>
+        <button type="button" onclick="openTarkovSurface('flea')"><b>◈</b><span>FLEA MARKET</span></button>
+        <button type="button" onclick="openTarkovSurface('presets')"><b>⌁</b><span>PRESETS</span></button>
+        <button type="button" onclick="openTarkovSurface('handbook')"><b>▤</b><span>HANDBOOK</span></button>
+        <button type="button" onclick="openTarkovSurface('messenger')"><b>✉</b><span>MESSENGER</span></button>
+        <button type="button" onclick="openTarkovSurface('watchlist')"><b>◌</b><span>WATCHLIST</span></button>
+      </nav>
+      <div class="tarkov-footer-right">
+        <span id="tarkov-time-readout">--:--</span>
+        <button type="button" onclick="openTarkovSurface('settings')" aria-label="Settings">⚙</button>
+        <button class="tarkov-mode-toggle" type="button" onclick="toggleTarkov()" aria-label="Switch to Blue Archive mode">↩</button>
+      </div>
+    </footer>
 
-  <!-- Center Vertical Menu Options -->
-  <div class="tarkov-center-menu">
-    <button class="tarkov-menu-btn raid-btn" onclick="openBAModal('experience')">
-      <span class="btn-text">ESCAPE FROM TARKOV</span>
-    </button>
-    <button class="tarkov-menu-btn" onclick="openBAModal('about')">
-      <span class="btn-text">CHARACTER</span>
-    </button>
-    <button class="tarkov-menu-btn" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')">
-      <span class="btn-text">TRADING</span>
-    </button>
-    <button class="tarkov-menu-btn" onclick="openBAModal('crafting')">
-      <span class="btn-text">HIDEOUT</span>
-    </button>
-    <button class="tarkov-menu-btn exit-btn" onclick="toggleTarkov()">
-      <span class="btn-text">EXIT TO SCHALE</span>
-    </button>
-  </div>
-
-  <!-- Bottom Metallic Bar (Tarkov Official HUD Bar) -->
-  <div class="tarkov-bottom-hud">
-    <div class="tarkov-hud-left">
-      <span class="tarkov-expansions-badge">EXPANSIONS</span>
-      <span class="tarkov-version-tag">v0.14.9.0.30626 | PvP S</span>
-    </div>
-    
-    <div class="tarkov-hud-center">
-      <button class="tarkov-hud-btn" onclick="toggleTarkov()"><span class="icon">≡</span> MAIN MENU</button>
-      <button class="tarkov-hud-btn" onclick="openBAModal('crafting')"><span class="icon">🏚️</span> HIDEOUT</button>
-      <button class="tarkov-hud-btn" onclick="openBAModal('about')"><span class="icon">👤</span> CHARACTER</button>
-      <button class="tarkov-hud-btn" onclick="window.open('https://linkedin.com/in/danielguanes/', '_blank')"><span class="icon">🛒</span> TRADERS</button>
-      <button class="tarkov-hud-btn" onclick="openBAModal('students')"><span class="icon">ℹ️</span> HANDBOOK</button>
-      <button class="tarkov-hud-btn" onclick="openBAModal('momotalk')"><span class="icon">💬</span> MESSENGER</button>
-    </div>
-
-    <div class="tarkov-hud-right">
-      <span class="tarkov-season-badge">PVP SEASON</span>
-      <span class="tarkov-clock" id="tarkov-time-display">18:56</span>
-    </div>
-  </div>
+    <section class="tarkov-surface" id="tarkov-surface" aria-live="polite" aria-hidden="true">
+      <div class="tarkov-surface-backdrop"></div>
+      <div class="tarkov-surface-panel" role="dialog" aria-label="Tarkov destination">
+        <header><span id="tarkov-surface-kicker">MENU</span><button type="button" onclick="closeTarkovSurface()">BACK</button></header>
+        <h2 id="tarkov-surface-title">PREPARE TO ESCAPE</h2>
+        <p id="tarkov-surface-summary"></p>
+        <div id="tarkov-surface-content" class="tarkov-surface-content"></div>
+      </div>
+    </section>
+  </section>
 </div>
 
 <!-- MODAL WINDOW OVERLAYS -->
@@ -510,7 +401,7 @@
 </div>
 
 <!-- Modal: Messages (MomoTalk Chat Style) -->
-<div class="ba-modal" id="modal-momotalk">
+<div class="ba-modal" id="modal-messages">
   <div class="momotalk-header d-flex align-items-center justify-content-between px-3 py-2">
     <div class="d-flex align-items-center gap-2">
       <img src="img/icon_momotalk.png" class="momotalk-logo" alt="MomoTalk">
@@ -747,8 +638,8 @@
       </div>
 
       <div class="crafting-inventory-row">
-        <div class="keystone-count">Keystones: <span id="keystone-count-val">5</span> 🔑</div>
-        <button class="craft-btn" id="craft-trigger-btn" onclick="startCrafting()">Start Crafting (1x 🔑)</button>
+        <div class="keystone-count">Keystones: <span id="keystone-count-val">5</span> ⚿</div>
+        <button class="craft-btn" id="craft-trigger-btn" onclick="startCrafting()">Start Crafting (1x ⚿)</button>
       </div>
 
       <div class="sec-title">// COLLECTIBLE ARCHIVE SHOWCASE</div>

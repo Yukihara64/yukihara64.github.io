@@ -754,42 +754,9 @@
    LOBBY VISUAL EXACT MATCHES OVERRIDES
    ========================================================================== */
 
-/* Arona Active Mode (Full screen Live2D video style) */
-body.arona-active .bg-grad {
-  background: linear-gradient(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05)), url('../img/ezgif-3151758b9efd3b14.gif') center/cover no-repeat fixed !important;
-  animation: none !important;
-}
-body.arona-active .avatar-frame {
-  display: none !important;
-}
-body.arona-active .lobby-quote-bubble {
-  bottom: 220px !important;
-}
-body.arona-active .char-swap-btn {
-  left: calc(50% - 15px) !important;
-  bottom: -60px !important;
-}
-
-/* Click target for Arona when she is in the background */
-.lobby-char-click-zone {
-  position: absolute;
-  top: 15vh;
-  left: 30vw;
-  width: 40vw;
-  height: 55vh;
-  cursor: pointer;
-  z-index: 3;
-  display: none;
-  background: transparent;
-}
-body.arona-active .lobby-char-click-zone {
-  display: block;
-}
-
-/* Hide widgets on the right during Arona's full-screen Live2D recollection lobby */
-body.arona-active .lobby-widgets-container {
-  display: none !important;
-}
+/* Arona remains a selectable center avatar; the old full-screen override was
+   incompatible with the current lobby markup and hid the live widgets. */
+.lobby-char-click-zone { display: none; }
 
 /* Exact copy of Blue Archive Bottom Dock */
 .lobby-dock {
@@ -1043,77 +1010,4 @@ body.arona-active .lobby-widgets-container {
   color: var(--ba-blue) !important;
 }
 
-/* Non-Arona Cutouts */
-.avatar-frame {
-  border-radius: 0 !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  width: 320px !important;
-  height: 70vh !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  position: relative !important;
-  overflow: visible !important;
-}
-
-.avatar-hex {
-  width: 100% !important;
-  height: 100% !important;
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-  overflow: visible !important;
-}
-.avatar-hex::before { display: none !important; }
-
-.avatar-inner {
-  width: 100% !important;
-  height: 100% !important;
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-  overflow: visible !important;
-}
-.avatar-inner::after { display: none !important; }
-
-.avatar-inner img {
-  width: auto !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  object-fit: contain !important;
-  border-radius: 0 !important;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25)) !important;
-  animation: characterFloat 5s ease-in-out infinite !important;
-}
-
-.avatar-halo {
-  width: 140px !important;
-  height: 140px !important;
-  top: -20px !important;
-  left: calc(50% - 70px) !important;
-  z-index: 10 !important;
-}
-
-.avatar-frame .lvl-badge {
-  position: absolute !important;
-  bottom: 0px !important;
-  right: calc(50% - 40px) !important;
-  background: linear-gradient(135deg, var(--ba-blue), var(--ba-pink)) !important;
-  border: 2px solid #fff !important;
-  border-radius: 4px !important;
-  padding: 2px 8px !important;
-  font-size: 0.68rem !important;
-  font-weight: 900;
-  color: #fff !important;
-  box-shadow: 0 2px 6px rgba(0,163,255,0.4) !important;
-  z-index: 5 !important;
-}
+/* The center avatar uses the widget-scale definitions in css/index.css. */

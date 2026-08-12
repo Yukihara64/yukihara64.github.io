@@ -1,4 +1,7 @@
-/* Main stylesheet — imports all CSS modules */
 @import '../css/index.css';
 @import '../css/shittim_tablet.css';
+@import '../css/lobby-fixes.css';
 @import '../css/admin.css';
+
+@tailwind components;
+@tailwind utilities;

@@ -205,6 +205,13 @@
 
   // ── Digital Boot Screen Sequence ──
   function runBootSequence() {
+    const previewParams = new URLSearchParams(window.location.search);
+    if (previewParams.get('preview') === '1') {
+      const boot = document.getElementById('boot-screen');
+      if (boot) boot.classList.add('fade-out');
+      return;
+    }
+
     const box = (document.getElementById('boot-log-box') as any);
     const progress = (document.getElementById('boot-progress') as any);
     const percent = (document.getElementById('boot-percent') as any);
@@ -309,7 +316,7 @@
         if (modalId === 'students') renderRoster();
         if (modalId === 'recruit') renderRecruitBanner();
         if (modalId === 'crafting') renderCraftingRoom();
-        if (modalId === 'messages' || modalId === 'momotalk') renderMomoTalk();
+        if (modalId === 'messages') renderMomoTalk();
       }, 250);
       setTimeout(() => { wipe.classList.remove('active'); }, 650);
     } else {
@@ -1060,7 +1067,7 @@
   // ── Character Database ──
   const characters = [
     { name: 'Daniel Guanes', type: 'twitter', src: 'https://unavatar.io/twitter/tsk_yk64' },
-    { name: 'Arona', type: 'local', src: 'img/arona_guide.jpg' },
+    { name: 'Arona', type: 'local', src: 'img/arona_full.webp' },
     { name: 'Hachiware', type: 'local', src: 'img/SweetBabyHachiware2.webp' }
   ];
   let currentCharIndex = 1;
@@ -1068,26 +1075,18 @@
   function loadLobbyCharacter() {
     const char = characters[currentCharIndex];
     const img = (document.getElementById('avatar-img') as any);
-    const halo = (document.getElementById('avatar-halo') as any);
     if (!img) return;
 
-    if (currentCharIndex === 1) {
-      // Live2D Memorial Lobby background active
-      img.style.display = 'none';
-      if (halo) halo.style.display = 'none';
-      document.body.classList.add('arona-active');
+    img.style.display = 'block';
+    if (char.type === 'twitter') {
+      const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      img.src = `${char.src}?v=${today}`;
     } else {
-      img.style.display = 'block';
-      if (halo) halo.style.display = 'block';
-      document.body.classList.remove('arona-active');
-
-      if (char.type === 'twitter') {
-        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-        img.src = `${char.src}?v=${today}`;
-      } else {
-        img.src = char.src;
-      }
+      img.src = char.src;
     }
+    
+    // Toggle full-screen Live2D mode when Arona (index 1) is active
+    document.body.classList.toggle('arona-active', currentCharIndex === 1);
   }
 
   function swapLobbyCharacter(event) {
@@ -1152,6 +1151,59 @@
       textEl.textContent = senseiQuotes[quoteIndex];
       textEl.style.opacity = 1;
     }, 150);
+  }
+
+  // ── Reference Home Controls ──
+  function toggleBAQuickMenu() {
+    const menu = document.getElementById('ba-quick-menu');
+    if (!menu) return;
+    const isOpen = menu.classList.toggle('active');
+    menu.setAttribute('aria-hidden', String(!isOpen));
+  }
+
+  function toggleBAUI() {
+    const body = document.body;
+    const isHidden = body.classList.toggle('ba-ui-hidden');
+    const menu = document.getElementById('ba-quick-menu');
+    if (menu) {
+      menu.classList.remove('active');
+      menu.setAttribute('aria-hidden', 'true');
+    }
+    const returnControl = document.querySelector('.ba-ui-return');
+    if (returnControl) returnControl.toggleAttribute('hidden', !isHidden);
+  }
+
+  function openBACharacterSelector() {
+    openBAModal('character-select');
+  }
+
+  function selectBALobbyCharacter(index: number) {
+    if (!characters[index]) return;
+    currentCharIndex = index;
+    loadLobbyCharacter();
+    closeAllBAModals();
+    const stage = document.querySelector('.ba-memorial-stage');
+    if (stage) {
+      stage.classList.remove('ba-character-switch');
+      void (stage as HTMLElement).offsetWidth;
+      stage.classList.add('ba-character-switch');
+    }
+    changeQuote();
+  }
+
+  function handleBALobbyTap(event?: Event) {
+    event?.stopPropagation();
+    const stage = document.querySelector('.ba-memorial-stage');
+    if (stage) {
+      stage.classList.remove('ba-character-tap');
+      void (stage as HTMLElement).offsetWidth;
+      stage.classList.add('ba-character-tap');
+    }
+    changeQuote();
+  }
+
+  function openBAWork() {
+    openBAModal('experience');
   }
 
   // ── Dynamic Age Calculation ──
@@ -1293,6 +1345,87 @@
     } catch(e) {
       el.innerHTML = `<span style="color:var(--muted);font-size:.75rem;">⚠️ Could not load Steam.</span>`;
     }
+  }  // ── Cafe Board Drawing Pad ──
+  const drawCanvas = (document.getElementById('draw-canvas') as HTMLCanvasElement | null);
+  const drawCtx = drawCanvas ? drawCanvas.getContext('2d') : null;
+  let drawDrawing = false;
+  let drawTool = 'pen';
+  let drawLastX = 0;
+  let drawLastY = 0;
+
+  function setTool(tool: string) {
+    drawTool = tool;
+    document.querySelectorAll('#modal-drawing .gacha-tool').forEach(button => button.classList.remove('active'));
+    const activeButton = document.getElementById(`tool-${tool}`);
+    if (activeButton) activeButton.classList.add('active');
+  }
+
+  function getDrawPos(event: any) {
+    if (!drawCanvas) return [0, 0];
+    const rect = drawCanvas.getBoundingClientRect();
+    const scaleX = drawCanvas.width / rect.width;
+    const scaleY = drawCanvas.height / rect.height;
+    const point = event.touches?.[0] ?? event;
+    return [(point.clientX - rect.left) * scaleX, (point.clientY - rect.top) * scaleY];
+  }
+
+  function clearCanvas() {
+    if (!drawCtx || !drawCanvas) return;
+    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  }
+
+  if (drawCanvas && drawCtx) {
+    drawCanvas.addEventListener('pointerdown', event => {
+      drawDrawing = true;
+      drawCanvas.setPointerCapture?.(event.pointerId);
+      [drawLastX, drawLastY] = getDrawPos(event);
+    });
+    drawCanvas.addEventListener('pointermove', event => {
+      if (!drawDrawing) return;
+      const [x, y] = getDrawPos(event);
+      drawCtx.globalCompositeOperation = drawTool === 'eraser' ? 'destination-out' : 'source-over';
+      drawCtx.strokeStyle = (document.getElementById('draw-color') as HTMLInputElement | null)?.value ?? '#00a3ff';
+      drawCtx.lineWidth = Number((document.getElementById('draw-size') as HTMLInputElement | null)?.value ?? 4);
+      drawCtx.lineCap = 'round';
+      drawCtx.lineJoin = 'round';
+      drawCtx.beginPath();
+      drawCtx.moveTo(drawLastX, drawLastY);
+      drawCtx.lineTo(x, y);
+      drawCtx.stroke();
+      [drawLastX, drawLastY] = [x, y];
+    });
+    const stopDrawing = () => { drawDrawing = false; };
+    drawCanvas.addEventListener('pointerup', stopDrawing);
+    drawCanvas.addEventListener('pointercancel', stopDrawing);
+    drawCanvas.addEventListener('pointerleave', stopDrawing);
+  }
+
+  async function sendDrawing() {
+    const status = document.getElementById('draw-status') as HTMLElement | null;
+    const message = (document.getElementById('draw-msg') as HTMLInputElement | null)?.value.trim() ?? '';
+    if (!drawCanvas) return;
+
+    const button = document.getElementById('draw-btn') as HTMLButtonElement | null;
+    if (button) { button.disabled = true; button.style.opacity = '.6'; }
+    if (status) { status.style.display = 'block'; status.style.color = 'var(--ba-blue)'; status.textContent = 'Uploading contract...'; }
+
+    try {
+      const response = await fetch('/api/drawings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_data: drawCanvas.toDataURL('image/png'), message })
+      });
+      const data = await response.json().catch(() => ({} as any)) as any;
+      if (!response.ok || data.success === false) throw new Error(data.error ?? 'Upload failed');
+      if (status) { status.style.color = '#80ffcc'; status.textContent = '✅ Contract registered! ありがとう 🌸'; }
+      clearCanvas();
+      const input = document.getElementById('draw-msg') as HTMLInputElement | null;
+      if (input) input.value = '';
+    } catch (error: any) {
+      if (status) { status.style.color = '#ff6b6b'; status.textContent = `❌ ${error?.message ?? 'Failed to submit contract.'}`; }
+    } finally {
+      if (button) { button.disabled = false; button.style.opacity = '1'; }
+    }
   }
 
   // ── Anonymous MomoTalk Messages Send ──
@@ -1375,18 +1508,17 @@
     }
   }
 
+  // ── Real-Time Digital Clock HUD ──
   (function() {
     function updateClock() {
+      const el = (document.getElementById("lobby-time-display") as any);
+      const tarkovEl = (document.getElementById("tarkov-time-readout") as any);
+      if (!el && !tarkovEl) return;
       const now = new Date();
       const hrs = String(now.getHours()).padStart(2, '0');
       const mins = String(now.getMinutes()).padStart(2, '0');
-      const str = `${hrs}:${mins}`;
-      
-      const el = (document.getElementById("lobby-time-display") as any);
-      if (el) el.textContent = str;
-      
-      const tarkovEl = (document.getElementById("tarkov-time-display") as any);
-      if (tarkovEl) tarkovEl.textContent = str;
+      if (el) el.textContent = `${hrs}:${mins}`;
+      if (tarkovEl) tarkovEl.textContent = `${hrs}:${mins}`;
     }
     updateClock();
     setInterval(updateClock, 1000);
@@ -1418,68 +1550,81 @@
     }, 1500);
   }
 
-  // ── Tarkov Theme Toggle & Audio Ticker ──
-  const tarkovBackgrounds = [
-    'img/tarkov1.jpeg', 'img/tarkov2.jpeg', 'img/tarkov3.jpeg',
-    'img/tarvko4.jpeg', 'img/tarkov5.jpeg', 'img/tarkov6.jpeg'
-  ];
-  const tarkovSongs = [
-    '00xprBmokcI', 'LDQEqhZ0TQc', 'zr5CCXjnZ8k', 'UxHruHuWKt4',
-    '1nS3lkNc408', 'Krg0yrh8o0M', 'wq9deTUvcy0', 'CMKuhNXF3ws'
-  ];
+  // ── Tarkov Theme Toggle ──
+  // The reconstructed menu intentionally uses a deterministic local scene.
 
-  let lastTarkovBG = null;
-  let lastTarkovSong = null;
+  function updateModeToggle(isTarkov: boolean) {
+    const btn = document.getElementById('tarkov-btn') as HTMLButtonElement | null;
+    if (!btn) return;
+    btn.innerHTML = isTarkov
+      ? '<span class="btn-inner">⌂</span><span class="mode-toggle-label">BA</span>'
+      : '<span class="btn-inner">⚙️</span><span class="mode-toggle-label">MODE</span>';
+    btn.setAttribute('aria-pressed', String(isTarkov));
+    btn.setAttribute('title', isTarkov ? 'Switch to Blue Archive mode' : 'Switch to Tarkov mode');
+  }
 
   function toggleTarkov() {
     const body = document.body;
-    const btn = (document.getElementById('tarkov-btn') as any);
-    const audioContainer = (document.getElementById('tarkov-audio-container') as any);
-    const baLobby = (document.querySelector('.ba-lobby') as any);
-    const textEl = (document.getElementById('lobby-quote-text') as any);
-    const clockKeys = (document.querySelector('.lobby-clock-hud .hud-keys') as any);
-    const workJp = (document.querySelector('.lobby-work-btn .work-jp') as any);
-
     const isTarkov = body.classList.toggle('tarkov-theme');
-    
-    if (isTarkov) {
-      if (btn) btn.innerHTML = '<span class="btn-inner">⚡</span>';
-      
-      let randomBG, randomSong;
-      do {
-        randomBG = tarkovBackgrounds[Math.floor(Math.random() * tarkovBackgrounds.length)];
-      } while (randomBG === lastTarkovBG && tarkovBackgrounds.length > 1);
-      
-      do {
-        randomSong = tarkovSongs[Math.floor(Math.random() * tarkovSongs.length)];
-      } while (randomSong === lastTarkovSong && tarkovSongs.length > 1);
-      
-      lastTarkovBG = randomBG;
-      lastTarkovSong = randomSong;
-
-      if (baLobby) {
-        baLobby.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.7)), url('${randomBG}')`;
-        baLobby.style.backgroundSize = 'cover';
-        baLobby.style.backgroundPosition = 'center';
-      }
-      
-      if (audioContainer) {
-        audioContainer.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${randomSong}?autoplay=1&loop=1&playlist=${randomSong}&enablejsapi=1" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
-      }
-
-      if (textEl) textEl.textContent = "[BEAR COMMS] Tactical Raid in progress. Deploying to Tarkov Customs. 🪖";
-      if (clockKeys) clockKeys.textContent = "✦ BEAR OS / TARKOV METRO";
-      if (workJp) workJp.textContent = "TACTICAL RAID";
-    } else {
-      if (btn) btn.innerHTML = '<span class="btn-inner">⚙️</span>';
-      if (baLobby) baLobby.style.backgroundImage = '';
-      if (audioContainer) audioContainer.innerHTML = '';
-
-      if (textEl) textEl.textContent = "Welcome to SCHALE office, Sensei! 🌸";
-      if (clockKeys) clockKeys.textContent = "Δ × + ◯";
-      if (workJp) workJp.textContent = "お仕事";
-    }
+    body.dataset.mode = isTarkov ? 'tarkov' : 'ba';
+    localStorage.setItem('lobby-mode', body.dataset.mode);
+    updateModeToggle(isTarkov);
+    const tarkovLobby = document.getElementById('tarkov-lobby');
+    if (tarkovLobby) tarkovLobby.toggleAttribute('hidden', !isTarkov);
+    if (!isTarkov) closeTarkovSurface();
   }
+
+  type TarkovSurfaceId = 'prepare' | 'character' | 'trading' | 'hideout' | 'flea' | 'presets' | 'handbook' | 'messenger' | 'watchlist' | 'settings';
+  const tarkovSurfaceData: Record<TarkovSurfaceId, { kicker: string; title: string; summary: string; content: string }> = {
+    prepare: { kicker: 'RAID SELECTION', title: 'PREPARE TO ESCAPE', summary: 'Choose your operative before map selection.', content: '<div class="tarkov-choice-grid"><button type="button" class="tarkov-choice-card"><b>SCAV</b><span>SCAVENGER</span><small>Random loadout · no stash risk</small></button><button type="button" class="tarkov-choice-card active"><b>PMC</b><span>YOUR CHARACTER</span><small>Use equipped gear · progress tasks</small></button></div><div class="tarkov-surface-controls"><button type="button">BACK</button><button type="button" class="primary">NEXT</button></div>' },
+    character: { kicker: 'CHARACTER', title: 'OVERALL', summary: 'Equipment layout and secure stash.', content: '<div class="tarkov-character-layout"><div class="tarkov-slot-list"><i>HEADWEAR</i><i>FACE COVER</i><i>BODY ARMOR</i><i>ON SLING</i><i>ON BACK</i><i>HOLSTER</i></div><div class="tarkov-operator-silhouette">PMC</div><div class="tarkov-stash-grid">STASH<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>' },
+    trading: { kicker: 'TRADING', title: 'TRADERS', summary: 'Select a trader to inspect loyalty and available stock.', content: '<div class="tarkov-trader-grid"><button type="button"><b>P</b><span>PRAPOR</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>T</b><span>THERAPIST</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>F</b><span>FENCE</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>S</b><span>SKIER</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>P</b><span>PEACEKEEPER</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>M</b><span>MECHANIC</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>R</b><span>RAGMAN</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>J</b><span>JAEGER</span><small>LOCKED</small></button></div>' },
+    hideout: { kicker: 'HIDEOUT', title: 'THE HIDEOUT', summary: 'Underground shelter module overview.', content: '<div class="tarkov-loading-state"><div class="tarkov-hex-spinner">◈</div><span>LOADING HIDEOUT</span></div>' },
+    flea: { kicker: 'TRADING', title: 'FLEA MARKET', summary: 'Browse item categories and current offers.', content: '<div class="tarkov-market-layout"><aside>WEAPONS<br>AMMO<br>MEDICAL<br>PROVISIONS<br>KEYS</aside><section>OFFERS <div class="tarkov-offer">5.45×39 BP <button>PURCHASE</button></div><div class="tarkov-offer">AI-2 MEDKIT <button>PURCHASE</button></div></section></div>' },
+    presets: { kicker: 'WEAPON', title: 'PRESETS', summary: 'Saved weapon configurations.', content: '<div class="tarkov-empty-state">NO PRESETS CREATED</div>' },
+    handbook: { kicker: 'HANDBOOK', title: 'HANDBOOK', summary: 'Item knowledge base.', content: '<div class="tarkov-empty-state">ITEM CATALOG READY</div>' },
+    messenger: { kicker: 'MESSENGER', title: 'MESSENGER', summary: 'Messages from traders and operational contacts.', content: '<div class="tarkov-messenger"><aside>PRAPOR<br>THERAPIST<br>FENCE</aside><section>SELECT A DIALOGUE</section></div>' },
+    watchlist: { kicker: 'WATCHLIST', title: 'WATCHLIST', summary: 'Tracked market offers.', content: '<div class="tarkov-empty-state">WATCHLIST IS EMPTY</div>' },
+    settings: { kicker: 'SETTINGS', title: 'SETTINGS', summary: 'Game and audio configuration.', content: '<div class="tarkov-settings-tabs"><button>GAME</button><button>GRAPHICS</button><button>POSTFX</button><button>SOUND</button><button>CONTROLS</button></div>' }
+  };
+
+  function openTarkovSurface(id: TarkovSurfaceId) {
+    const data = tarkovSurfaceData[id];
+    const surface = document.getElementById('tarkov-surface');
+    if (!data || !surface) return;
+    const kicker = document.getElementById('tarkov-surface-kicker');
+    const title = document.getElementById('tarkov-surface-title');
+    const summary = document.getElementById('tarkov-surface-summary');
+    const content = document.getElementById('tarkov-surface-content');
+    if (kicker) kicker.textContent = data.kicker;
+    if (title) title.textContent = data.title;
+    if (summary) summary.textContent = data.summary;
+    if (content) content.innerHTML = data.content;
+    surface.classList.add('active');
+    surface.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeTarkovSurface() {
+    const surface = document.getElementById('tarkov-surface');
+    if (!surface) return;
+    surface.classList.remove('active');
+    surface.setAttribute('aria-hidden', 'true');
+  }
+
+  function initializeLobbyMode() {
+    const requestedMode = new URLSearchParams(window.location.search).get('mode');
+    if (requestedMode === 'ba' || requestedMode === 'tarkov') localStorage.setItem('lobby-mode', requestedMode);
+    const isTarkov = localStorage.getItem('lobby-mode') === 'tarkov';
+    document.body.dataset.mode = isTarkov ? 'tarkov' : 'ba';
+    document.body.classList.toggle('tarkov-theme', isTarkov);
+    updateModeToggle(isTarkov);
+    const tarkovLobby = document.getElementById('tarkov-lobby');
+    if (tarkovLobby) tarkovLobby.toggleAttribute('hidden', !isTarkov);
+  }
+
+  // Apply the persisted mode before the first DOMContentLoaded paint.
+  initializeLobbyMode();
+
 
   // ── Initialization ──
   window.addEventListener('DOMContentLoaded', () => {
@@ -1509,16 +1654,40 @@
   });
 
 
-// Expose functions to global window object for index.html inline onclick handlers
-(window as any).openBAModal = openBAModal;
-(window as any).closeAllBAModals = closeAllBAModals;
-(window as any).replenishPyroxenes = replenishPyroxenes;
-(window as any).toggleTarkov = toggleTarkov;
-(window as any).changeQuote = changeQuote;
-(window as any).swapLobbyCharacter = swapLobbyCharacter;
-(window as any).startGacha = startGacha;
-(window as any).setGachaTool = setGachaTool;
-(window as any).clearGachaCanvas = clearGachaCanvas;
-(window as any).confirmSignature = confirmSignature;
-(window as any).finishRecruitment = finishRecruitment;
-
+// Expose functions to the global window object for legacy inline handlers.
+// The entry point is a module, so its local declarations are not global by default.
+Object.assign(window, {
+  openBAModal,
+  closeAllBAModals,
+  replenishPyroxenes,
+  inviteStudentToCafe,
+  tapChibi,
+  closeScheduleEvent,
+  filterRoster,
+  levelUpStudent,
+  startGacha,
+  setGachaTool,
+  clearGachaCanvas,
+  confirmSignature,
+  finishRecruitment,
+  closeCraftedPopup,
+  confirmCardReveal,
+  startCrafting,
+  setTool,
+  clearCanvas,
+  sendDrawing,
+  sendMessage,
+  toggleTarkov,
+  changeQuote,
+  swapLobbyCharacter,
+  toggleBAQuickMenu,
+  toggleBAUI,
+  openBACharacterSelector,
+  selectBALobbyCharacter,
+  handleBALobbyTap,
+  openBAWork,
+  openTarkovSurface,
+  closeTarkovSurface,
+  toggleFullScreen,
+  scrollToWidgets
+});
