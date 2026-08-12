@@ -2140,3 +2140,171 @@ body.tarkov-theme .tarkov-settings-tabs button { min-width: 90px; padding: 15px 
   body.tarkov-theme .tarkov-trader-grid { grid-template-columns: repeat(2,1fr); }
   body.tarkov-theme .tarkov-market-layout, body.tarkov-theme .tarkov-messenger { grid-template-columns: 105px 1fr; }
 }
+
+/* Clean local icon pass: prevent sprite fragments and keep each mode's palette */
+body:not(.tarkov-theme) .ba-home-rail-action > img {
+  width: 33px;
+  height: 33px;
+  object-fit: contain;
+  flex: 0 0 33px;
+  padding: 3px;
+  filter: drop-shadow(0 1px 1px rgba(24,121,184,.16));
+}
+body:not(.tarkov-theme) .ba-home-dock button > img {
+  width: 31px;
+  height: 31px;
+  object-fit: contain;
+  margin-bottom: 1px;
+  filter: drop-shadow(0 1px 1px rgba(24,121,184,.16));
+}
+body.tarkov-theme .tarkov-footer-actions img {
+  display: block;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  opacity: .88;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.8));
+}
+body.tarkov-theme .tarkov-footer-right button > img {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: auto;
+  object-fit: contain;
+}
+body.tarkov-theme .tarkov-footer-actions button:hover img,
+body.tarkov-theme .tarkov-footer-right button:hover img { opacity: 1; filter: brightness(1.17) drop-shadow(0 0 3px rgba(207,162,108,.35)); }
+@media (max-width: 750px) {
+  body:not(.tarkov-theme) .ba-home-rail-action > img { width: 28px; height: 28px; flex-basis: 28px; }
+  body:not(.tarkov-theme) .ba-home-dock button > img { width: 26px; height: 26px; }
+}
+
+/* Tarkov surface fidelity pass: inventory density, trader rows and hideout modules */
+body.tarkov-theme .tarkov-surface-panel {
+  width: min(1160px, 90vw);
+  max-height: min(790px, 82vh);
+  padding: 18px 22px 22px;
+  overflow: auto;
+  background:
+    linear-gradient(90deg, rgba(192,148,93,.06) 1px, transparent 1px) 0 0 / 92px 100%,
+    linear-gradient(135deg, rgba(31,35,30,.985), rgba(8,10,8,.99));
+}
+body.tarkov-theme .tarkov-surface-panel::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 36px;
+  height: 36px;
+  border-right: 1px solid rgba(194,138,84,.55);
+  border-bottom: 1px solid rgba(194,138,84,.55);
+  pointer-events: none;
+}
+body.tarkov-theme .tarkov-surface-content { min-height: 260px; }
+body.tarkov-theme .tarkov-surface-panel h2 { margin-top: 15px; }
+body.tarkov-theme .tarkov-panel-feedback { min-height: 15px; margin: 11px 0 0; color: #c48c57; font-size: .53rem; font-weight: 800; letter-spacing: .11em; }
+body.tarkov-theme .tarkov-action-btn {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid rgba(216,210,195,.25);
+  color: rgba(226,219,204,.8);
+  background: rgba(255,255,255,.025);
+  font: 800 .48rem/1 inherit;
+  letter-spacing: .1em;
+  cursor: pointer;
+  transition: border-color .14s ease, color .14s ease, background .14s ease;
+}
+body.tarkov-theme .tarkov-action-btn:hover,
+body.tarkov-theme .tarkov-action-btn.active { border-color: #c58c55; color: #e5c79f; background: rgba(197,140,85,.13); }
+body.tarkov-theme .tarkov-action-btn.primary { color: #191715; border-color: #c58c55; background: #c58c55; }
+body.tarkov-theme .tarkov-action-btn.primary:hover { color: #151311; background: #dfa060; }
+
+/* Character / stash */
+body.tarkov-theme .tarkov-character-overview { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; margin-bottom: 9px; border: 1px solid rgba(213,210,194,.15); color: rgba(222,218,206,.56); font-size: .49rem; font-weight: 800; letter-spacing: .08em; }
+body.tarkov-theme .tarkov-character-overview b { color: #d4b28b; }
+body.tarkov-theme .tarkov-character-layout { grid-template-columns: minmax(245px,.92fr) minmax(200px,.7fr) minmax(330px,1.35fr); min-height: 330px; gap: 10px; }
+body.tarkov-theme .tarkov-equipment-panel,
+body.tarkov-theme .tarkov-operator-panel,
+body.tarkov-theme .tarkov-stash-panel { position: relative; min-width: 0; padding: 10px; border: 1px solid rgba(213,210,194,.16); background: rgba(5,7,6,.28); }
+body.tarkov-theme .tarkov-section-label { display: block; margin-bottom: 9px; color: rgba(222,218,206,.52); font-size: .49rem; font-weight: 800; letter-spacing: .14em; }
+body.tarkov-theme .tarkov-slot-list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 5px; }
+body.tarkov-theme .tarkov-slot-list button { min-height: 52px; padding: 6px; border: 1px solid rgba(213,210,194,.15); color: rgba(218,215,205,.57); background: linear-gradient(135deg, rgba(133,121,99,.11), rgba(0,0,0,.1)); font: 800 .45rem/1.25 inherit; letter-spacing: .065em; cursor: pointer; text-align: left; transition: border-color .14s ease, color .14s ease, background .14s ease; }
+body.tarkov-theme .tarkov-slot-list button::before { display: block; margin-bottom: 5px; color: rgba(196,141,87,.62); font-size: .38rem; content: attr(data-slot); }
+body.tarkov-theme .tarkov-slot-list button:hover,
+body.tarkov-theme .tarkov-slot-list button.active { border-color: rgba(197,140,85,.8); color: #e6dfd1; background: rgba(197,140,85,.12); }
+body.tarkov-theme .tarkov-operator-panel { display: grid; place-items: center; overflow: hidden; }
+body.tarkov-theme .tarkov-operator-panel::before { position: absolute; width: 150%; height: 1px; background: rgba(215,209,190,.13); content: ''; transform: rotate(-30deg); }
+body.tarkov-theme .tarkov-operator-figure { position: relative; z-index: 1; width: min(148px, 95%); color: rgba(206,199,178,.38); filter: drop-shadow(0 0 18px rgba(173,149,110,.13)); }
+body.tarkov-theme .tarkov-operator-figure svg { display: block; width: 100%; height: auto; }
+body.tarkov-theme .tarkov-operator-caption { position: absolute; bottom: 11px; left: 0; right: 0; color: rgba(221,216,201,.5); font-size: .44rem; font-weight: 800; letter-spacing: .13em; text-align: center; }
+body.tarkov-theme .tarkov-stash-title { display: flex; justify-content: space-between; margin-bottom: 9px; color: rgba(223,218,205,.6); font-size: .48rem; font-weight: 800; letter-spacing: .12em; }
+body.tarkov-theme .tarkov-stash-grid { grid-template-columns: repeat(10, minmax(24px,1fr)); grid-auto-rows: minmax(27px,1fr); gap: 2px; min-height: 267px; }
+body.tarkov-theme .tarkov-stash-grid button { position: relative; padding: 0; border: 1px solid rgba(213,210,194,.14); color: rgba(218,215,205,.58); background: rgba(140,130,111,.07); cursor: pointer; }
+body.tarkov-theme .tarkov-stash-grid button:hover,
+body.tarkov-theme .tarkov-stash-grid button.active { z-index: 1; border-color: #c58c55; background: rgba(197,140,85,.16); box-shadow: inset 0 0 8px rgba(197,140,85,.17); }
+body.tarkov-theme .tarkov-stash-grid button.item-med { background: linear-gradient(135deg, rgba(76,133,67,.66), rgba(45,82,40,.3)); }
+body.tarkov-theme .tarkov-stash-grid button.item-ammo { background: linear-gradient(135deg, rgba(135,107,47,.7), rgba(73,57,26,.3)); }
+body.tarkov-theme .tarkov-stash-grid button.item-weapon { background: linear-gradient(135deg, rgba(89,102,110,.75), rgba(44,48,49,.28)); }
+body.tarkov-theme .tarkov-stash-grid button.item-bag { background: linear-gradient(135deg, rgba(96,84,60,.76), rgba(55,48,34,.33)); }
+body.tarkov-theme .tarkov-stash-grid button span { position: absolute; right: 2px; bottom: 1px; color: rgba(255,255,255,.78); font-size: .36rem; font-weight: 900; }
+
+/* Traders and flea market */
+body.tarkov-theme .tarkov-trader-grid { grid-template-columns: repeat(4,1fr); gap: 7px; }
+body.tarkov-theme .tarkov-trader-grid button { position: relative; min-height: 114px; overflow: hidden; text-align: left; }
+body.tarkov-theme .tarkov-trader-grid button::after { position: absolute; right: -8px; bottom: -16px; color: rgba(225,216,196,.08); font-size: 4.4rem; font-weight: 900; line-height: 1; content: attr(data-letter); }
+body.tarkov-theme .tarkov-trader-grid button.active { border-color: #c58c55; box-shadow: inset 0 0 17px rgba(197,140,85,.1); }
+body.tarkov-theme .tarkov-trader-detail { display: grid; grid-template-columns: 138px minmax(0,1fr) 190px; min-height: 276px; border: 1px solid rgba(213,210,194,.17); }
+body.tarkov-theme .tarkov-trader-sidebar { padding: 12px; border-right: 1px solid rgba(213,210,194,.13); }
+body.tarkov-theme .tarkov-trader-sidebar button { display: flex; width: 100%; min-height: 29px; align-items: center; justify-content: space-between; padding: 0 6px; border: 0; border-bottom: 1px solid rgba(213,210,194,.08); color: rgba(222,218,206,.55); background: transparent; font: 800 .46rem inherit; letter-spacing: .07em; cursor: pointer; text-align: left; }
+body.tarkov-theme .tarkov-trader-sidebar button:hover,
+body.tarkov-theme .tarkov-trader-sidebar button.active { color: #e1c29d; background: rgba(197,140,85,.1); }
+body.tarkov-theme .tarkov-trader-stock { padding: 12px; min-width: 0; }
+body.tarkov-theme .tarkov-trader-toolbar { display: flex; gap: 6px; margin-bottom: 10px; }
+body.tarkov-theme .tarkov-trader-toolbar .tarkov-action-btn { flex: 1; }
+body.tarkov-theme .tarkov-item-row { display: grid; grid-template-columns: 30px minmax(0,1fr) auto auto; gap: 8px; align-items: center; min-height: 43px; padding: 5px; border-top: 1px solid rgba(213,210,194,.1); color: rgba(225,220,209,.73); font-size: .5rem; font-weight: 800; letter-spacing: .04em; }
+body.tarkov-theme .tarkov-item-thumb { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid rgba(213,210,194,.18); color: #b88657; background: rgba(137,126,106,.12); font-size: .45rem; }
+body.tarkov-theme .tarkov-item-row small { color: rgba(218,214,203,.44); font-size: .4rem; font-weight: 700; }
+body.tarkov-theme .tarkov-item-row strong { color: #d0ae85; font-size: .49rem; }
+body.tarkov-theme .tarkov-trader-inventory { padding: 12px; border-left: 1px solid rgba(213,210,194,.13); }
+body.tarkov-theme .tarkov-trader-inventory .tarkov-stash-grid { grid-template-columns: repeat(5,1fr); grid-auto-rows: 29px; min-height: 0; }
+body.tarkov-theme .tarkov-market-layout { grid-template-columns: 145px minmax(0,1fr); }
+body.tarkov-theme .tarkov-market-layout aside button { display: block; width: 100%; padding: 7px 3px; border: 0; border-bottom: 1px solid rgba(213,210,194,.08); color: rgba(222,218,206,.57); background: transparent; font: 800 .5rem inherit; letter-spacing: .1em; cursor: pointer; text-align: left; }
+body.tarkov-theme .tarkov-market-layout aside button:hover,
+body.tarkov-theme .tarkov-market-layout aside button.active { color: #dfbf98; background: rgba(197,140,85,.11); }
+body.tarkov-theme .tarkov-offer { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 8px; align-items: center; }
+body.tarkov-theme .tarkov-offer span { color: rgba(216,213,203,.45); font-size: .45rem; }
+
+/* Hideout */
+body.tarkov-theme .tarkov-hideout-layout { display: grid; grid-template-columns: minmax(0,1.45fr) 218px; gap: 10px; }
+body.tarkov-theme .tarkov-hideout-view { position: relative; min-height: 278px; overflow: hidden; border: 1px solid rgba(213,210,194,.2); background: radial-gradient(ellipse at 48% 75%, rgba(159,111,55,.23), transparent 28%), linear-gradient(152deg, rgba(35,34,29,.95), rgba(6,8,7,.98)); }
+body.tarkov-theme .tarkov-hideout-view::before { position: absolute; inset: 0; opacity: .42; background: repeating-linear-gradient(90deg, transparent 0 45px, rgba(220,210,192,.09) 46px 47px), repeating-linear-gradient(0deg, transparent 0 37px, rgba(220,210,192,.06) 38px 39px); content: ''; transform: perspective(300px) rotateX(57deg) scale(1.9) translateY(13%); transform-origin: bottom; }
+body.tarkov-theme .tarkov-hideout-view.powered-off { filter: brightness(.62) saturate(.64); }
+body.tarkov-theme .tarkov-hideout-label { position: absolute; z-index: 1; color: rgba(231,224,211,.63); font-size: .48rem; font-weight: 800; letter-spacing: .13em; }
+body.tarkov-theme .tarkov-hideout-label:nth-child(1) { top: 18%; left: 14%; }
+body.tarkov-theme .tarkov-hideout-label:nth-child(2) { top: 43%; right: 14%; }
+body.tarkov-theme .tarkov-hideout-label:nth-child(3) { bottom: 17%; left: 39%; }
+body.tarkov-theme .tarkov-hideout-label i { display: inline-block; width: 7px; height: 7px; margin-right: 5px; border-radius: 50%; background: #c58c55; box-shadow: 0 0 7px #c58c55; }
+body.tarkov-theme .tarkov-hideout-sidebar { padding: 13px; border: 1px solid rgba(213,210,194,.17); background: rgba(5,7,6,.32); }
+body.tarkov-theme .tarkov-power-state { padding-bottom: 11px; border-bottom: 1px solid rgba(213,210,194,.14); }
+body.tarkov-theme .tarkov-power-state b { display: block; margin-top: 5px; color: #d7c4a9; font-size: .64rem; letter-spacing: .09em; }
+body.tarkov-theme .tarkov-power-state span { color: #b88757; font-size: .45rem; font-weight: 800; letter-spacing: .08em; }
+body.tarkov-theme .tarkov-module-list { display: grid; gap: 5px; margin-top: 10px; }
+body.tarkov-theme .tarkov-module-list button { display: flex; min-height: 36px; align-items: center; justify-content: space-between; border: 1px solid rgba(213,210,194,.13); padding: 0 7px; color: rgba(223,217,204,.68); background: rgba(121,110,88,.08); font: 800 .46rem inherit; letter-spacing: .06em; cursor: pointer; text-align: left; }
+body.tarkov-theme .tarkov-module-list button:hover,
+body.tarkov-theme .tarkov-module-list button.active { border-color: #c58c55; color: #e5c9a6; background: rgba(197,140,85,.12); }
+body.tarkov-theme .tarkov-module-list em { color: rgba(218,213,200,.45); font-size: .4rem; font-style: normal; }
+body.tarkov-theme .tarkov-hideout-footer { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 10px; padding: 9px; border: 1px solid rgba(213,210,194,.15); color: rgba(222,216,204,.56); font-size: .47rem; font-weight: 800; letter-spacing: .08em; }
+
+@media (max-width: 750px) {
+  body.tarkov-theme .tarkov-surface-panel { width: 96vw; max-height: 82vh; padding: 15px; }
+  body.tarkov-theme .tarkov-character-overview { font-size: .43rem; }
+  body.tarkov-theme .tarkov-character-layout { grid-template-columns: 1fr; }
+  body.tarkov-theme .tarkov-operator-panel { display: none; }
+  body.tarkov-theme .tarkov-stash-grid { grid-template-columns: repeat(8,minmax(24px,1fr)); }
+  body.tarkov-theme .tarkov-trader-grid { grid-template-columns: repeat(2,1fr); }
+  body.tarkov-theme .tarkov-trader-detail { grid-template-columns: 96px minmax(0,1fr); }
+  body.tarkov-theme .tarkov-trader-inventory { display: none; }
+  body.tarkov-theme .tarkov-hideout-layout { grid-template-columns: 1fr; }
+  body.tarkov-theme .tarkov-hideout-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  body.tarkov-theme .tarkov-module-list { margin-top: 0; }
+}

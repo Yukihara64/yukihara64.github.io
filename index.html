@@ -81,7 +81,7 @@
   <header class="ba-home-header" aria-label="Sensei status">
     <button class="ba-home-profile" type="button" onclick="openBAModal('about')" aria-label="Open Sensei profile">
       <span class="ba-home-profile-level">Lv. <strong id="age-badge-topbar">26</strong></span>
-      <span class="ba-home-profile-name">ゆかり</span>
+      <span class="ba-home-profile-name" id="ba-sensei-handle" data-twitter-handle="tsk_yk64">@tsk_yk64</span>
       <span class="ba-home-profile-progress">41/66</span>
     </button>
 
@@ -117,13 +117,13 @@
 
   <aside class="ba-home-rail" aria-label="Home alerts and communication">
     <button class="ba-home-rail-action" type="button" onclick="openBAModal('about')">
-      <img src="img/icon_notice.png" alt=""><span>NOTICE</span>
+      <img src="/img/ui-icons/ba-notice.svg" alt=""><span>NOTICE</span>
     </button>
     <button class="ba-home-rail-action ba-home-rail-momotalk" type="button" onclick="openBAModal('messages')">
-      <img src="img/ba-reference/icon_momotalk.png" alt=""><span>MOMOTALK</span><i aria-label="Unread messages"></i>
+      <img src="/img/ui-icons/ba-momotalk.svg" alt=""><span>MOMOTALK</span><i aria-label="Unread messages"></i>
     </button>
     <button class="ba-home-rail-action" type="button" onclick="openBAModal('experience')">
-      <img src="img/icon_missions.png" alt=""><span>MISSION</span>
+      <img src="/img/ui-icons/ba-mission.svg" alt=""><span>MISSION</span>
     </button>
   </aside>
 
@@ -148,14 +148,14 @@
 
   <footer class="ba-home-footer" aria-label="Blue Archive main navigation">
     <nav class="ba-home-dock">
-      <button type="button" onclick="openBAModal('cafe')"><img src="img/icon_cafe.png" alt=""><span>CAFE</span></button>
-      <button type="button" onclick="openBAModal('schedule')"><img src="img/icon_schedule.png" alt=""><span>SCHEDULE</span></button>
-      <button type="button" onclick="openBAModal('students')"><img src="img/icon_student.png" alt=""><span>STUDENTS</span></button>
-      <button type="button" onclick="openBAModal('experience')"><img src="img/icon_formation.png" alt=""><span>FORMATION</span></button>
-      <button type="button" onclick="openBAModal('about')"><img src="img/icon_circle.png" alt=""><span>CIRCLE</span></button>
-      <button type="button" onclick="openBAModal('crafting')"><img src="img/icon_craft.png" alt=""><span>CRAFTING</span></button>
-      <button type="button" onclick="openBAModal('about')"><img src="img/icon_shop.png" alt=""><span>SHOP</span></button>
-      <button type="button" onclick="openBAModal('recruit')"><img src="img/icon_recruit.png" alt=""><span>RECRUIT</span></button>
+      <button type="button" onclick="openBAModal('cafe')"><img src="/img/ui-icons/ba-cafe.svg" alt=""><span>CAFE</span></button>
+      <button type="button" onclick="openBAModal('schedule')"><img src="/img/ui-icons/ba-schedule.svg" alt=""><span>SCHEDULE</span></button>
+      <button type="button" onclick="openBAModal('students')"><img src="/img/ui-icons/ba-students.svg" alt=""><span>STUDENTS</span></button>
+      <button type="button" onclick="openBAModal('experience')"><img src="/img/ui-icons/ba-formation.svg" alt=""><span>FORMATION</span></button>
+      <button type="button" onclick="openBAModal('about')"><img src="/img/ui-icons/ba-circle.svg" alt=""><span>CIRCLE</span></button>
+      <button type="button" onclick="openBAModal('crafting')"><img src="/img/ui-icons/ba-crafting.svg" alt=""><span>CRAFTING</span></button>
+      <button type="button" onclick="openBAModal('about')"><img src="/img/ui-icons/ba-shop.svg" alt=""><span>SHOP</span></button>
+      <button type="button" onclick="openBAModal('recruit')"><img src="/img/ui-icons/ba-recruit.svg" alt=""><span>RECRUIT</span></button>
     </nav>
     <div class="ba-home-clock"><span>LOCAL TIME</span><strong id="lobby-time-display">--:--</strong></div>
   </footer>
@@ -210,17 +210,17 @@
         <button type="button" onclick="openTarkovSurface('hideout')">HIDEOUT</button>
       </div>
       <nav class="tarkov-footer-actions">
-        <button type="button" onclick="openTarkovSurface('character')"><b>▣</b><span>CHARACTER</span></button>
-        <button type="button" onclick="openTarkovSurface('trading')"><b>◉</b><span>TRADERS</span></button>
-        <button type="button" onclick="openTarkovSurface('flea')"><b>◈</b><span>FLEA MARKET</span></button>
-        <button type="button" onclick="openTarkovSurface('presets')"><b>⌁</b><span>PRESETS</span></button>
-        <button type="button" onclick="openTarkovSurface('handbook')"><b>▤</b><span>HANDBOOK</span></button>
-        <button type="button" onclick="openTarkovSurface('messenger')"><b>✉</b><span>MESSENGER</span></button>
-        <button type="button" onclick="openTarkovSurface('watchlist')"><b>◌</b><span>WATCHLIST</span></button>
+        <button type="button" onclick="openTarkovSurface('character')"><img src="/img/ui-icons/tarkov-character.svg" alt=""><span>CHARACTER</span></button>
+        <button type="button" onclick="openTarkovSurface('trading')"><img src="/img/ui-icons/tarkov-traders.svg" alt=""><span>TRADERS</span></button>
+        <button type="button" onclick="openTarkovSurface('flea')"><img src="/img/ui-icons/tarkov-flea.svg" alt=""><span>FLEA MARKET</span></button>
+        <button type="button" onclick="openTarkovSurface('presets')"><img src="/img/ui-icons/tarkov-presets.svg" alt=""><span>PRESETS</span></button>
+        <button type="button" onclick="openTarkovSurface('handbook')"><img src="/img/ui-icons/tarkov-handbook.svg" alt=""><span>HANDBOOK</span></button>
+        <button type="button" onclick="openTarkovSurface('messenger')"><img src="/img/ui-icons/tarkov-messenger.svg" alt=""><span>MESSENGER</span></button>
+        <button type="button" onclick="openTarkovSurface('watchlist')"><img src="/img/ui-icons/tarkov-watchlist.svg" alt=""><span>WATCHLIST</span></button>
       </nav>
       <div class="tarkov-footer-right">
         <span id="tarkov-time-readout">--:--</span>
-        <button type="button" onclick="openTarkovSurface('settings')" aria-label="Settings">⚙</button>
+        <button type="button" onclick="openTarkovSurface('settings')" aria-label="Settings"><img src="/img/ui-icons/tarkov-settings.svg" alt=""></button>
         <button class="tarkov-mode-toggle" type="button" onclick="toggleTarkov()" aria-label="Switch to Blue Archive mode">↩</button>
       </div>
     </footer>

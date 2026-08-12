@@ -1206,6 +1206,16 @@
     openBAModal('experience');
   }
 
+  // ── Sensei identity from configured Twitter handle ──
+  (function() {
+    const handleEl = document.getElementById('ba-sensei-handle');
+    const configuredHandle = handleEl?.getAttribute('data-twitter-handle')?.trim().replace(/^@+/, '');
+    if (!handleEl || !configuredHandle) return;
+    const visibleHandle = `@${configuredHandle}`;
+    handleEl.textContent = visibleHandle;
+    handleEl.closest('button')?.setAttribute('aria-label', `Open ${visibleHandle} Sensei profile`);
+  })();
+
   // ── Dynamic Age Calculation ──
   (function() {
     const BIRTH = new Date(1999, 9, 4); // October 4, 1999 (0-indexed 9 is October)
@@ -1575,18 +1585,101 @@
   }
 
   type TarkovSurfaceId = 'prepare' | 'character' | 'trading' | 'hideout' | 'flea' | 'presets' | 'handbook' | 'messenger' | 'watchlist' | 'settings';
-  const tarkovSurfaceData: Record<TarkovSurfaceId, { kicker: string; title: string; summary: string; content: string }> = {
-    prepare: { kicker: 'RAID SELECTION', title: 'PREPARE TO ESCAPE', summary: 'Choose your operative before map selection.', content: '<div class="tarkov-choice-grid"><button type="button" class="tarkov-choice-card"><b>SCAV</b><span>SCAVENGER</span><small>Random loadout · no stash risk</small></button><button type="button" class="tarkov-choice-card active"><b>PMC</b><span>YOUR CHARACTER</span><small>Use equipped gear · progress tasks</small></button></div><div class="tarkov-surface-controls"><button type="button">BACK</button><button type="button" class="primary">NEXT</button></div>' },
-    character: { kicker: 'CHARACTER', title: 'OVERALL', summary: 'Equipment layout and secure stash.', content: '<div class="tarkov-character-layout"><div class="tarkov-slot-list"><i>HEADWEAR</i><i>FACE COVER</i><i>BODY ARMOR</i><i>ON SLING</i><i>ON BACK</i><i>HOLSTER</i></div><div class="tarkov-operator-silhouette">PMC</div><div class="tarkov-stash-grid">STASH<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>' },
-    trading: { kicker: 'TRADING', title: 'TRADERS', summary: 'Select a trader to inspect loyalty and available stock.', content: '<div class="tarkov-trader-grid"><button type="button"><b>P</b><span>PRAPOR</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>T</b><span>THERAPIST</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>F</b><span>FENCE</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>S</b><span>SKIER</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>P</b><span>PEACEKEEPER</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>M</b><span>MECHANIC</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>R</b><span>RAGMAN</span><small>LOYALTY LEVEL 1</small></button><button type="button"><b>J</b><span>JAEGER</span><small>LOCKED</small></button></div>' },
+  type TarkovSurfaceData = { kicker: string; title: string; summary: string; content: string };
+
+  function tarkovStashCells(columns = 10, rows = 6) {
+    const specialCells: Record<number, { cls: string; label: string }> = {
+      2: { cls: 'item-ammo', label: 'BS' }, 3: { cls: 'item-ammo', label: 'BS' }, 12: { cls: 'item-med', label: 'IFK' },
+      13: { cls: 'item-med', label: 'AI2' }, 24: { cls: 'item-weapon', label: 'AK' }, 25: { cls: 'item-weapon', label: 'AK' },
+      26: { cls: 'item-weapon', label: 'AK' }, 34: { cls: 'item-bag', label: 'MB' }, 35: { cls: 'item-bag', label: 'MB' },
+      36: { cls: 'item-bag', label: 'MB' }, 46: { cls: 'item-med', label: 'CMS' }
+    };
+    return Array.from({ length: columns * rows }, (_, index) => {
+      const item = specialCells[index];
+      return `<button type="button" class="${item?.cls ?? ''}" onclick="tarkovSelectStashCell(this)" aria-label="Stash cell ${index + 1}"><span>${item?.label ?? ''}</span></button>`;
+    }).join('');
+  }
+
+  const tarkovOperatorFigure = `<div class="tarkov-operator-figure" aria-hidden="true"><svg viewBox="0 0 160 270" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="81" cy="32" r="20" fill="currentColor"/><path d="M55 56L107 56L126 132L115 173L112 260H91L81 194L70 260H48L50 173L35 132L55 56Z" fill="currentColor"/><path d="M55 66L20 129L33 145L65 105M107 66L140 129L126 145L97 105" stroke="currentColor" stroke-width="17" stroke-linecap="square"/><path d="M63 88H99M60 117H103M58 145H105" stroke="#171816" stroke-width="5" opacity=".65"/></svg></div>`;
+
+  const tarkovSurfaceData: Record<TarkovSurfaceId, TarkovSurfaceData> = {
+    prepare: { kicker: 'RAID SELECTION', title: 'PREPARE TO ESCAPE', summary: 'Select a character profile before the deployment sequence.', content: '<div class="tarkov-choice-grid"><button type="button" class="tarkov-choice-card" onclick="tarkovSelectLoadout(this)"><b>SCAV</b><span>SCAVENGER</span><small>Random equipment · no personal stash risk</small></button><button type="button" class="tarkov-choice-card active" onclick="tarkovSelectLoadout(this)"><b>PMC</b><span>YOUR CHARACTER</span><small>Use equipped gear · progress tasks</small></button></div><div class="tarkov-surface-controls"><button type="button" onclick="closeTarkovSurface()">BACK</button><button type="button" class="primary" onclick="tarkovPrepareNext()">NEXT</button></div><p class="tarkov-panel-feedback" id="tarkov-panel-feedback">PMC profile selected. Select NEXT to enter map selection.</p>' },
+    character: { kicker: 'CHARACTER', title: 'OVERALL', summary: 'Equipment slots, health state and the personal stash in the Tarkov grid format.', content: `<div class="tarkov-character-overview"><span>PMC <b>YUKIHARA64</b></span><span>LEVEL <b>26</b></span><span>HEALTH <b>435 / 435</b></span><span>WEIGHT <b>19.6 KG</b></span></div><div class="tarkov-character-layout"><section class="tarkov-equipment-panel"><span class="tarkov-section-label">EQUIPMENT</span><div class="tarkov-slot-list"><button type="button" data-slot="HEAD" onclick="tarkovSelectSlot(this)">HEADWEAR</button><button type="button" data-slot="FACE" onclick="tarkovSelectSlot(this)">FACE COVER</button><button type="button" data-slot="EYES" onclick="tarkovSelectSlot(this)">EYEWEAR</button><button type="button" data-slot="EAR" onclick="tarkovSelectSlot(this)">EARPIECE</button><button type="button" data-slot="BODY" onclick="tarkovSelectSlot(this)">BODY ARMOR</button><button type="button" data-slot="RIG" onclick="tarkovSelectSlot(this)">TACTICAL RIG</button><button type="button" data-slot="SLING" onclick="tarkovSelectSlot(this)">ON SLING</button><button type="button" data-slot="BACK" onclick="tarkovSelectSlot(this)">ON BACK</button></div></section><section class="tarkov-operator-panel">${tarkovOperatorFigure}<span class="tarkov-operator-caption">USEC · PRIMARY LOADOUT</span></section><section class="tarkov-stash-panel"><div class="tarkov-stash-title"><span>STASH</span><span>10 × 68</span></div><div class="tarkov-stash-grid">${tarkovStashCells()}</div></section></div><p class="tarkov-panel-feedback" id="tarkov-panel-feedback">Select a gear slot or stash cell to inspect the current loadout.</p>` },
+    trading: { kicker: 'TRADING', title: 'TRADERS', summary: 'Choose a contact, filter their stock and compare it with the inventory grid.', content: '<div class="tarkov-trader-grid"><button type="button" class="active" data-letter="P" onclick="tarkovSelectTrader(this)" data-trader="PRAPOR"><b>P</b><span>PRAPOR</span><small>LOYALTY LEVEL 1</small></button><button type="button" data-letter="T" onclick="tarkovSelectTrader(this)" data-trader="THERAPIST"><b>T</b><span>THERAPIST</span><small>LOYALTY LEVEL 1</small></button><button type="button" data-letter="F" onclick="tarkovSelectTrader(this)" data-trader="FENCE"><b>F</b><span>FENCE</span><small>LOYALTY LEVEL 1</small></button><button type="button" data-letter="S" onclick="tarkovSelectTrader(this)" data-trader="SKIER"><b>S</b><span>SKIER</span><small>LOYALTY LEVEL 1</small></button></div><div class="tarkov-trader-detail"><aside class="tarkov-trader-sidebar"><button type="button" class="active" onclick="tarkovSelectTradeCategory(this)">ALL ITEMS <span>32</span></button><button type="button" onclick="tarkovSelectTradeCategory(this)">WEAPONS <span>7</span></button><button type="button" onclick="tarkovSelectTradeCategory(this)">AMMUNITION <span>18</span></button><button type="button" onclick="tarkovSelectTradeCategory(this)">GEAR <span>4</span></button><button type="button" onclick="tarkovSelectTradeCategory(this)">MEDICAL <span>3</span></button></aside><section class="tarkov-trader-stock"><div class="tarkov-trader-toolbar"><button type="button" class="tarkov-action-btn active" onclick="tarkovSetTradeMode(this)">BUY</button><button type="button" class="tarkov-action-btn" onclick="tarkovSetTradeMode(this)">SELL</button><button type="button" class="tarkov-action-btn" onclick="tarkovSetTradeMode(this)">TASKS</button></div><span class="tarkov-section-label" id="tarkov-trader-name">PRAPOR · LOYALTY LEVEL 1</span><div class="tarkov-item-row"><span class="tarkov-item-thumb">AK</span><span>AKS-74U <small>Assault carbine</small></span><strong>20 651 ₽</strong><button type="button" class="tarkov-action-btn" onclick="tarkovPurchase(&quot;AKS-74U&quot;)">BUY</button></div><div class="tarkov-item-row"><span class="tarkov-item-thumb">PS</span><span>5.45×39 PS <small>Ammo box · 30</small></span><strong>1 148 ₽</strong><button type="button" class="tarkov-action-btn" onclick="tarkovPurchase(&quot;5.45×39 PS&quot;)">BUY</button></div><div class="tarkov-item-row"><span class="tarkov-item-thumb">M</span><span>Army medkit <small>Medical item</small></span><strong>3 402 ₽</strong><button type="button" class="tarkov-action-btn" onclick="tarkovPurchase(&quot;Army medkit&quot;)">BUY</button></div></section><aside class="tarkov-trader-inventory"><span class="tarkov-section-label">INVENTORY</span><div class="tarkov-stash-grid" data-trader-stash></div></aside></div><p class="tarkov-panel-feedback" id="tarkov-panel-feedback">Prapor is ready to trade. Prices shown in roubles.</p>' },
     hideout: { kicker: 'HIDEOUT', title: 'THE HIDEOUT', summary: 'Underground shelter module overview.', content: '<div class="tarkov-loading-state"><div class="tarkov-hex-spinner">◈</div><span>LOADING HIDEOUT</span></div>' },
-    flea: { kicker: 'TRADING', title: 'FLEA MARKET', summary: 'Browse item categories and current offers.', content: '<div class="tarkov-market-layout"><aside>WEAPONS<br>AMMO<br>MEDICAL<br>PROVISIONS<br>KEYS</aside><section>OFFERS <div class="tarkov-offer">5.45×39 BP <button>PURCHASE</button></div><div class="tarkov-offer">AI-2 MEDKIT <button>PURCHASE</button></div></section></div>' },
+    flea: { kicker: 'TRADING', title: 'FLEA MARKET', summary: 'Browse item categories, current prices and available offers.', content: '<div class="tarkov-market-layout"><aside><button type="button" class="active" onclick="tarkovSetMarketCategory(this)">WEAPONS</button><button type="button" onclick="tarkovSetMarketCategory(this)">AMMO</button><button type="button" onclick="tarkovSetMarketCategory(this)">MEDICAL</button><button type="button" onclick="tarkovSetMarketCategory(this)">PROVISIONS</button><button type="button" onclick="tarkovSetMarketCategory(this)">KEYS</button></aside><section><span class="tarkov-section-label">OFFERS · SORTED BY PRICE</span><div class="tarkov-offer"><b>5.45×39 BP</b><span>120 units available</span><strong>1 480 ₽</strong><button type="button" onclick="tarkovPurchase(&quot;5.45×39 BP&quot;)">PURCHASE</button></div><div class="tarkov-offer"><b>AI-2 medkit</b><span>32 units available</span><strong>3 640 ₽</strong><button type="button" onclick="tarkovPurchase(&quot;AI-2 medkit&quot;)">PURCHASE</button></div><div class="tarkov-offer"><b>Water bottle</b><span>48 units available</span><strong>9 999 ₽</strong><button type="button" onclick="tarkovPurchase(&quot;Water bottle&quot;)">PURCHASE</button></div></section></div><p class="tarkov-panel-feedback" id="tarkov-panel-feedback">Select a category or purchase an offer to update the market action state.</p>' },
     presets: { kicker: 'WEAPON', title: 'PRESETS', summary: 'Saved weapon configurations.', content: '<div class="tarkov-empty-state">NO PRESETS CREATED</div>' },
     handbook: { kicker: 'HANDBOOK', title: 'HANDBOOK', summary: 'Item knowledge base.', content: '<div class="tarkov-empty-state">ITEM CATALOG READY</div>' },
     messenger: { kicker: 'MESSENGER', title: 'MESSENGER', summary: 'Messages from traders and operational contacts.', content: '<div class="tarkov-messenger"><aside>PRAPOR<br>THERAPIST<br>FENCE</aside><section>SELECT A DIALOGUE</section></div>' },
     watchlist: { kicker: 'WATCHLIST', title: 'WATCHLIST', summary: 'Tracked market offers.', content: '<div class="tarkov-empty-state">WATCHLIST IS EMPTY</div>' },
     settings: { kicker: 'SETTINGS', title: 'SETTINGS', summary: 'Game and audio configuration.', content: '<div class="tarkov-settings-tabs"><button>GAME</button><button>GRAPHICS</button><button>POSTFX</button><button>SOUND</button><button>CONTROLS</button></div>' }
   };
+
+  function renderTarkovHideout() {
+    return '<div class="tarkov-hideout-layout"><section class="tarkov-hideout-view"><span class="tarkov-hideout-label"><i></i>WORKBENCH</span><span class="tarkov-hideout-label"><i></i>MEDSTATION</span><span class="tarkov-hideout-label"><i></i>GENERATOR</span></section><aside class="tarkov-hideout-sidebar"><section class="tarkov-power-state"><span>GENERATOR STATUS</span><b id="tarkov-power-text">POWER ON</b><button type="button" class="tarkov-action-btn active" onclick="tarkovTogglePower(this)">TURN OFF</button></section><div class="tarkov-module-list"><button type="button" class="active" onclick="tarkovSelectModule(this)"><span>Workbench</span><em>LVL 1 / 3</em></button><button type="button" onclick="tarkovSelectModule(this)"><span>Medstation</span><em>LVL 1 / 3</em></button><button type="button" onclick="tarkovSelectModule(this)"><span>Generator</span><em>LVL 1 / 3</em></button><button type="button" onclick="tarkovSelectModule(this)"><span>Rest Space</span><em>LVL 0 / 3</em></button></div></aside></div><div class="tarkov-hideout-footer"><span>FUEL: <b>41 / 100</b></span><span>CONSTRUCTION: <b>NONE ACTIVE</b></span><button type="button" class="tarkov-action-btn" onclick="tarkovSelectModule(document.querySelector(\'.tarkov-module-list button\'))">INSPECT MODULE</button></div><p class="tarkov-panel-feedback" id="tarkov-panel-feedback">Hideout power is active. Select a module for its operational state.</p>';
+  }
+
+  function tarkovFeedback(message: string) {
+    const feedback = document.getElementById('tarkov-panel-feedback');
+    if (feedback) feedback.textContent = message;
+  }
+
+  function tarkovSelectLoadout(button: HTMLElement) {
+    document.querySelectorAll('.tarkov-choice-card').forEach(card => card.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.querySelector('b')?.textContent ?? 'PROFILE'} profile selected. Select NEXT to enter map selection.`);
+  }
+
+  function tarkovPrepareNext() { tarkovFeedback('Map selection queued. The deployment route would continue from this point.'); }
+  function tarkovSelectSlot(button: HTMLElement) {
+    button.closest('.tarkov-slot-list')?.querySelectorAll('button').forEach(slot => slot.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.textContent?.trim() ?? 'Equipment'} slot selected. No item equipped.`);
+  }
+  function tarkovSelectStashCell(button: HTMLElement) {
+    button.closest('.tarkov-stash-grid')?.querySelectorAll('button').forEach(cell => cell.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`Stash cell selected${button.textContent?.trim() ? `: ${button.textContent.trim()}` : ''}.`);
+  }
+  function tarkovSelectTrader(button: HTMLElement) {
+    button.closest('.tarkov-trader-grid')?.querySelectorAll('button').forEach(trader => trader.classList.remove('active'));
+    button.classList.add('active');
+    const name = button.dataset.trader ?? 'TRADER';
+    const heading = document.getElementById('tarkov-trader-name');
+    if (heading) heading.textContent = `${name} · LOYALTY LEVEL 1`;
+    tarkovFeedback(`${name} selected. Stock prices shown in roubles.`);
+  }
+  function tarkovSelectTradeCategory(button: HTMLElement) {
+    button.closest('.tarkov-trader-sidebar')?.querySelectorAll('button').forEach(category => category.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.textContent?.trim() ?? 'Category'} filter applied to trader stock.`);
+  }
+  function tarkovSetTradeMode(button: HTMLElement) {
+    button.closest('.tarkov-trader-toolbar')?.querySelectorAll('button').forEach(mode => mode.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.textContent?.trim()} mode selected.`);
+  }
+  function tarkovSetMarketCategory(button: HTMLElement) {
+    button.closest('aside')?.querySelectorAll('button').forEach(category => category.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.textContent?.trim()} market category selected.`);
+  }
+  function tarkovPurchase(item: string) { tarkovFeedback(`${item} selected for purchase. Transaction confirmation is ready.`); }
+  function tarkovTogglePower(button: HTMLElement) {
+    const view = document.querySelector('.tarkov-hideout-view');
+    const poweredOff = view?.classList.toggle('powered-off') ?? false;
+    button.classList.toggle('active', !poweredOff);
+    button.textContent = poweredOff ? 'TURN ON' : 'TURN OFF';
+    const status = document.getElementById('tarkov-power-text');
+    if (status) status.textContent = poweredOff ? 'POWER OFF' : 'POWER ON';
+    tarkovFeedback(poweredOff ? 'Generator disabled. Fuel-consuming modules paused.' : 'Generator enabled. Fuel-consuming modules resumed.');
+  }
+  function tarkovSelectModule(button: HTMLElement | null) {
+    if (!button) return;
+    button.closest('.tarkov-module-list')?.querySelectorAll('button').forEach(module => module.classList.remove('active'));
+    button.classList.add('active');
+    tarkovFeedback(`${button.textContent?.trim() ?? 'Module'} selected. Construction requirements are available for inspection.`);
+  }
 
   function openTarkovSurface(id: TarkovSurfaceId) {
     const data = tarkovSurfaceData[id];
@@ -1599,9 +1692,21 @@
     if (kicker) kicker.textContent = data.kicker;
     if (title) title.textContent = data.title;
     if (summary) summary.textContent = data.summary;
-    if (content) content.innerHTML = data.content;
+    if (content) {
+      content.innerHTML = data.content;
+      if (id === 'trading') {
+        const compactStash = content.querySelector<HTMLElement>('[data-trader-stash]');
+        if (compactStash) compactStash.innerHTML = tarkovStashCells(5, 5);
+      }
+    }
     surface.classList.add('active');
     surface.setAttribute('aria-hidden', 'false');
+    if (id === 'hideout') {
+      window.setTimeout(() => {
+        if (!surface.classList.contains('active') || !content) return;
+        content.innerHTML = renderTarkovHideout();
+      }, 620);
+    }
   }
 
   function closeTarkovSurface() {
@@ -1688,6 +1793,17 @@ Object.assign(window, {
   openBAWork,
   openTarkovSurface,
   closeTarkovSurface,
+  tarkovSelectLoadout,
+  tarkovPrepareNext,
+  tarkovSelectSlot,
+  tarkovSelectStashCell,
+  tarkovSelectTrader,
+  tarkovSelectTradeCategory,
+  tarkovSetTradeMode,
+  tarkovSetMarketCategory,
+  tarkovPurchase,
+  tarkovTogglePower,
+  tarkovSelectModule,
   toggleFullScreen,
   scrollToWidgets
 });
