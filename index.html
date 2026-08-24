@@ -290,6 +290,35 @@
     .footer a:hover{text-decoration:underline;}
     .footer .jp-footer{font-family:'Zen Maru Gothic',sans-serif;font-size:.7rem;color:rgba(160,122,176,.5);margin-top:6px;letter-spacing:2px;}
 
+    /* Menu Links */
+    .menu-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .menu-link {
+      padding: 8px 16px;
+      border: 1px solid var(--neon-pink);
+      border-radius: 4px;
+      color: var(--neon-pink);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+    .menu-link:hover {
+      background: rgba(255, 105, 180, 0.1);
+      box-shadow: var(--glow-pink);
+      transform: translateY(-2px);
+    }
+    .menu-link.tarkov { border-color: #c9a66b; color: #c9a66b; }
+    .menu-link.tarkov:hover { background: rgba(201, 166, 107, 0.1); box-shadow: 0 0 12px rgba(201, 166, 107, 0.4); }
+    .menu-link.ba { border-color: #ff7eb9; color: #ff7eb9; }
+    .menu-link.ba:hover { background: rgba(255, 126, 185, 0.1); box-shadow: 0 0 12px rgba(255, 126, 185, 0.4); }
+
     @media(max-width:540px){
       .hero-banner{grid-template-columns:1fr;text-align:center;}
       .hero-badges{justify-content:center;}
@@ -539,7 +568,14 @@
     </div>
   </div>
 
-  <!-- FOOTER -->  <div class="footer">
+  <!-- GAME MENU LINKS -->
+  <div class="menu-links">
+    <a href="/tarkov-menu.html" class="menu-link tarkov">⚔️ Tarkov Menu</a>
+    <a href="/blue-archive-menu.html" class="menu-link ba">🎓 Blue Archive Menu</a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
     <a href="https://www.linkedin.com/in/danielguanes/" target="_blank">🔗 LinkedIn</a>
     &nbsp;·&nbsp; Asunción, Paraguay
     <div class="jp-footer">夢を諦めない — Never give up on your dreams ✨</div>

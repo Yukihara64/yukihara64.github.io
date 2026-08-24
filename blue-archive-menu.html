@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Archive - Main Menu</title>
+    <style>
+        /* --- RESET & BASE --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* --- FONTS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap');
+
+        /* --- ASSETS PLACEHOLDERS --- */
+        :root {
+            --bg-image: url('/assets/bluearchive/bg_main.jpg');
+            --color-primary: #00a8ff;
+            --color-secondary: #ff7eb9;
+            --color-accent: #ffd700;
+            --color-bg-dark: rgba(0, 0, 0, 0.6);
+            --color-bg-light: rgba(255, 255, 255, 0.1);
+            --border-radius: 12px;
+            --font-main: 'Noto Sans JP', sans-serif;
+        }
+
+        /* --- BACKGROUND LAYERS --- */
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(102, 126, 234, 0.8) 0%, 
+                rgba(118, 75, 162, 0.8) 50%,
+                rgba(255, 126, 185, 0.6) 100%);
+            z-index: 1;
+        }
+
+        /* Floating particles effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.3; }
+        }
+
+        /* --- UI CONTAINER --- */
+        .ui-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem 2rem;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--color-bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid #fff;
+        }
+
+        .player-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .player-level {
+            font-size: 0.75rem;
+            color: var(--color-secondary);
+        }
+
+        .currency-bar {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .currency-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-bg-dark);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.85rem;
+        }
+
+        .currency-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #000;
+            font-weight: bold;
+        }
+
+        /* --- CENTER AREA (CHARACTER DISPLAY) --- */
+        .center-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .character-display {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .character-placeholder {
+            width: 400px;
+            height: 600px;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-placeholder::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .character-text {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .character-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .character-text p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* --- RIGHT SIDE MENU BUTTONS --- */
+        .side-menu {
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .menu-btn {
+            width: 60px;
+            height: 60px;
+            background: var(--color-bg-dark);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+            background: var(--color-primary);
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.5);
+        }
+
+        .menu-btn::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 70px;
+            background: rgba(0,0,0,0.8);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            opacity: 0;
+            transition: 0.3s;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .menu-btn:hover::after {
+            opacity: 1;
+            right: 75px;
+        }
+
+        .menu-btn-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Special Start Button */
+        .start-btn {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            border: 3px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(255, 126, 185, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 126, 185, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 126, 185, 0.8); }
+        }
+
+        .start-btn:hover {
+            animation: none;
+            transform: scale(1.1);
+        }
+
+        .start-btn-icon {
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        /* --- BOTTOM BAR --- */
+        .bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .quick-menu {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quick-btn {
+            padding: 0.6rem 1.2rem;
+            background: var(--color-bg-dark);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quick-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 126, 185, 0.4);
+        }
+
+        .news-panel {
+            background: var(--color-bg-dark);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 300px;
+        }
+
+        .news-title {
+            font-size: 0.8rem;
+            color: var(--color-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .news-item {
+            font-size: 0.75rem;
+            margin-bottom: 0.3rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        /* --- DECORATIVE ELEMENTS --- */
+        .deco-line {
+            position: absolute;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .deco-line-h {
+            height: 1px;
+            width: 200px;
+        }
+
+        .deco-line-v {
+            width: 1px;
+            height: 200px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .ui-container { padding: 1rem; }
+            .side-menu { display: none; }
+            .character-placeholder { width: 250px; height: 400px; }
+            .currency-bar { display: none; }
+            .bottom-bar { flex-direction: column; gap: 1rem; align-items: center; }
+            .news-panel { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Layers -->
+    <div class="background-layer"></div>
+    <div class="gradient-overlay"></div>
+    
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main UI -->
+    <div class="ui-container">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="player-info">
+                <div class="player-avatar">S</div>
+                <div class="player-details">
+                    <span class="player-name">Sensei</span>
+                    <span class="player-level">Level 65</span>
+                </div>
+            </div>
+
+            <div class="currency-bar">
+                <div class="currency-item">
+                    <div class="currency-icon">C</div>
+                    <span>1,245,678</span>
+                </div>
+                <div class="currency-item">
+                    <div class="currency-icon" style="background: var(--color-secondary);">G</div>
+                    <span>450</span>
+                </div>
+                <div class="currency-item">
+                    <div class="currency-icon" style="background: #9b59b6;">Q</div>
+                    <span>120</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Area -->
+        <div class="center-area">
+            <div class="character-display">
+                <div class="character-placeholder">
+                    <div class="character-text">
+                        <h2>Main Character</h2>
+                        <p>[Insert Live2D/Spine Animation Here]</p>
+                        <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.6;">
+                            Download assets from BA-AD repo<br>
+                            Place in /public/assets/bluearchive/
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Menu Buttons -->
+            <div class="side-menu">
+                <div class="menu-btn" data-label="Students">
+                    <span class="menu-btn-icon">🎓</span>
+                </div>
+                <div class="menu-btn" data-label="Missions">
+                    <span class="menu-btn-icon">📋</span>
+                </div>
+                <div class="menu-btn" data-label="Equipment">
+                    <span class="menu-btn-icon">⚔️</span>
+                </div>
+                <div class="menu-btn" data-label="Shop">
+                    <span class="menu-btn-icon">🛒</span>
+                </div>
+                <div class="start-btn" data-label="START">
+                    <span class="start-btn-icon">▶</span>
+                </div>
+                <div class="menu-btn" data-label="Menu">
+                    <span class="menu-btn-icon">⚙️</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="quick-menu">
+                <button class="quick-btn">Friend</button>
+                <button class="quick-btn">Gift</button>
+                <button class="quick-btn">Recruit</button>
+                <button class="quick-btn">Event</button>
+            </div>
+
+            <div class="news-panel">
+                <div class="news-title">Latest News</div>
+                <div class="news-item">
+                    <div class="news-dot"></div>
+                    <span>New Event: Operation Record</span>
+                </div>
+                <div class="news-item">
+                    <div class="news-dot"></div>
+                    <span>Maintenance Complete</span>
+                </div>
+                <div class="news-item">
+                    <div class="news-dot"></div>
+                    <span>Login Bonus Available</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative Lines -->
+        <div class="deco-line deco-line-h" style="top: 100px; left: 50px;"></div>
+        <div class="deco-line deco-line-v" style="bottom: 100px; right: 300px;"></div>
+
+    </div>
+
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 20;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random properties
+            const size = Math.random() * 8 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
+
+        // Add click effect to start button
+        const startBtn = document.querySelector('.start-btn');
+        startBtn.addEventListener('click', () => {
+            alert('Starting mission! (Integrate with your actual game logic)');
+        });
+
+        // Add hover sound effect placeholder
+        const menuBtns = document.querySelectorAll('.menu-btn, .quick-btn');
+        menuBtns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Play hover sound here
+                // const audio = new Audio('/assets/sounds/hover.mp3');
+                // audio.play();
+            });
+        });
+    </script>
+</body>
+</html>

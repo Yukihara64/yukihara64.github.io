@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Preview - Tarkov & Blue Archive</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --text-light: #e0e0e0;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid #333;
+            z-index: 1000;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button.nav-btn {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button.nav-btn:hover {
+            background: #555;
+            border-color: #fff;
+        }
+
+        button.nav-btn.active {
+            background: #c9a66b; /* Tarkov Gold */
+            color: #000;
+            border-color: #c9a66b;
+        }
+
+        button.nav-btn.ba-active {
+            background: #ff6b81; /* BA Pink */
+            color: #fff;
+            border-color: #ff6b81;
+        }
+
+        .preview-container {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 60px);
+        }
+
+        .menu-frame {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            display: none;
+            background: #000;
+        }
+
+        .menu-frame.active {
+            display: block;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #444;
+            max-width: 300px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .info-panel h3 {
+            margin-top: 0;
+            color: #c9a66b;
+        }
+
+        .ba-info h3 {
+            color: #ff6b81;
+        }
+
+        /* Mobile adjustment */
+        @media (max-width: 768px) {
+            .preview-container {
+                flex-direction: column;
+            }
+            .menu-frame {
+                height: 50vh;
+                border-bottom: 2px solid #333;
+            }
+            .menu-frame.active {
+                display: block;
+            }
+            /* Show both on mobile for comparison */
+            .menu-frame {
+                display: none;
+            }
+            .menu-frame.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UI Preview Suite</h1>
+        <div class="controls">
+            <button class="nav-btn active" onclick="showMenu('tarkov')">Tarkov</button>
+            <button class="nav-btn" onclick="showMenu('bluearchive')">Blue Archive</button>
+            <button class="nav-btn" onclick="toggleFullscreen()">Fullscreen</button>
+        </div>
+    </header>
+
+    <div class="preview-container">
+        <!-- Tarkov Frame -->
+        <iframe id="tarkov-frame" class="menu-frame active" src="tarkov-menu.html"></iframe>
+        
+        <!-- Blue Archive Frame -->
+        <iframe id="bluearchive-frame" class="menu-frame" src="blue-archive-menu.html"></iframe>
+    </div>
+
+    <div id="tarkov-info" class="info-panel">
+        <h3>Tarkov Menu</h3>
+        <p>• Hover over "READY" button<br>• Watch the scanline effects<br>• Check the operator profile</p>
+        <p style="color:#aaa; font-size:0.7rem;">Note: Requires Bender font & assets for 1:1 look</p>
+    </div>
+
+    <div id="ba-info" class="info-panel ba-info" style="display:none;">
+        <h3>Blue Archive Menu</h3>
+        <p>• Click "START" button<br>• Observe particle floating<br>• Check glassmorphism panels</p>
+        <p style="color:#aaa; font-size:0.7rem;">Note: Requires Noto Sans JP & character assets</p>
+    </div>
+
+    <script>
+        function showMenu(menuName) {
+            const tarkovFrame = document.getElementById('tarkov-frame');
+            const baFrame = document.getElementById('bluearchive-frame');
+            const tarkovBtn = document.querySelector('button[onclick="showMenu(\'tarkov\')"]');
+            const baBtn = document.querySelector('button[onclick="showMenu(\'bluearchive\')"]');
+            const tarkovInfo = document.getElementById('tarkov-info');
+            const baInfo = document.getElementById('ba-info');
+
+            if (menuName === 'tarkov') {
+                tarkovFrame.classList.add('active');
+                baFrame.classList.remove('active');
+                tarkovBtn.classList.add('active');
+                baBtn.classList.remove('active', 'ba-active');
+                tarkovInfo.style.display = 'block';
+                baInfo.style.display = 'none';
+            } else {
+                tarkovFrame.classList.remove('active');
+                baFrame.classList.add('active');
+                tarkovBtn.classList.remove('active');
+                baBtn.classList.add('active', 'ba-active');
+                tarkovInfo.style.display = 'none';
+                baInfo.style.display = 'block';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
