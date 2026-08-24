@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape From Tarkov - Main Menu</title>
+    <style>
+        /* --- RESET & BASE --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #050505;
+            color: #dcdcdc;
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* --- FONTS --- */
+        @font-face {
+            font-family: 'Bender';
+            src: url('/fonts/Bender.woff2') format('woff2'),
+                 url('/fonts/Bender.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* --- ASSETS PLACEHOLDERS --- */
+        /* You need to download assets from the repos and put them in /public/assets/tarkov/ */
+        :root {
+            --bg-image: url('/assets/tarkov/bg_main.jpg'); 
+            --noise-overlay: url('/assets/tarkov/noise.png');
+            --font-main: 'Bender', 'UniSans', 'Courier New', monospace;
+            --color-accent: #c9a66b; /* Tarkov Gold */
+            --color-danger: #8b3a3a;
+            --color-text: #e0e0e0;
+        }
+
+        /* --- BACKGROUND LAYERS --- */
+        .background-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6) contrast(1.2) sepia(0.3);
+            z-index: 0;
+        }
+
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+            animation: scrollScanlines 10s linear infinite;
+        }
+
+        .vignette {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        /* --- UI CONTAINER --- */
+        .ui-container {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 4rem;
+        }
+
+        /* --- TOP BAR --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+
+        .server-status {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #4caf50;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            box-shadow: 0 0 5px #4caf50;
+        }
+
+        .time-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-accent);
+            text-shadow: 0 0 10px rgba(201, 166, 107, 0.5);
+        }
+
+        /* --- CENTER AREA (OPERATOR & READY) --- */
+        .center-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .operator-profile {
+            width: 40%;
+            height: 80%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.4);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .op-header {
+            background: rgba(201, 166, 107, 0.2);
+            padding: 0.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .op-image-placeholder {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            /* Replace with actual operator image */
+            background-image: url('/assets/tarkov/operator.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .ready-btn-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ready-btn {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+
+        .ready-btn:hover {
+            background: var(--color-accent);
+            color: #000;
+            box-shadow: 0 0 30px rgba(201, 166, 107, 0.6);
+        }
+
+        .ready-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .ready-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Decorative corners for UI elements */
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-accent);
+            transition: all 0.3s;
+        }
+        .tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* --- BOTTOM BAR (MAPS & GEAR) --- */
+        .bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 2px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+        }
+
+        .map-selection {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .map-card {
+            width: 150px;
+            height: 100px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .map-card.active {
+            border-color: var(--color-accent);
+            background: rgba(201, 166, 107, 0.1);
+        }
+
+        .map-card:hover {
+            transform: translateY(-5px);
+            border-color: #fff;
+        }
+
+        .gear-list {
+            text-align: right;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .gear-item {
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes scrollScanlines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.9; }
+            5% { opacity: 0.8; }
+            10% { opacity: 0.95; }
+            15% { opacity: 0.6; }
+            20% { opacity: 0.9; }
+            100% { opacity: 0.9; }
+        }
+
+        .flicker-text {
+            animation: flicker 4s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .ui-container { padding: 1rem; }
+            .center-area { flex-direction: column; gap: 2rem; }
+            .operator-profile { width: 100%; height: 200px; }
+            .ready-btn-container { width: 200px; height: 200px; }
+            .bottom-bar { flex-direction: column; gap: 1rem; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Layers -->
+    <div class="background-layer"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- Main UI -->
+    <div class="ui-container">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="server-status">
+                <span><span class="status-dot"></span>Server: Online</span>
+                <span>Ping: 24ms</span>
+            </div>
+            <div class="time-display" id="clock">14:32</div>
+            <div class="user-info">
+                <span>PMC // Level 45</span>
+            </div>
+        </div>
+
+        <!-- Center Area -->
+        <div class="center-area">
+            <!-- Operator Profile -->
+            <div class="operator-profile">
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+                <div class="op-header">Operator Profile</div>
+                <div class="op-image-placeholder">
+                    [Insert Operator Image Here]
+                    <!-- Use: <img src="/assets/tarkov/operator.png" alt="Operator"> -->
+                </div>
+                <div style="padding: 1rem; font-size: 0.8rem; text-transform: uppercase;">
+                    <p>Kappa Container: Locked</p>
+                    <p>Reputation: Scav +0.50</p>
+                </div>
+            </div>
+
+            <!-- Ready Button -->
+            <div class="ready-btn-container">
+                <button class="ready-btn flicker-text">
+                    READY
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <div class="map-selection">
+                <div class="map-card active">Woods</div>
+                <div class="map-card">Shoreline</div>
+                <div class="map-card">Customs</div>
+                <div class="map-card">Interchange</div>
+                <div class="map-card">Reserve</div>
+            </div>
+
+            <div class="gear-list">
+                <div class="gear-item">Weapon: AK-74M</div>
+                <div class="gear-item">Armor: 6B43</div>
+                <div class="gear-item">Headset: ComTac II</div>
+                <div class="gear-item" style="color: var(--color-accent);">Status: Combat Ready</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Simple Clock Logic
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Add subtle random flicker to background brightness
+        const bgLayer = document.querySelector('.background-layer');
+        setInterval(() => {
+            if(Math.random() > 0.95) {
+                bgLayer.style.filter = 'brightness(0.7) contrast(1.3)';
+                setTimeout(() => {
+                    bgLayer.style.filter = 'brightness(0.6) contrast(1.2) sepia(0.3)';
+                }, 100);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
